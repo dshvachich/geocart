@@ -1,0 +1,19 @@
+:root {
+  --font-body: 'Inter', Arial, sans-serif;
+  --font-display: 'Urbanist', 'Inter', Arial, sans-serif;
+  --layout-max-width: 1440px;
+  --layout-gutter: 68px;
+  --layout-gutter-mobile: 16px;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f2f4f5;
+  --color-bg-dark: #101011;
+  --color-fg-primary: #000000;
+  --color-fg-secondary: #797a7b;
+  --color-fg-on-dark: #ffffff;
+  --color-fg-dark-secondary: #999c9f;
+  --color-fg-dark-tertiary: #6a6c6e;
+  --color-accent: #22a327;
+  --color-danger: #ec3235;
+  --color-divider-light: #e5e5e5;
+  --color-divider-dark: #2a2a2a;
+}

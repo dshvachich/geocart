@@ -12,7 +12,7 @@ export const ProductGrid = ({ products }: ProductGridProps) => (
         Popular products
       </h2>
     </div>
-    <div className="content-rail product-grid">
+    <div className="product-grid">
       {products.map((product, index) => (
         <ProductCard key={product.id} product={product} priority={index < 6} />
       ))}

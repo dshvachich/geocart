@@ -1,6 +1,6 @@
 export { BaseApiGateway } from './base-api.gateway'
 export * from './base-api.types'
 export * from './geocart-home'
-export * from './openapi/endpoints/catalog/catalog'
-export * from './openapi/endpoints/crm/crm'
+export * from './home-page'
+export * from './openapi/endpoints/default/default'
 export * from './openapi/models'

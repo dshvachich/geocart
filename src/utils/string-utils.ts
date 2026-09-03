@@ -1,3 +1,10 @@
-export const formatPrice = (value: number, currency: string) => `from ${value} ${currency}`
+export const formatPrice = (value: number, currency: string) => {
+  const formattedValue = Number.isInteger(value)
+    ? String(value)
+    : value.toFixed(2)
 
-export const formatOffers = (value: number) => `${value} ${value === 1 ? 'offer' : 'offers'}`
+  return `from ${formattedValue} ${currency}`
+}
+
+export const formatOffers = (value: number) =>
+  `${value} ${value === 1 ? 'offer' : 'offers'}`

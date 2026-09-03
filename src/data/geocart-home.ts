@@ -1,4 +1,10 @@
-import type { Banner, Category, Product } from '@/domain/entities'
+import {
+  SearchSuggestionType,
+  type Banner,
+  type Category,
+  type Product,
+  type SearchSuggestion,
+} from '@/domain/entities'
 
 const asset = (name: string) => `/assets/geocart/${name}`
 
@@ -148,5 +154,68 @@ export const geocartProducts: Product[] = [
     offers: 5,
     imageSrc: asset('product-iphone-17-lavender.png'),
     imageFit: 'cover',
+  },
+]
+
+export const geocartSearchSuggestions: SearchSuggestion[] = [
+  {
+    id: 'monitor-asus-rog-strix-white',
+    label: '27" Монитор ASUS ROG Strix XG27ACS-W White',
+    type: SearchSuggestionType.product,
+  },
+  {
+    id: 'palit-geforce-rtx-white',
+    label: 'Palit GeForce RTX 5060 Ti White OC [NE7506TU19P1-GB2062M]',
+    type: SearchSuggestionType.product,
+  },
+  {
+    id: 'gigabyte-b850m-aorus-ice',
+    label: 'GIGABYTE B850M AORUS ELITE WIFI6E ICE',
+    type: SearchSuggestionType.product,
+  },
+  {
+    id: 'white-smartphones',
+    label: 'White Smartphones',
+    type: SearchSuggestionType.category,
+  },
+  {
+    id: 'white-gaming-consoles',
+    label: 'White Gaming Consoles',
+    type: SearchSuggestionType.category,
+  },
+  {
+    id: 'white-laptops',
+    label: 'White Laptops',
+    type: SearchSuggestionType.category,
+  },
+  {
+    id: 'playstation-5-slim-1tb-white',
+    label: 'Sony PlayStation 5 Slim 1TB White',
+    type: SearchSuggestionType.product,
+  },
+  {
+    id: 'playstation-ps5-slim-digital-white',
+    label: 'Sony PlayStation PS5 Slim 825GB Digital Edition White',
+    type: SearchSuggestionType.product,
+  },
+  {
+    id: 'playstation-5-slim-1tb-white-repeat',
+    label: 'Sony PlayStation 5 Slim 1TB White',
+    type: SearchSuggestionType.product,
+  },
+  {
+    id: 'playstation-games',
+    label: 'PlayStation Games',
+    type: SearchSuggestionType.category,
+  },
+  {
+    id: 'playstation-gaming-consoles',
+    label: 'PlayStation Gaming Consoles',
+    type: SearchSuggestionType.category,
+  },
+  {
+    id: 'playstation-accessories',
+    label: 'PlayStation Accessories',
+    type: SearchSuggestionType.category,
   },
 ]

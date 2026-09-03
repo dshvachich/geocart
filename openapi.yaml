@@ -1,2731 +1,386 @@
 openapi: 3.0.3
 info:
-  title: market
+  title: marketi
   version: "1"
 servers:
-  - url: /api/v1
+  - url: http://137.184.128.46:8080
 
 paths:
-  /categories:
+  /catalog/categories:
     get:
       operationId: listCategories
-      tags: [catalog]
-      responses:
-        "200":
-          description: The category hierarchy.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /product-types/{code}:
-    get:
-      operationId: getProductType
-      tags: [catalog]
       description: |
-        What a card, a filter and a specification table render: the type's
-        attributes in binding order, each with its value type, unit and the
-        order an enumerated one's values take. Codes throughout — a label is the
-        frontend's (DESIGN.md §7.5).
+        Отсортированный список категорий со всеми подкатегориями
       parameters:
-        - name: code
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/AcceptLocale'
       responses:
         "200":
-          description: One product type and what it binds.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProductType"
-        default:
-          $ref: "#/components/responses/Error"
+          $ref: '#/components/responses/CategoryListResponse'
 
-  /products:
+  /catalog/products:
     get:
       operationId: listProducts
-      tags: [catalog]
       description: |
-        Attribute filters are `attr.<code>`, repeated for alternatives:
-        `attr.color=Black&attr.color=White`. An attribute the binding marks a
-        range filter takes bounds instead — `attr.refresh_rate.min=60` and
-        `attr.refresh_rate.max=120`, either one alone. They are not declared
-        below because the name of such a parameter is an attribute code, which
-        is data.
+        Список популярных продуктов.
       parameters:
-        - name: category
+        - $ref: '#/components/parameters/AcceptLocale'
+        - name: ids
           in: query
-          description: Required unless q is given.
-          schema:
-            type: string
-        - name: q
-          in: query
-          description: |
-            Matches a product name by containment. At least two characters, and
-            the only thing that makes `category` optional.
-          schema:
-            type: string
-        - name: min_price
-          in: query
-          schema:
-            type: integer
-            format: int64
-            x-go-type-skip-optional-pointer: false
-        - name: max_price
-          in: query
-          schema:
-            type: integer
-            format: int64
-            x-go-type-skip-optional-pointer: false
-        - name: sort
-          in: query
-          description: Defaults to price_asc.
-          schema:
-            type: string
-            enum: [price_asc, price_desc, newest]
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
-        - name: cursor
-          in: query
-          description: |
-            Opaque, and only ever a next_cursor of this endpoint. It carries the
-            sort it was read under, so a page continues that order or is refused.
-          schema:
-            type: string
-      responses:
-        "200":
-          description: One page of products, with the facets of the whole result.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProductList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /products/suggest:
-    get:
-      operationId: listProductSuggestions
-      tags: [catalog]
-      description: |
-        What a search box offers while it is being typed: the products a query
-        names, closest first, and nothing a card would need.
-      parameters:
-        - name: q
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
-      responses:
-        "200":
-          description: The products the query names.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProductSuggestionList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /products/{id}:
-    get:
-      operationId: getProduct
-      tags: [catalog]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: One product, with its offers and its siblings.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProductDetail"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/offers:
-    get:
-      operationId: listCrmOffers
-      tags: [crm]
-      description: |
-        One page of offers under the shared CRM filter. Every parameter is
-        optional and narrows; repeating one states alternatives. A parameter
-        no filter declares is a 400 rather than an ignored typo.
-      parameters:
-        - name: status
-          in: query
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/OfferStatus"
-        - name: review_reason
-          in: query
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/OfferReviewReason"
-        - name: shop
-          in: query
-          description: Shop codes, which are data rather than a fixed list.
+          required: false
+          explode: false
           schema:
             type: array
             items:
               type: string
-        - name: category
-          in: query
-          description: |
-            The category and every descendant of it, resolved through the
-            product types mapped to them.
-          schema:
-            type: string
-        - name: matched
-          in: query
-          description: Whether the offer carries a product link.
-          schema:
-            type: boolean
-            x-go-type-skip-optional-pointer: false
-        - name: locked
-          in: query
-          schema:
-            type: boolean
-            x-go-type-skip-optional-pointer: false
-        - name: available
-          in: query
-          schema:
-            type: boolean
-            x-go-type-skip-optional-pointer: false
-        - name: min_price
+              format: uuid
+        - name: limit
+          required: true
           in: query
           schema:
             type: integer
-            format: int64
-            x-go-type-skip-optional-pointer: false
-        - name: max_price
+            minimum: 1
+            maximum: 50
+        - name: page
+          required: true
           in: query
           schema:
             type: integer
-            format: int64
-            x-go-type-skip-optional-pointer: false
-        - name: updated_from
-          in: query
-          schema:
-            type: string
-            format: date-time
-            x-go-type-skip-optional-pointer: false
-        - name: updated_to
-          in: query
-          schema:
-            type: string
-            format: date-time
-            x-go-type-skip-optional-pointer: false
+            minimum: 0
+            maximum: 50
+      responses:
+        "200":
+          $ref: '#/components/responses/ProductListResponse'
+
+  /catalog/search:
+    get:
+      operationId: searchProducts
+      description: |
+        Поиск продуктов по тексту и/или фильтрам.
+        Продукты всегда возвращаются в рамках одной из категорий для поддержания корректности
+        фильтров. Также возвращаются возможные категории продуктов и выбранная категория,
+        по которой происходит поиск.
+
+        При запросе с фильтрами всегда необходимо указывать категорию.
+
+        Возможные фильтры, их названия и типы полностью определяются тем, что ответил сервер.
+        Поэтому они не указаны как параметры запроса в схеме. Каждый тип фильтра соотносится типа параметра, который фильтруется.
+        Каждый фильтр в ответе имеет указатель на то, были ли выбраны какие-то значения для этого фильтра при запросе.
+        Так на стороне клиента должны отсекаться невалидные значения, сужения фильтров и так далее: логика формирования фильтров
+        и действующих значений полностью находится на стороне сервера.
+
+        Правила наименований фильтров при использовании в запросе:
+          - Типы фильтров: `checkbox`, `range`, `toggle`.
+          - `checkbox`: фильтры предполагают выбор нескольких предложенных значений.
+          В качестве сепаратора значения использовать `,`, например: `brand=Apple,Samsung'
+          - `range`: фильтр предполагает выбор из минимального и максимального значения какого-то числового
+          параметра для поиска. `min` и `max` из ответа указывают на минимальные и максимальные значения по всему корпусу.
+          При применении данного фильтра необходимо **всегда присылать оба значения** в виде: `{selectedMin}-{selectedMax}`,
+          заменяя невыбранные границами всего корпуса, которые пришли в ответе.
+          - `toggle`: простой фильтр `true/false`. Отправлять как `true/false`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLocale'
         - name: q
           in: query
-          description: Free text over the offer's name and url.
+          description: Текст запроса
+          required: false
           schema:
             type: string
-        - name: page
-          in: query
-          description: 1-based.
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
-        - name: per_page
-          in: query
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
-      responses:
-        "200":
-          description: One page of offers, with the size of the whole filtered set.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmOfferList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/shops:
-    get:
-      operationId: listCrmShops
-      tags: [crm]
-      description: |
-        Every shop, ordered by code. Codes are data, so they are strings rather
-        than a fixed list a client would have to be regenerated to learn.
-      responses:
-        "200":
-          description: Every shop the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmShopList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/attributes:
-    get:
-      operationId: listCrmAttributes
-      tags: [crm]
-      description: |
-        Every attribute, ordered by code. Codes are data, so they are strings
-        rather than a fixed list a client would have to be regenerated to learn.
-      responses:
-        "200":
-          description: Every attribute the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmAttributeList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/attributes/{code}/values:
-    get:
-      operationId: listCrmAttributeValues
-      tags: [crm]
-      description: |
-        What the shops published for one attribute, over every offer carrying
-        it, most frequent first. Each value names the canonical matching
-        currently resolves it to. It scopes by attribute alone, because an alias
-        does and a narrower screen would under-show what an edit rewrites.
-      parameters:
-        - $ref: "#/components/parameters/AttributeCode"
-      responses:
-        "200":
-          description: The observed values, most frequent first.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmAttributeValues"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/aliases:
-    get:
-      operationId: listCrmAliases
-      tags: [crm]
-      description: |
-        Every alias, whatever attribute holds it, ordered by attribute and folded
-        value. It is how one is found by an operator who does not already know
-        which attribute carries it; writing and re-pointing one is still the
-        attribute's.
-      responses:
-        "200":
-          description: Every alias the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmAliasList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/attributes/{code}/divergence:
-    get:
-      operationId: listCrmAttributeDivergence
-      tags: [crm]
-      description: |
-        What one identity group's rows and offers say about this attribute where
-        they do not agree. `within` is two shops contradicting each other inside
-        one configuration; `across` is what separates one configuration from
-        another, which is what an axis looks like. Most divergent first, and
-        capped.
-      parameters:
-        - $ref: "#/components/parameters/AttributeCode"
-      responses:
-        "200":
-          description: The identity groups that disagree, most divergent first.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmDivergenceList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/attributes/{code}/aliases:
-    post:
-      operationId: aliasCrmAttributeValues
-      tags: [crm]
-      description: |
-        Points observed values at one canonical. Each is written under its
-        folded form, so a value already aliased is re-pointed, and each enqueues
-        the `rematch` that re-resolves the offers carrying it. An attribute
-        whose values are not free text is a 400: aliases correct strings.
-      parameters:
-        - $ref: "#/components/parameters/AttributeCode"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmAttributeAlias"
-      responses:
-        "200":
-          description: The aliases written, and the runs they enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmAttributeAliased"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/job-runs:
-    get:
-      operationId: listCrmJobRuns
-      tags: [crm]
-      description: |
-        One page of job runs, newest first, with the counts of the whole
-        filtered set beside it. Every parameter is optional and narrows;
-        repeating one states alternatives.
-      parameters:
-        - name: kind
-          in: query
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/JobRunKind"
-        - name: status
-          in: query
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/JobRunStatus"
-        - name: scrape_target
-          in: query
-          description: The scope of a scrape run.
-          schema:
-            type: string
-            format: uuid
-            x-go-type-skip-optional-pointer: false
-        - name: product_type
-          in: query
-          description: The scope of a rehash or a rename.
-          schema:
-            type: string
-        - name: created_from
-          in: query
-          schema:
-            type: string
-            format: date-time
-            x-go-type-skip-optional-pointer: false
-        - name: created_to
-          in: query
-          schema:
-            type: string
-            format: date-time
-            x-go-type-skip-optional-pointer: false
-        - name: page
-          in: query
-          description: 1-based.
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
-        - name: per_page
-          in: query
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
-      responses:
-        "200":
-          description: One page of runs, with the counts of the whole filtered set.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmJobRunList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/job-runs/cancel:
-    post:
-      operationId: cancelCrmJobRuns
-      tags: [crm]
-      description: |
-        Cancels every unfinished run of the named kinds, or every unfinished run
-        when none is named. A run that has already finished stays as it
-        finished.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmJobRunCancel"
-      responses:
-        "200":
-          description: The runs this cancellation moved.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmJobRunCancelled"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/job-runs/{id}/cancel:
-    post:
-      operationId: cancelCrmJobRun
-      tags: [crm]
-      description: |
-        Cancels one run. A run that has already finished is a 409, and the work
-        already being processed is cancelled with it.
-      parameters:
-        - $ref: "#/components/parameters/JobRunID"
-      responses:
-        "200":
-          description: The run, as it now stands.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmJobRun"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/scrape-targets:
-    get:
-      operationId: listCrmScrapeTargets
-      tags: [crm]
-      description: Every scrape target, ordered by shop code and url.
-      responses:
-        "200":
-          description: Every target the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmScrapeTargetList"
-        default:
-          $ref: "#/components/responses/Error"
-    post:
-      operationId: createCrmScrapeTarget
-      tags: [crm]
-      description: |
-        Creates a target. Its `static_attributes` may only name attributes its
-        category binds.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmScrapeTargetEdit"
-      responses:
-        "201":
-          description: The target as stored.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmScrapeTarget"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/scrape-targets/{id}/run:
-    post:
-      operationId: runCrmScrapeTarget
-      tags: [crm]
-      description: |
-        Enqueues a scrape of one target. The worker is what opens the job run,
-        so the run appears in the listing rather than in this response. A
-        disabled target is a 409.
-      parameters:
-        - $ref: "#/components/parameters/ScrapeTargetID"
-      responses:
-        "202":
-          description: The scrape is enqueued.
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/offers/{id}:
-    get:
-      operationId: getCrmOffer
-      tags: [crm]
-      description: One offer as its CRM card renders it.
-      parameters:
-        - $ref: "#/components/parameters/OfferID"
-      responses:
-        "200":
-          $ref: "#/components/responses/CrmOfferCard"
-        default:
-          $ref: "#/components/responses/Error"
-    patch:
-      operationId: updateCrmOffer
-      tags: [crm]
-      description: |
-        Edits the content a lock protects. A value the type's schema refuses
-        is nulled and the offer is flagged for review, exactly as the model's
-        answer is. The edit reaches a product through a re-match.
-      parameters:
-        - $ref: "#/components/parameters/OfferID"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmOfferEdit"
-      responses:
-        "200":
-          $ref: "#/components/responses/CrmOfferCard"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/offers/{id}/review:
-    post:
-      operationId: reviewCrmOffer
-      tags: [crm]
-      description: |
-        Moves the offer through one review transition. Only the transitions the
-        card reports are accepted; anything else is a 409.
-      parameters:
-        - $ref: "#/components/parameters/OfferID"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmOfferReview"
-      responses:
-        "200":
-          $ref: "#/components/responses/CrmOfferCard"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/offers/{id}/lock:
-    post:
-      operationId: lockCrmOffer
-      tags: [crm]
-      description: |
-        Locking takes the snapshot unlocking writes back. Price and availability
-        update on a locked offer either way.
-      parameters:
-        - $ref: "#/components/parameters/OfferID"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmOfferLock"
-      responses:
-        "200":
-          $ref: "#/components/responses/CrmOfferCard"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/offers/{id}/rematch:
-    post:
-      operationId: rematchCrmOffer
-      tags: [crm]
-      description: |
-        Hands the offer back to the matcher. An offer the matcher would ignore —
-        one in review, denied, or not yet parsed — is a 409.
-      parameters:
-        - $ref: "#/components/parameters/OfferID"
-      responses:
-        "200":
-          $ref: "#/components/responses/CrmOfferCard"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/categories:
-    get:
-      operationId: listCrmCategories
-      tags: [crm]
-      description: |
-        The browse tree, ordered by path. A category binds nothing at any
-        depth: a parent and a leaf are the same kind of thing.
-      responses:
-        "200":
-          description: Every category the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmCategoryList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/categories/{code}:
-    put:
-      operationId: saveCrmCategory
-      tags: [crm]
-      description: |
-        Creates the category or edits it; the code is the path and is
-        immutable. A changed parent carries the subtree's paths with it.
-      parameters:
-        - $ref: "#/components/parameters/CategoryCode"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmCategoryEdit"
-      responses:
-        "200":
-          description: The category as stored.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmCategory"
-        default:
-          $ref: "#/components/responses/Error"
-    delete:
-      operationId: deleteCrmCategory
-      tags: [crm]
-      description: |
-        Deletes a category nothing points at. One with a type mapped to it, a
-        product attached to it, a mapping or a target naming it, or a child, is
-        a 409 — categories are RESTRICT parents throughout.
-      parameters:
-        - $ref: "#/components/parameters/CategoryCode"
-      responses:
-        "204":
-          description: The category is gone.
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/product-types:
-    get:
-      operationId: listCrmProductTypes
-      tags: [crm]
-      description: |
-        Every product type, ordered by code, with the browse categories its
-        products sit under. A type owns the attribute schema; a category owns
-        nothing but the tree.
-      responses:
-        "200":
-          description: Every product type the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmProductTypeList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/product-types/{code}:
-    put:
-      operationId: saveCrmProductType
-      tags: [crm]
-      description: |
-        Creates the type or edits it; the code is the path and is immutable. An
-        edited name template enqueues the `rename` that rewrites the rows it
-        names. The category list is read at browse time, so editing it
-        recomputes nothing.
-      parameters:
-        - $ref: "#/components/parameters/ProductTypeCode"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmProductTypeEdit"
-      responses:
-        "200":
-          description: The type as stored, and the runs the edit enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmProductTypeSaved"
-        default:
-          $ref: "#/components/responses/Error"
-    delete:
-      operationId: deleteCrmProductType
-      tags: [crm]
-      description: |
-        Deletes a type nothing points at. A binding, a product, an offer, a
-        target, a mapping or a mapped category is a 409.
-      parameters:
-        - $ref: "#/components/parameters/ProductTypeCode"
-      responses:
-        "204":
-          description: The product type is gone.
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/product-types/{code}/attributes:
-    get:
-      operationId: listCrmProductTypeAttributes
-      tags: [crm]
-      description: |
-        The type's bindings, ordered by attribute code, each carrying the role
-        overrides that amend it.
-      parameters:
-        - $ref: "#/components/parameters/ProductTypeCode"
-      responses:
-        "200":
-          description: What this product type binds.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmBindingList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/product-types/{code}/attributes/{attribute_code}:
-    put:
-      operationId: saveCrmProductTypeAttribute
-      tags: [crm]
-      description: |
-        Binds the attribute to the type or edits the binding, overrides
-        included: what the body omits is deleted. An override naming an identity
-        binding, or scoped by an attribute that is not a free-text identity one,
-        is a 400. The schema it changes enqueues a `rehash`.
-      parameters:
-        - $ref: "#/components/parameters/ProductTypeCode"
-        - $ref: "#/components/parameters/BoundAttributeCode"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmBindingEdit"
-      responses:
-        "200":
-          description: The binding as stored, and the runs the edit enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmBindingSaved"
-        default:
-          $ref: "#/components/responses/Error"
-    delete:
-      operationId: deleteCrmProductTypeAttribute
-      tags: [crm]
-      description: Unbinds the attribute, which enqueues a `rehash`.
-      parameters:
-        - $ref: "#/components/parameters/ProductTypeCode"
-        - $ref: "#/components/parameters/BoundAttributeCode"
-      responses:
-        "200":
-          description: The runs the unbinding enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmBackfilled"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/overrides:
-    get:
-      operationId: listCrmOverrides
-      tags: [crm]
-      description: |
-        Every role override, whatever binding holds it, ordered by product type
-        and attribute code. It is how one is found by an operator who does not
-        already know where it lives; editing one is still the binding's.
-      responses:
-        "200":
-          description: Every override the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmOverrideList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/taxonomy:
-    get:
-      operationId: listCrmTaxonomy
-      tags: [crm]
-      description: |
-        Every shop taxonomy mapping, ordered by shop and key. It is the finder;
-        writing one is the shop's.
-      responses:
-        "200":
-          description: Every mapping the CRM knows.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmTaxonomyList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/taxonomy/unmapped:
-    get:
-      operationId: listCrmUnmappedTaxonomyKeys
-      tags: [crm]
-      description: |
-        What the shops publish that no mapping covers, most published first. It
-        is the operator's queue, not a fault: a key too coarse for any one type
-        is left unmapped on purpose, and the target's declaration answers for
-        the offers under it.
-      responses:
-        "200":
-          description: The unmapped keys, most published first.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmUnmappedKeyList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/shops/{code}/taxonomy:
-    get:
-      operationId: listCrmShopTaxonomy
-      tags: [crm]
-      description: One shop's mapping, ordered by key.
-      parameters:
-        - $ref: "#/components/parameters/ShopCode"
-      responses:
-        "200":
-          description: What this shop's keys map to.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmTaxonomyList"
-        default:
-          $ref: "#/components/responses/Error"
-    post:
-      operationId: saveCrmShopTaxonomy
-      tags: [crm]
-      description: |
-        Maps one of the shop's keys onto a product type and, where the key says
-        something about where a customer browses, onto a category. Writing one
-        is idempotent and enqueues the `recompute_categories` that rebuilds the
-        memberships the shop's offers gave their rows. The key is in the body
-        because a shop writes it and a path segment cannot carry every shape.
-      parameters:
-        - $ref: "#/components/parameters/ShopCode"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmTaxonomyEdit"
-      responses:
-        "200":
-          description: The mapping as stored, and the run it enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmTaxonomySaved"
-        default:
-          $ref: "#/components/responses/Error"
-    delete:
-      operationId: deleteCrmShopTaxonomy
-      tags: [crm]
-      description: |
-        Unmaps one key, which returns it to the queue and is a
-        `recompute_categories` as writing one is.
-      parameters:
-        - $ref: "#/components/parameters/ShopCode"
-        - name: key
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: The run the removal enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmBackfilled"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/attributes/{code}:
-    put:
-      operationId: saveCrmAttribute
-      tags: [crm]
-      description: |
-        Creates the attribute or edits it, replacing its enum values. A declared
-        one is a 409. A changed value type or unit, and a removed enum value,
-        each enqueue a `rehash` of every category that binds it.
-      parameters:
-        - $ref: "#/components/parameters/AttributeCode"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmAttributeEdit"
-      responses:
-        "200":
-          description: The attribute as stored, and the runs the edit enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmAttributeSaved"
-        default:
-          $ref: "#/components/responses/Error"
-    delete:
-      operationId: deleteCrmAttribute
-      tags: [crm]
-      description: |
-        Deletes an unbound manual attribute. A declared one is a 409, and so is
-        one a category binds or a stored value carries.
-      parameters:
-        - $ref: "#/components/parameters/AttributeCode"
-      responses:
-        "204":
-          description: The attribute is gone.
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/shops/{code}:
-    put:
-      operationId: saveCrmShop
-      tags: [crm]
-      description: |
-        Creates the shop or edits it. The code is the path and is immutable, and
-        there is no delete — a shop is disabled instead.
-      parameters:
-        - $ref: "#/components/parameters/ShopCode"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmShopEdit"
-      responses:
-        "200":
-          description: The shop as stored.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmShop"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/shops/{code}/silence:
-    get:
-      operationId: listCrmShopSilence
-      tags: [crm]
-      description: |
-        How often this shop publishes each attribute its offers' categories bind,
-        over the offers it has past parsing. A shop that never states one, or has
-        stopped, is what the rate makes visible.
-      parameters:
-        - $ref: "#/components/parameters/ShopCode"
-      responses:
-        "200":
-          description: One fill rate per attribute, by attribute code.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmSilenceList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/scrape-targets/{id}:
-    put:
-      operationId: saveCrmScrapeTarget
-      tags: [crm]
-      description: |
-        Edits one target. There is no delete — a target is disabled, or its
-        offers lose their delisting owner. A membership is the product type's
-        and the shop's mapping, so no edit here rebuilds one.
-      parameters:
-        - $ref: "#/components/parameters/ScrapeTargetID"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmScrapeTargetEdit"
-      responses:
-        "200":
-          description: The target as stored, and the runs the edit enqueued.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmScrapeTargetSaved"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/products:
-    get:
-      operationId: listCrmProducts
-      tags: [crm]
-      description: |
-        One page of product rows, one per configuration. Attribute filters are
-        `attr.<code>`, repeated for alternatives, and are not declared below
-        because such a parameter's name is an attribute code, which is data.
-      parameters:
         - name: category
           in: query
+          description: Категория поиска. Принимаются только конечные категории
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: sort
+          in: query
+          description: Сортировка. По умолчанию - по популярности
+          schema:
+            type: string
+            enum: [popularity, price]
+        - name: sortOrder
+          in: query
+          description: Направление сортировки. По умолчанию - по убыванию
+          schema:
+            type: string
+            enum: [asc, desc]
+        - name: cursor
+          in: query
           description: |
-            The category and every descendant of it, over both membership
-            branches: the row's type is mapped to one, or the row is attached to
-            one.
+            Курсор пагинации для получения следующей страницы.
+            Возвращается в поле ответа `next`
           schema:
             type: string
-        - name: product_type
-          in: query
-          schema:
-            type: string
-        - name: identity
-          in: query
-          description: |
-            One identity group, which is how a chosen row's siblings are read
-            (DESIGN.md §3.1).
-          schema:
-            type: string
-        - name: min_price
-          in: query
-          schema:
-            type: integer
-            format: int64
-            x-go-type-skip-optional-pointer: false
-        - name: max_price
-          in: query
-          schema:
-            type: integer
-            format: int64
-            x-go-type-skip-optional-pointer: false
-        - name: has_offers
-          in: query
-          description: False is the manual delete flow's filter.
-          schema:
-            type: boolean
-            x-go-type-skip-optional-pointer: false
-        - name: page
-          in: query
-          description: 1-based.
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
-        - name: per_page
-          in: query
-          schema:
-            type: integer
-            x-go-type-skip-optional-pointer: false
       responses:
         "200":
-          description: One page of rows, with the size of the whole filtered set.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmProductList"
-        default:
-          $ref: "#/components/responses/Error"
+          $ref: '#/components/responses/SearchResponse'
 
-  /crm/products/forks:
+  /catalog/search/suggest:
     get:
-      operationId: listCrmProductForks
-      tags: [crm]
+      operationId: listSuggestions
       description: |
-        Per identity group of one product type, the axes some configurations
-        state and others say nothing about — the shape a role override removes.
-        Each row names the attribute and the identity values an override is
-        scoped by, so the editor opens filled in. Widest fork first, and capped.
+        Подсказки для поиска
       parameters:
-        - name: product_type
+        - $ref: '#/components/parameters/AcceptLocale'
+        - name: q
           in: query
+          description: Текст запроса
           required: true
           schema:
             type: string
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
       responses:
         "200":
-          description: The forks of this product type, widest first.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmForkList"
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/products/{id}:
-    delete:
-      operationId: deleteCrmProduct
-      tags: [crm]
-      description: |
-        Deletes one configuration and not its siblings. Its offers keep their
-        rows, lose their link, and return to `parsed`, so a row with offers is
-        recreated by the next match — which is why the flow filters on having
-        none.
-      parameters:
-        - $ref: "#/components/parameters/ProductID"
-      responses:
-        "204":
-          description: The configuration is gone.
-        default:
-          $ref: "#/components/responses/Error"
-
-  /crm/products/{id}/lock:
-    post:
-      operationId: lockCrmProduct
-      tags: [crm]
-      description: |
-        A locked row is the operator's: the pipeline stops overwriting its
-        content, and its name is no longer recomputed.
-      parameters:
-        - $ref: "#/components/parameters/ProductID"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CrmProductLock"
-      responses:
-        "200":
-          description: The row as it now stands.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CrmProduct"
-        default:
-          $ref: "#/components/responses/Error"
+          $ref: '#/components/responses/SearchSuggestionResponse'
 
 components:
-  parameters:
-    OfferID:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    JobRunID:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    ScrapeTargetID:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
-    AttributeCode:
-      name: code
-      in: path
-      required: true
-      schema:
-        type: string
-
-    CategoryCode:
-      name: code
-      in: path
-      required: true
-      schema:
-        type: string
-
-    ProductTypeCode:
-      name: code
-      in: path
-      required: true
-      schema:
-        type: string
-
-    ShopCode:
-      name: code
-      in: path
-      required: true
-      schema:
-        type: string
-
-    BoundAttributeCode:
-      name: attribute_code
-      in: path
-      required: true
-      schema:
-        type: string
-
-    ProductID:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-
   responses:
-    CrmOfferCard:
-      description: The offer, its type's schema, and where it can go next.
+    ErrorResponse:
+      description: Общая ошибка
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/CrmOfferDetail"
+            $ref: '#/components/schemas/Error'
 
-    Error:
-      description: The error envelope every failure returns.
+    CategoryListResponse:
+      description: Список категорий
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorEnvelope"
+            $ref: '#/components/schemas/CategoryList'
+
+    ProductListResponse:
+      description: Список продуктов
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              products:
+                $ref: '#/components/schemas/ProductList'
+
+    SearchResponse:
+      description: |
+        Список продуктов по запросу, подходящих категорий и фильтров
+        по выбранной или предсказанной категории.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchResponse'
+
+    SearchSuggestionResponse:
+      description: |
+            Подсказки содержат ID, отображаемое название и тип сущности,
+            к которой они относятся. Актуальный набор типов сущностей указан
+            в схеме подсказки
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchSuggestion'
+
+  parameters:
+    AcceptLocale:
+      name: "Accept-Locale"
+      in: header
+      required: false
+      schema:
+        type: string
+        enum: [ru, en, ka]
+        x-go-type: domain.Language
 
   schemas:
-    ErrorEnvelope:
+    Error:
       type: object
       required: [error]
       properties:
         error:
-          $ref: "#/components/schemas/ErrorBody"
-      x-go-type: apierror.Envelope
-      x-go-type-import:
-        name: apierror
-        path: market/internal/api/apierror
-
-    ErrorBody:
-      type: object
-      required: [kind, code, message]
-      properties:
-        kind:
-          type: string
-          enum: [invalid, not_found, conflict, internal]
-        code:
-          type: string
-        message:
-          type: string
-        details:
           type: object
-          additionalProperties: true
-      x-go-type: apierror.Body
-      x-go-type-import:
-        name: apierror
-        path: market/internal/api/apierror
-
-    AttributeValue:
-      oneOf:
-        - type: string
-        - type: number
-        - type: boolean
-        - description: A `set` attribute, whose value is its element codes.
-          type: array
-          items:
-            type: string
-      x-go-type: any
-
-    AttributeValues:
-      type: object
-      additionalProperties:
-        $ref: "#/components/schemas/AttributeValue"
+          required: [id, message]
+          properties:
+            id:
+              type: string
+            message:
+              type: string
+            data:
+              type: object
+              additionalProperties: true
 
     CategoryList:
-      type: object
-      required: [categories]
-      properties:
-        categories:
-          type: array
-          items:
-            $ref: "#/components/schemas/Category"
+      type: array
+      items:
+        $ref: '#/components/schemas/Category'
 
     Category:
       type: object
-      required: [code, parent_code, path, sort_order]
+      required: [id, label, imageUrl]
       properties:
-        code:
+        id:
           type: string
-        parent_code:
+        type:
+          type: string
+          enum: [normal, button]
+        label:
+          type: string
+        imageUrl:
           type: string
           format: null-string
           nullable: true
-        path:
-          type: string
-        sort_order:
-          type: integer
+        subCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
 
-    ProductSuggestionList:
+    ProductList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ProductListItem'
+
+    ProductListItem:
       type: object
-      required: [suggestions]
+      required: [id, name, minPriceTetri, offersCount, imageUrls, isNew]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        minPriceTetri:
+          type: integer
+        offersCount:
+          type: integer
+        imageUrls:
+          type: array
+          items:
+            type: string
+        isNew:
+          type: boolean
+
+    SearchSuggestionItem:
+      type: object
+      required: [id, name, type]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+          enum: [product, category]
+
+    SearchSuggestion:
+      type: object
+      required: [products, categories]
       properties:
         suggestions:
           type: array
           items:
-            $ref: "#/components/schemas/ProductSuggestion"
+            $ref: '#/components/schemas/SearchSuggestionItem'
 
-    ProductSuggestion:
+    SearchResponse:
       type: object
-      required: [product_id, name]
+      required: [title, products, filters, categories, next]
       properties:
-        product_id:
+        title:
           type: string
-          format: uuid
-        name:
-          type: string
-
-    ProductType:
-      type: object
-      required: [code, name, attributes]
-      properties:
-        code:
-          type: string
-        name:
-          type: string
-        attributes:
-          type: array
-          items:
-            $ref: "#/components/schemas/ProductTypeAttribute"
-
-    ProductTypeAttribute:
-      description: One attribute of one product type, as the client renders it.
-      type: object
-      required:
-        [code, role, sort_order, is_filterable, filter_type, value_type, unit,
-         enum_values]
-      properties:
-        code:
-          type: string
-        role:
-          type: string
-          enum: [common, identity, variant]
-        sort_order:
-          description: The order the type binds it in, which is display order.
-          type: integer
-        is_filterable:
-          type: boolean
-        filter_type:
-          description: Empty exactly while the attribute is not filterable.
-          type: string
-          enum: ["", pick, range]
-        value_type:
-          type: string
-          enum: [enum, string, int, decimal, bool, set]
-        unit:
-          description: Empty on everything but a numeric attribute.
-          type: string
-        enum_values:
-          description: The codes an enumerated attribute accepts, in their order.
-          type: array
-          items:
-            type: string
-
-    ProductList:
-      type: object
-      required:
-        [products, facets, ranges, total, min_price_tetri, max_price_tetri]
-      properties:
         products:
+          $ref: '#/components/schemas/ProductList'
+        filters:
           type: array
           items:
-            $ref: "#/components/schemas/Product"
-        facets:
-          type: array
-          items:
-            $ref: "#/components/schemas/Facet"
-        ranges:
-          description: One per range-filtered attribute the matching set states.
-          type: array
-          items:
-            $ref: "#/components/schemas/Range"
-        total:
-          description: The matching products, of which `products` is one page.
-          type: integer
-        min_price_tetri:
-          description: |
-            The bounds of the matching set, which the price filter narrows like
-            any other filter. Null where nothing matched.
-          type: integer
-          format: null-int
-          nullable: true
-        max_price_tetri:
-          type: integer
-          format: null-int
-          nullable: true
-        next_cursor:
-          type: string
-          description: Absent on the last page.
-
-    Product:
-      type: object
-      required:
-        [id, name, product_type_code, thumbnail_url, attributes,
-         min_price_tetri, offers_count, created_at]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        product_type_code:
-          type: string
-        thumbnail_url:
-          type: string
-          format: null-string
-          nullable: true
-        attributes:
-          $ref: "#/components/schemas/AttributeValues"
-        min_price_tetri:
-          type: integer
-          format: int64
-        offers_count:
-          description: The available offers of visible shops the price is drawn from.
-          type: integer
-        created_at:
-          type: string
-          format: date-time
-
-    Facet:
-      type: object
-      required: [attribute_code, values]
-      properties:
-        attribute_code:
-          type: string
-        values:
-          type: array
-          items:
-            $ref: "#/components/schemas/FacetValue"
-
-    FacetValue:
-      type: object
-      required: [value, product_count]
-      properties:
-        value:
-          type: string
-        product_count:
-          type: integer
-
-    Range:
-      description: |
-        What a numeric attribute spans over the matching set, which its own
-        bound narrows like any other filter.
-      type: object
-      required: [attribute_code, min, max]
-      properties:
-        attribute_code:
-          type: string
-        min:
-          type: number
-          format: double
-        max:
-          type: number
-          format: double
-
-    ProductDetail:
-      type: object
-      required:
-        [id, name, product_type_code, variant_attributes, attributes,
-         description, thumbnail_url, picture_urls, offers, siblings]
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        product_type_code:
-          type: string
-        variant_attributes:
-          description: The product type's axis codes, in picker order.
-          type: array
-          items:
-            type: string
-        attributes:
-          $ref: "#/components/schemas/AttributeValues"
-        description:
-          type: string
-        thumbnail_url:
-          type: string
-          format: null-string
-          nullable: true
-        picture_urls:
-          type: array
-          items:
-            type: string
-          x-go-name: PictureURLs
-        offers:
-          type: array
-          items:
-            $ref: "#/components/schemas/Offer"
-        siblings:
-          type: array
-          items:
-            $ref: "#/components/schemas/Sibling"
-
-    Sibling:
-      type: object
-      required: [product_id, values, selected]
-      properties:
-        product_id:
-          type: string
-          format: uuid
-        values:
-          description: One entry per axis, null where no shop published it.
-          allOf:
-            - $ref: "#/components/schemas/AttributeValues"
-        selected:
-          type: boolean
-
-    OfferStatus:
-      type: string
-      enum: [pending, parsed, matched, review, denied]
-
-    OfferReviewReason:
-      type: string
-      enum:
-        [type_unresolved, identity_missing, parse_failed, enum_violation,
-         manual]
-
-    CrmOfferList:
-      type: object
-      required: [offers, page, per_page, total]
-      properties:
-        offers:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmOffer"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          description: Every offer the filter matches, which page numbers count.
-          type: integer
-
-    CrmOffer:
-      type: object
-      required:
-        [id, shop_code, product_type_code, shop_taxonomy_keys, status,
-         review_reason, unavailable_reason, name, url, thumbnail_url,
-         price_tetri, is_available, is_locked, product_id, created_at,
-         updated_at]
-      properties:
-        id:
-          type: string
-          format: uuid
-        shop_code:
-          type: string
-        product_type_code:
-          description: Null where the shop's keys map to none and its target declares none.
-          type: string
-          format: null-string
-          nullable: true
-        shop_taxonomy_keys:
-          description: The shop's own nodes, in its order, opaque to us.
-          type: array
-          items:
-            type: string
-        status:
-          $ref: "#/components/schemas/OfferStatus"
-        review_reason:
-          description: Empty outside review.
-          type: string
-        unavailable_reason:
-          description: Empty while available.
-          type: string
-        name:
-          type: string
-        url:
-          type: string
-        thumbnail_url:
-          type: string
-          format: null-string
-          nullable: true
-        price_tetri:
-          type: integer
-          format: int64
-        is_available:
-          type: boolean
-        is_locked:
-          type: boolean
-        product_id:
-          description: Null until the offer is matched.
-          type: string
-          format: null-uuid
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-
-    CrmOfferDetail:
-      type: object
-      required:
-        [offer, description, picture_urls, attributes, type_attributes,
-         transitions, product_name, product_offers]
-      properties:
-        offer:
-          $ref: "#/components/schemas/CrmOffer"
-        description:
-          type: string
-        picture_urls:
-          type: array
-          items:
-            type: string
-          x-go-name: PictureURLs
-        attributes:
-          description: This offer's normalized values, absent where nothing was stated.
-          allOf:
-            - $ref: "#/components/schemas/AttributeValues"
-        type_attributes:
-          description: |
-            The product type's bindings with this offer's role overrides
-            applied, so an axis its brand does not vary is absent rather than
-            unstated. Empty where the offer resolves to no type.
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmTypeAttribute"
-        transitions:
-          description: The review transitions this offer's status allows.
-          type: array
-          items:
-            $ref: "#/components/schemas/OfferStatus"
-        product_name:
-          description: |
-            The name of the product row this offer sits on, empty until it is
-            matched. Its id is the offer's `product_id`.
-          type: string
-        product_offers:
-          description: |
-            Every offer matched to that row, this one among them, ordered by
-            price. A hidden shop's offer is not in it.
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmProductOffer"
-
-    CrmTypeAttribute:
-      type: object
-      required: [code, role, value_type, unit, enum_values]
-      properties:
-        code:
-          type: string
-        role:
-          type: string
-          enum: [common, identity, variant]
-        value_type:
-          type: string
-          enum: [enum, string, int, decimal, bool, set]
-        unit:
-          description: Empty on everything but a numeric attribute.
-          type: string
-        enum_values:
-          description: The codes an enumerated attribute accepts, empty otherwise.
-          type: array
-          items:
-            type: string
-
-    CrmProductOffer:
-      type: object
-      required: [id, shop_code, status, price_tetri, is_available]
-      properties:
-        id:
-          type: string
-          format: uuid
-        shop_code:
-          type: string
-        status:
-          $ref: "#/components/schemas/OfferStatus"
-        price_tetri:
-          type: integer
-          format: int64
-        is_available:
-          type: boolean
-
-    JobRunKind:
-      type: string
-      enum: [scrape_target, rehash, rematch, rename, recompute_categories]
-
-    JobRunStatus:
-      type: string
-      enum: [pending, running, completed, failed, cancelled]
-
-    CrmJobRunList:
-      type: object
-      required: [runs, page, per_page, total, stats]
-      properties:
-        runs:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmJobRun"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          description: Every run the filter matches, which page numbers count.
-          type: integer
-        stats:
-          $ref: "#/components/schemas/CrmJobRunStats"
-
-    CrmJobRun:
-      type: object
-      required:
-        [id, kind, status, scope, stats, created_at, started_at, finished_at,
-         error]
-      properties:
-        id:
-          type: string
-          format: uuid
-        kind:
-          $ref: "#/components/schemas/JobRunKind"
-        status:
-          $ref: "#/components/schemas/JobRunStatus"
-        scope:
-          $ref: "#/components/schemas/CrmJobRunScope"
-        stats:
-          description: Kind-specific counters, empty until a run records one.
-          type: object
-          additionalProperties:
-            type: integer
-            format: int64
-        created_at:
-          type: string
-          format: date-time
-        started_at:
-          description: Null until the run runs.
-          type: string
-          format: null-date-time
-          nullable: true
-        finished_at:
-          type: string
-          format: null-date-time
-          nullable: true
-        error:
-          description: Empty unless the run failed.
-          type: string
-
-    CrmJobRunScope:
-      type: object
-      description: What the run acts on. Which fields are stated follows from the kind.
-      required:
-        [scrape_target_id, product_type_code, shop_code, attribute_code,
-         from_fold]
-      properties:
-        scrape_target_id:
-          type: string
-          format: null-uuid
-          nullable: true
-        product_type_code:
-          type: string
-          format: null-string
-          nullable: true
-        shop_code:
-          type: string
-          format: null-string
-          nullable: true
-        attribute_code:
-          type: string
-          format: null-string
-          nullable: true
-        from_fold:
-          type: string
-          format: null-string
-          nullable: true
-
-    CrmJobRunStats:
-      type: object
-      description: Counts over the whole filtered set, paging aside.
-      required: [by_status, by_kind]
-      properties:
-        by_status:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmJobRunStatusCount"
-        by_kind:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmJobRunKindCount"
-
-    CrmJobRunStatusCount:
-      type: object
-      required: [status, count]
-      properties:
-        status:
-          $ref: "#/components/schemas/JobRunStatus"
-        count:
-          type: integer
-          format: int64
-
-    CrmJobRunKindCount:
-      type: object
-      required: [kind, count]
-      properties:
-        kind:
-          $ref: "#/components/schemas/JobRunKind"
-        count:
-          type: integer
-          format: int64
-
-    CrmJobRunCancel:
-      type: object
-      required: [kinds]
-      properties:
-        kinds:
-          description: Empty cancels every unfinished run.
-          type: array
-          items:
-            $ref: "#/components/schemas/JobRunKind"
-
-    CrmJobRunCancelled:
-      type: object
-      required: [run_ids]
-      properties:
-        run_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
-
-    CrmScrapeTargetList:
-      type: object
-      required: [targets]
-      properties:
-        targets:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmScrapeTarget"
-
-    CrmScrapeTarget:
-      type: object
-      required:
-        [id, shop_code, url, fetch_mode, static_attributes, product_type_code,
-         is_enabled, max_pages]
-      properties:
-        id:
-          type: string
-          format: uuid
-        shop_code:
-          type: string
-        url:
-          type: string
-        fetch_mode:
-          type: string
-          enum: [api, http, browser]
-        static_attributes:
-          description: |
-            Operator-asserted facts the shop does not publish, applied after
-            parsing and never entering an offer's raw attributes.
-          allOf:
-            - $ref: "#/components/schemas/AttributeValues"
-        product_type_code:
-          description: |
-            What an offer of this target takes where the shop's own keys map to
-            no type. Null leaves such an offer in review.
-          type: string
-          format: null-string
-          nullable: true
-        is_enabled:
-          type: boolean
-        max_pages:
-          description: Zero paginates to exhaustion.
-          type: integer
-
-    CrmScrapeTargetEdit:
-      type: object
-      required:
-        [shop_code, url, fetch_mode, static_attributes, product_type_code,
-         is_enabled, max_pages]
-      properties:
-        shop_code:
-          type: string
-        url:
-          type: string
-        fetch_mode:
-          type: string
-          enum: [api, http, browser]
-        static_attributes:
-          allOf:
-            - $ref: "#/components/schemas/AttributeValues"
-        product_type_code:
-          type: string
-          format: null-string
-          nullable: true
-        is_enabled:
-          type: boolean
-        max_pages:
-          type: integer
-
-    CrmScrapeTargetSaved:
-      type: object
-      required: [target, run_ids]
-      properties:
-        target:
-          $ref: "#/components/schemas/CrmScrapeTarget"
-        run_ids:
-          description: Empty; a target edit invalidates no derived membership.
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
-
-    CrmShopList:
-      type: object
-      required: [shops]
-      properties:
-        shops:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmShop"
-
-    CrmShop:
-      type: object
-      required:
-        [code, name, is_scraped, is_visible, priority, url, logo_url, address,
-         phone_number, coords]
-      properties:
-        code:
-          type: string
-        name:
-          type: string
-        is_scraped:
-          type: boolean
-        is_visible:
-          type: boolean
-        priority:
-          description: Breaks ties between offers at the same price.
-          type: integer
-        url:
-          type: string
-        logo_url:
-          type: string
-          x-go-name: LogoURL
-        address:
-          type: string
-        phone_number:
-          type: string
-        coords:
-          $ref: "#/components/schemas/Coords"
-
-    Coords:
-      type: object
-      description: Display only; nothing queries by it.
-      required: [lat, lon]
-      nullable: true
-      properties:
-        lat:
-          type: number
-        lon:
-          type: number
-      x-go-type: null.Value[shop.Coords]
-      x-go-type-import:
-        name: shop
-        path: market/internal/domain/shop
-
-    CrmShopEdit:
-      type: object
-      required:
-        [name, is_scraped, is_visible, priority, url, logo_url, address,
-         phone_number, coords]
-      properties:
-        name:
-          type: string
-        is_scraped:
-          type: boolean
-        is_visible:
-          type: boolean
-        priority:
-          type: integer
-        url:
-          type: string
-        logo_url:
-          type: string
-          x-go-name: LogoURL
-        address:
-          type: string
-        phone_number:
-          type: string
-        coords:
-          $ref: "#/components/schemas/Coords"
-
-    CrmAttributeList:
-      type: object
-      required: [attributes]
-      properties:
-        attributes:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmAttribute"
-
-    CrmAttribute:
-      type: object
-      required: [code, value_type, unit, description, enum_values]
-      properties:
-        code:
-          type: string
-        value_type:
-          type: string
-          enum: [enum, string, int, decimal, bool, set]
-        unit:
-          description: Empty on everything but a numeric attribute.
-          type: string
-        description:
-          description: What the model reads to decide what the attribute means.
-          type: string
-        enum_values:
-          description: |
-            The codes an enumerated attribute accepts, in their order, empty
-            otherwise.
-          type: array
-          items:
-            type: string
-
-    CrmAttributeEdit:
-      type: object
-      required: [value_type, unit, description, enum_values]
-      properties:
-        value_type:
-          type: string
-          enum: [enum, string, int, decimal, bool, set]
-        unit:
-          type: string
-        description:
-          type: string
-        enum_values:
-          description: Replaces the stored list; order is the order given.
-          type: array
-          items:
-            type: string
-
-    CrmAttributeSaved:
-      type: object
-      required: [attribute, run_ids]
-      properties:
-        attribute:
-          $ref: "#/components/schemas/CrmAttribute"
-        run_ids:
-          description: A rehash per product type the edit invalidated.
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
-
-    CrmAttributeValues:
-      type: object
-      required: [attribute_code, values]
-      properties:
-        attribute_code:
-          type: string
-        values:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmAttributeValue"
-
-    CrmAttributeValue:
-      type: object
-      required: [value, fold, offer_count, canonical]
-      properties:
-        value:
-          description: As a shop published it.
-          type: string
-        fold:
-          description: |
-            The key an alias for this value is written under. Two published
-            values sharing one fold already resolve alike.
-          type: string
-        offer_count:
-          type: integer
-          format: int64
-        canonical:
-          description: What matching resolves the value to, null where no alias does.
-          type: string
-          format: null-string
-          nullable: true
-
-    CrmAttributeAlias:
-      type: object
-      required: [to_display, from_values]
-      properties:
-        to_display:
-          description: The canonical value, in display form.
-          type: string
-        from_values:
-          description: Observed values, as the distribution reports them.
-          type: array
-          items:
-            type: string
-
-    CrmAttributeAliased:
-      type: object
-      required: [aliases, run_ids]
-      properties:
-        aliases:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmAttributeAliasEntry"
-        run_ids:
-          description: The rematch each aliased value enqueued.
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
-
-    CrmAliasList:
-      type: object
-      required: [aliases]
-      properties:
-        aliases:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmAlias"
-
-    CrmAlias:
-      type: object
-      required: [attribute_code, from_fold, to_display]
-      properties:
-        attribute_code:
-          type: string
-        from_fold:
-          description: The folded published value the alias corrects.
-          type: string
-        to_display:
-          description: The canonical value, in display form.
-          type: string
-
-    CrmAttributeAliasEntry:
-      type: object
-      required: [from_fold, to_display]
-      properties:
-        from_fold:
-          type: string
-        to_display:
-          type: string
-
-    CrmOfferEdit:
-      type: object
-      required: [name, description, attributes]
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        attributes:
-          description: |
-            Replaces the stored set: an attribute this does not state is one the
-            offer no longer carries.
-          allOf:
-            - $ref: "#/components/schemas/AttributeValues"
-
-    CrmOfferReview:
-      type: object
-      required: [status]
-      properties:
-        status:
-          $ref: "#/components/schemas/OfferStatus"
-
-    CrmOfferLock:
-      type: object
-      required: [is_locked]
-      properties:
-        is_locked:
-          type: boolean
-
-    CrmCategoryList:
-      type: object
-      required: [categories]
-      properties:
+            $ref: '#/components/schemas/SearchFilter'
         categories:
           type: array
           items:
-            $ref: "#/components/schemas/CrmCategory"
-
-    CrmCategory:
-      type: object
-      required: [code, parent_code, path, sort_order]
-      properties:
-        code:
+            $ref: '#/components/schemas/SearchCategory'
+        next:
           type: string
-        parent_code:
-          type: string
-          format: null-string
-          nullable: true
-        path:
-          type: string
-        sort_order:
-          type: integer
-
-    CrmCategoryEdit:
-      type: object
-      required: [parent_code, sort_order]
-      properties:
-        parent_code:
-          description: Empty for a root.
-          type: string
-        sort_order:
-          type: integer
-
-    CrmProductTypeList:
-      type: object
-      required: [product_types]
-      properties:
-        product_types:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmProductType"
-
-    CrmProductType:
-      type: object
-      required: [code, name, product_name_template, category_codes]
-      properties:
-        code:
-          type: string
-        name:
-          type: string
-        product_name_template:
-          description: |
-            `{attribute_code}` tokens. It must name every axis the type binds,
-            or two configurations render one name at two prices.
-          type: string
-        category_codes:
-          description: The browse categories every product of the type sits under.
-          type: array
-          items:
-            type: string
-
-    CrmProductTypeEdit:
-      type: object
-      required: [name, product_name_template, category_codes]
-      properties:
-        name:
-          type: string
-        product_name_template:
-          type: string
-        category_codes:
-          description: Replaces the stored list.
-          type: array
-          items:
-            type: string
-
-    CrmProductTypeSaved:
-      type: object
-      required: [product_type, run_ids]
-      properties:
-        product_type:
-          $ref: "#/components/schemas/CrmProductType"
-        run_ids:
-          description: The rename an edited template enqueued.
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
-
-    CrmTaxonomyList:
-      type: object
-      required: [mappings]
-      properties:
-        mappings:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmTaxonomy"
-
-    CrmTaxonomy:
-      type: object
-      required: [shop_code, key, product_type_code, category_code]
-      properties:
-        shop_code:
-          type: string
-        key:
-          description: The shop's own node, as it publishes it.
-          type: string
-        product_type_code:
-          type: string
-        category_code:
-          description: Null where the key says nothing about where a customer browses.
-          type: string
-          format: null-string
           nullable: true
 
-    CrmTaxonomyEdit:
+    SearchCategory:
       type: object
-      required: [key, product_type_code, category_code]
+      required: [id, label, selected]
       properties:
-        key:
+        id:
           type: string
-        product_type_code:
+        label:
           type: string
-        category_code:
-          description: Empty where the key says nothing about where a customer browses.
+        selected:
+          type: boolean
+        imageUrl:
           type: string
+          format: url
 
-    CrmTaxonomySaved:
+    SearchFilter:
       type: object
-      required: [mapping, run_ids]
-      properties:
+      required: [type]
+      oneOf:
+        - $ref: '#/components/schemas/SearchFilterRange'
+        - $ref: '#/components/schemas/SearchFilterSelectable'
+      discriminator:
+        propertyName: type
         mapping:
-          $ref: "#/components/schemas/CrmTaxonomy"
-        run_ids:
-          description: The recompute the mapping enqueued.
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
+          checkbox: '#/components/schemas/SearchFilterSelectable'
+          toggle: '#/components/schemas/SearchFilterSelectable'
+          range: '#/components/schemas/SearchFilterRange'
 
-    CrmUnmappedKeyList:
-      type: object
-      required: [keys]
-      properties:
-        keys:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmUnmappedKey"
+    SearchFilterType:
+      type: string
+      enum: [checkbox, toggle, range]
 
-    CrmUnmappedKey:
+    SearchFilterVariant:
       type: object
-      required: [shop_code, key, offer_count]
-      properties:
-        shop_code:
-          type: string
-        key:
-          type: string
-        offer_count:
-          type: integer
-
-    CrmBindingList:
-      type: object
-      required: [bindings]
-      properties:
-        bindings:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmBinding"
-
-    CrmBinding:
-      type: object
-      required:
-        [product_type_code, attribute_code, role, sort_order, is_filterable,
-         filter_type, overrides]
-      properties:
-        product_type_code:
-          type: string
-        attribute_code:
-          type: string
-        role:
-          type: string
-          enum: [common, identity, variant]
-        sort_order:
-          description: For an axis, the order a picker offers it in.
-          type: integer
-        is_filterable:
-          type: boolean
-        filter_type:
-          description: Empty exactly while the attribute is not filterable.
-          type: string
-          enum: ["", pick, range]
-        overrides:
-          description: |
-            The role overrides that amend this binding, in scope order. They are
-            part of the binding rather than an entity beside it.
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmRoleOverride"
-
-    CrmRoleOverride:
-      type: object
-      required: [scope_attribute_code, scope_value_fold, role]
-      properties:
-        scope_attribute_code:
-          description: An identity attribute of the same product type.
-          type: string
-        scope_value_fold:
-          description: The folded value, which is the form a product key carries.
-          type: string
-        role:
-          description: What the attribute becomes for the rows in scope.
-          type: string
-          enum: [common, variant]
-
-    CrmBindingEdit:
-      type: object
-      required: [role, sort_order, is_filterable, filter_type, overrides]
-      properties:
-        role:
-          type: string
-          enum: [common, identity, variant]
-        sort_order:
-          type: integer
-        is_filterable:
-          type: boolean
-        filter_type:
-          description: Empty exactly while the attribute is not filterable.
-          type: string
-          enum: ["", pick, range]
-        overrides:
-          description: |
-            Replaces the stored list: an override this does not state is one the
-            binding no longer carries. Scope values are folded server-side.
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmRoleOverrideEdit"
-
-    CrmRoleOverrideEdit:
-      type: object
-      required: [scope_attribute_code, scope_value, role]
-      properties:
-        scope_attribute_code:
-          type: string
-        scope_value:
-          description: As a shop published it; the endpoint folds it.
-          type: string
-        role:
-          type: string
-          enum: [common, variant]
-
-    CrmBindingSaved:
-      type: object
-      required: [binding, run_ids]
-      properties:
-        binding:
-          $ref: "#/components/schemas/CrmBinding"
-        run_ids:
-          description: The rehash the schema change enqueued.
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
-
-    CrmOverrideList:
-      type: object
-      required: [overrides]
-      properties:
-        overrides:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmOverride"
-
-    CrmOverride:
-      type: object
-      required:
-        [product_type_code, attribute_code, scope_attribute_code,
-         scope_value_fold, role]
-      properties:
-        product_type_code:
-          type: string
-        attribute_code:
-          type: string
-        scope_attribute_code:
-          description: An identity attribute of the same product type.
-          type: string
-        scope_value_fold:
-          description: The folded value, which is the form a product key carries.
-          type: string
-        role:
-          description: What the attribute becomes for the rows in scope.
-          type: string
-          enum: [common, variant]
-
-    CrmForkList:
-      type: object
-      required: [product_type_code, forks]
-      properties:
-        product_type_code:
-          type: string
-        forks:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmFork"
-
-    CrmFork:
-      type: object
-      required:
-        [product_type_code, identity_hash, attribute_code, identity, name,
-         silent_count, stating_count, stated_values]
-      properties:
-        product_type_code:
-          type: string
-        identity_hash:
-          type: string
-        attribute_code:
-          description: The axis that forked, which an override would demote.
-          type: string
-        identity:
-          description: |
-            The identity values the group shares, one of which is the scope an
-            override is written against.
-          allOf:
-            - $ref: "#/components/schemas/AttributeValues"
-        name:
-          description: One configuration's name, so the group is recognisable.
-          type: string
-        silent_count:
-          type: integer
-        stating_count:
-          type: integer
-        stated_values:
-          type: array
-          items:
-            $ref: "#/components/schemas/AttributeValue"
-
-    CrmDivergenceList:
-      type: object
-      required: [attribute_code, identities]
-      properties:
-        attribute_code:
-          type: string
-        identities:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmDivergence"
-
-    CrmDivergence:
-      type: object
-      required: [identity_hash, name, within, across]
-      properties:
-        identity_hash:
-          type: string
-        name:
-          type: string
-        within:
-          description: |
-            Values the offers of one configuration contradict each other with,
-            counted over offers.
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmValueCount"
-        across:
-          description: |
-            Values that separate one configuration of the group from another,
-            counted over configurations.
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmValueCount"
-
-    CrmValueCount:
-      type: object
-      required: [value, count]
+      required: [value, selected]
       properties:
         value:
-          $ref: "#/components/schemas/AttributeValue"
-        count:
-          type: integer
-          format: int64
-
-    CrmSilenceList:
-      type: object
-      required: [shop_code, attributes]
-      properties:
-        shop_code:
           type: string
-        attributes:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmSilence"
-
-    CrmSilence:
-      type: object
-      required: [attribute_code, offer_count, filled_count]
-      properties:
-        attribute_code:
+        label:
           type: string
-        offer_count:
-          description: The shop's offers past parsing under types binding it.
-          type: integer
-          format: int64
-        filled_count:
-          type: integer
-          format: int64
+        selected:
+          type: boolean
 
-    CrmBackfilled:
+    SearchFilterSelectable:
       type: object
-      required: [run_ids]
+      required: [type, id, label, variants]
       properties:
-        run_ids:
-          type: array
-          items:
-            type: string
-            format: uuid
-          x-go-name: RunIDs
-
-    CrmProductList:
-      type: object
-      required: [products, page, per_page, total]
-      properties:
-        products:
-          type: array
-          items:
-            $ref: "#/components/schemas/CrmProduct"
-        page:
-          type: integer
-        per_page:
-          type: integer
-        total:
-          description: Every row the filter matches, which page numbers count.
-          type: integer
-
-    CrmProduct:
-      type: object
-      required:
-        [id, product_type_code, identity_hash, name, thumbnail_url, attributes,
-         min_price_tetri, has_available_offer, is_locked, offer_count,
-         created_at, updated_at]
-      properties:
+        type:
+          type: string
+          enum: [checkbox, toggle]
         id:
           type: string
-          format: uuid
-        product_type_code:
+        label:
           type: string
-        identity_hash:
-          description: What groups this row with its siblings.
-          type: string
-        name:
-          type: string
-        thumbnail_url:
-          type: string
-          format: null-string
-          nullable: true
-        attributes:
-          description: This configuration's own values, axes among them.
-          allOf:
-            - $ref: "#/components/schemas/AttributeValues"
-        min_price_tetri:
-          description: Null while no visible shop has it available.
-          type: integer
-          format: null-int
-          nullable: true
-        has_available_offer:
-          type: boolean
-        is_locked:
-          type: boolean
-        offer_count:
-          description: Every offer linked to the row. Zero is what deletes.
-          type: integer
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchFilterVariant'
 
-    CrmProductLock:
+    SearchFilterRange:
       type: object
-      required: [is_locked]
+      required: [type, id, label, min, max, selectedMin, selectedMax]
       properties:
-        is_locked:
-          type: boolean
-
-    Offer:
-      type: object
-      required: [id, shop, url, price_tetri, is_available]
-      properties:
+        type:
+          type: string
+          enum: [range]
         id:
           type: string
-          format: uuid
-        shop:
-          $ref: "#/components/schemas/Shop"
-        url:
+        label:
           type: string
-        price_tetri:
+        min:
           type: integer
-          format: int64
-        is_available:
-          type: boolean
-
-    Shop:
-      description: |
-        The shop an offer is from, as it is displayed (DESIGN.md §3.5). `address`
-        and `phone_number` are empty where the shop states none.
-      type: object
-      required: [code, name, url, logo_url, address, phone_number]
-      properties:
-        code:
-          type: string
-        name:
-          type: string
-        url:
-          type: string
-        logo_url:
-          type: string
-          x-go-name: LogoURL
-        address:
-          type: string
-        phone_number:
-          type: string
+        max:
+          type: integer
+        selectedMin:
+          type: integer
+        selectedMax:
+          type: integer

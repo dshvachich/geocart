@@ -13,6 +13,10 @@ export type HomePageData = {
   products: Product[]
 }
 
+export type CatalogPageData = {
+  categories: Category[]
+}
+
 export type SearchPageData = {
   activeFilters: SearchActiveFilter[]
   breadcrumbs: SearchBreadcrumb[]

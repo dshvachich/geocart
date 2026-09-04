@@ -3,7 +3,6 @@ import type { Location } from '@/domain/types/location'
 
 export class AppStore {
   language = 'EN'
-  favoritesCount = 15
   isLanguageMenuOpen = false
   isLocationMenuOpen = false
   isNavbarCompact = false

@@ -1,12 +1,14 @@
 import type { HomePageData } from '@/domain/entities'
 import { catalogRepository } from '@/data/repositories'
-import { geocartCategories } from '@/data/geocart-home'
 
 export const getHomePageData = async (): Promise<HomePageData> => {
-  const products = await catalogRepository.getPopularProducts()
+  const [categories, products] = await Promise.all([
+    catalogRepository.getCategoryTree(),
+    catalogRepository.getPopularProducts(),
+  ])
 
   return {
-    categories: geocartCategories,
+    categories,
     products,
   }
 }

@@ -5,4 +5,5 @@ export type {
   GetPopularProductsParams,
   GetSearchProductsParams,
   GetSearchSuggestionsParams,
-} from './catalog.repository'
+} from "./catalog.repository";
+export type { FavoritesRepository } from "./favorites.repository";

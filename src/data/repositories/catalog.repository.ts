@@ -1,4 +1,9 @@
-import type { Product, SearchResult, SearchSuggestion } from '@/domain/entities'
+import type {
+  Category,
+  Product,
+  SearchResult,
+  SearchSuggestion,
+} from '@/domain/entities'
 import type {
   CatalogRepository,
   GetPopularProductsParams,
@@ -6,11 +11,17 @@ import type {
   GetSearchSuggestionsParams,
 } from '@/domain/repositories'
 import {
+  listCategories,
   listProducts,
   listSuggestions,
   searchProducts as fetchSearchProducts,
 } from '@/data/openapi/endpoints/default/default'
-import { geocartProducts, geocartSearchSuggestions } from '@/data/geocart-home'
+import {
+  geocartCategoryTree,
+  geocartProducts,
+  geocartSearchSuggestions,
+} from '@/data/geocart-home'
+import { CategoryDtoToCategoryEntityMapperExtension } from '@/data/mappers/category.mapper'
 import { ProductListItemToProductMapperExtension } from '@/data/mappers/product-list-item.mapper'
 import { SearchResponseDtoToSearchResultEntityMapperExtension } from '@/data/mappers/search-response.mapper'
 import { SearchSuggestionItemToSearchSuggestionMapperExtension } from '@/data/mappers/search-suggestion-item.mapper'
@@ -18,6 +29,7 @@ import { SearchSuggestionItemToSearchSuggestionMapperExtension } from '@/data/ma
 const DEFAULT_POPULAR_PRODUCTS_LIMIT = 12
 const DEFAULT_SEARCH_PRODUCTS_LIMIT = 6
 const DEFAULT_SUGGESTIONS_LIMIT = 6
+const CATEGORIES_API_TIMEOUT_MS = 3500
 const HOME_API_TIMEOUT_MS = 3500
 const SEARCH_API_TIMEOUT_MS = 3500
 const SUGGESTIONS_API_TIMEOUT_MS = 2500
@@ -69,6 +81,32 @@ const getFallbackSuggestions = (query: string, limit: number) => {
 }
 
 class CatalogApiRepository implements CatalogRepository {
+  async getCategoryTree(): Promise<Category[]> {
+    try {
+      const categories = await listCategories({
+        timeout: CATEGORIES_API_TIMEOUT_MS,
+        headers: {
+          'Accept-Locale': 'en',
+        },
+      })
+
+      const categoryTree = categories.map((category, index) =>
+        CategoryDtoToCategoryEntityMapperExtension.toEntity(
+          category,
+          geocartCategoryTree[index],
+        ),
+      )
+
+      if (categoryTree.length > 0) {
+        return categoryTree
+      }
+    } catch {
+      return geocartCategoryTree
+    }
+
+    return geocartCategoryTree
+  }
+
   async getPopularProducts({
     limit = DEFAULT_POPULAR_PRODUCTS_LIMIT,
     page = 0,
@@ -175,15 +213,12 @@ class CatalogApiRepository implements CatalogRepository {
     }
 
     try {
-      const response = await fetchSearchProducts(
-        params,
-        {
-          timeout: SEARCH_API_TIMEOUT_MS,
-          headers: {
-            'Accept-Locale': 'en',
-          },
+      const response = await fetchSearchProducts(params, {
+        timeout: SEARCH_API_TIMEOUT_MS,
+        headers: {
+          'Accept-Locale': 'en',
         },
-      )
+      })
 
       return SearchResponseDtoToSearchResultEntityMapperExtension.toEntity(
         response,

@@ -2,10 +2,14 @@ const asset = (name: string) => `/assets/geocart/${name}`
 
 export const uiAssets = {
   catalog: asset('icon-catalog.svg'),
+  catalogActive: asset('icon-catalog-active.svg'),
   catalogMuted: asset('icon-catalog-muted.svg'),
+  catalogPromoPlaystation: asset('catalog-promo-playstation.png'),
   search: asset('icon-search.svg'),
   close: asset('icon-close.svg'),
+  closeWhite: asset('icon-close-white.svg'),
   home: asset('icon-home.svg'),
+  homeMuted: asset('icon-home-muted.svg'),
   location: asset('icon-location.svg'),
   caret: asset('icon-caret.svg'),
   heart: asset('icon-heart.svg'),

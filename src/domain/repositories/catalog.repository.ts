@@ -1,4 +1,9 @@
-import type { Product, SearchResult, SearchSuggestion } from '@/domain/entities'
+import type {
+  Category,
+  Product,
+  SearchResult,
+  SearchSuggestion,
+} from '@/domain/entities'
 
 export type CatalogSort = 'popularity' | 'price'
 export type CatalogSortOrder = 'asc' | 'desc'
@@ -25,6 +30,7 @@ export type GetSearchProductsParams = {
 }
 
 export interface CatalogRepository {
+  getCategoryTree(): Promise<Category[]>
   getPopularProducts(params?: GetPopularProductsParams): Promise<Product[]>
   getSearchSuggestions(
     params: GetSearchSuggestionsParams,

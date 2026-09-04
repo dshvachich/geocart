@@ -1,3 +1,5 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="8.58779" height="4.79289" viewBox="0 0 8.58779 4.79289" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path id="Vector" d="M4.64745 4.64645C4.45219 4.84171 4.1356 4.84171 3.94034 4.64645L0.147449 0.853553C-0.167534 0.53857 0.0555505 0 0.501003 0H8.08679C8.53224 0 8.75533 0.538571 8.44034 0.853553L4.64745 4.64645Z" fill="#6A6C6E"/>
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icons / caret-down">
+<path id="Vector" d="M6.35355 8.64645C6.15829 8.84171 5.84171 8.84171 5.64645 8.64645L1.85355 4.85355C1.53857 4.53857 1.76165 4 2.20711 4H9.79289C10.2383 4 10.4614 4.53857 10.1464 4.85355L6.35355 8.64645Z" fill="#6A6C6E"/>
+</g>
 </svg>

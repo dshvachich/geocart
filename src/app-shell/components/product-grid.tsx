@@ -28,6 +28,10 @@ export const ProductGrid = ({ products }: ProductGridProps) => (
 export const productGridStyles = stylex.create({
   grid: {
     display: "grid",
+    gridAutoRows: {
+      default: 450,
+      "@media (max-width: 760px)": "auto",
+    },
     gridTemplateColumns: {
       default: "repeat(6, minmax(0, 1fr))",
       "@media (max-width: 1180px)": "repeat(3, minmax(0, 220px))",

@@ -1,39 +1,73 @@
 import Image from "next/image";
+import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
 import { uiAssets } from "./assets";
 
+type MobileTabbarItemId = "home" | "catalog" | "favorites" | "compare";
+
+type MobileTabbarProps = {
+  activeItem?: MobileTabbarItemId;
+};
+
 const tabbarItems = [
   {
+    id: "home",
     label: "Home",
-    icon: uiAssets.home,
-    isActive: true,
+    href: "/",
+    activeIcon: uiAssets.home,
+    icon: uiAssets.homeMuted,
   },
   {
+    id: "catalog",
     label: "Catalog",
+    href: "/catalog",
+    activeIcon: uiAssets.catalogActive,
     icon: uiAssets.catalogMuted,
   },
   {
+    id: "favorites",
     label: "Favorites",
+    href: "/favorites",
+    activeIcon: uiAssets.heart,
     icon: uiAssets.heart,
   },
   {
+    id: "compare",
     label: "Compare",
+    href: "/",
+    activeIcon: uiAssets.list,
     icon: uiAssets.list,
   },
-];
+] satisfies Array<{
+  id: MobileTabbarItemId;
+  label: string;
+  href: string;
+  activeIcon: string;
+  icon: string;
+}>;
 
-export const MobileTabbar = () => (
+export const MobileTabbar = ({ activeItem = "home" }: MobileTabbarProps) => (
   <nav {...stylex.props(styles.tabbar)} aria-label="Primary navigation">
-    {tabbarItems.map((item) => (
-      <button
-        {...stylex.props(styles.item, item.isActive && styles.activeItem)}
-        key={item.label}
-        type="button"
-      >
-        <Image src={item.icon} alt="" width={24} height={24} />
-        <span>{item.label}</span>
-      </button>
-    ))}
+    {tabbarItems.map((item) => {
+      const isActive = item.id === activeItem;
+
+      return (
+        <Link
+          {...stylex.props(styles.item, isActive && styles.activeItem)}
+          key={item.label}
+          href={item.href}
+          aria-current={isActive ? "page" : undefined}
+        >
+          <Image
+            src={isActive ? item.activeIcon : item.icon}
+            alt=""
+            width={24}
+            height={24}
+          />
+          <span>{item.label}</span>
+        </Link>
+      );
+    })}
   </nav>
 );
 

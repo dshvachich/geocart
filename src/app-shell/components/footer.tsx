@@ -239,10 +239,7 @@ const styles = stylex.create({
       "@media (max-width: 760px)": 16,
     },
     paddingTop: 24,
-    paddingBottom: {
-      default: 24,
-      "@media (max-width: 760px)": 80,
-    },
+    paddingBottom: 24,
     color: "var(--color-fg-dark-tertiary)",
     fontSize: 14,
     lineHeight: "20px",

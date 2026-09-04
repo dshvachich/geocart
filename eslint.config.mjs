@@ -5,7 +5,12 @@ const eslintConfig = [
   ...nextVitals,
   ...nextTypescript,
   {
-    ignores: ['.next/**', 'node_modules/**', 'src/data/openapi/**'],
+    ignores: [
+      '.next/**',
+      '*.config.cjs',
+      'node_modules/**',
+      'src/data/openapi/**',
+    ],
   },
 ]
 

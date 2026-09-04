@@ -1,15 +1,16 @@
 export type { Banner } from './banner'
 export type {
-  CatalogActiveFilter,
-  CatalogBreadcrumb,
-  CatalogCollapsedFilter,
-  CatalogFilter,
-  CatalogFilterOption,
-  CatalogQuickCategory,
-  CatalogRangeFilter,
-  CatalogSelectableFilter,
-  CatalogSortOption,
-} from './catalog'
+  SearchActiveFilter,
+  SearchBreadcrumb,
+  SearchCategory,
+  SearchCollapsedFilter,
+  SearchFilter,
+  SearchFilterVariant,
+  SearchRangeFilter,
+  SearchResult,
+  SearchSelectableFilter,
+  SearchSortOption,
+} from './search'
 export type { Category } from './category'
 export type { Product } from './product'
 export { SearchSuggestionType } from './search-suggestion'

@@ -1,29 +1,54 @@
-'use client'
+"use client";
 
-import { makeAutoObservable } from 'mobx'
-import { createContext } from 'react'
-import type { Location } from '@/domain/types/location'
+import { makeAutoObservable } from "mobx";
+import { createContext } from "react";
+import type { Location } from "@/domain/types/location";
 
 class AppStore {
-  language = 'EN'
-  favoritesCount = 15
+  language = "EN";
+  favoritesCount = 15;
+  isLanguageMenuOpen = false;
+  isLocationMenuOpen = false;
+  isNavbarCompact = false;
   location: Location = {
-    city: 'Tbilisi',
-    country: 'Georgia',
-  }
+    city: "Tbilisi",
+    country: "Georgia",
+  };
 
   constructor() {
-    makeAutoObservable(this)
+    makeAutoObservable(this, {}, { autoBind: true });
   }
 
   setLanguage(language: string) {
-    this.language = language
+    this.language = language;
+    this.isLanguageMenuOpen = false;
   }
 
   setLocation(location: Location) {
-    this.location = location
+    this.location = location;
+    this.isLocationMenuOpen = false;
+  }
+
+  setNavbarCompact(isCompact: boolean) {
+    this.isNavbarCompact = isCompact;
+  }
+
+  toggleLanguageMenu() {
+    this.isLanguageMenuOpen = !this.isLanguageMenuOpen;
+
+    if (this.isLanguageMenuOpen) {
+      this.isLocationMenuOpen = false;
+    }
+  }
+
+  toggleLocationMenu() {
+    this.isLocationMenuOpen = !this.isLocationMenuOpen;
+
+    if (this.isLocationMenuOpen) {
+      this.isLanguageMenuOpen = false;
+    }
   }
 }
 
-export const appStore = new AppStore()
-export const AppStoreContext = createContext<AppStore>(appStore)
+export const appStore = new AppStore();
+export const AppStoreContext = createContext<AppStore>(appStore);

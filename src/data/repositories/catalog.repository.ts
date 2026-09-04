@@ -1,18 +1,24 @@
-import type { Product, SearchSuggestion } from '@/domain/entities'
+import type { Product, SearchResult, SearchSuggestion } from '@/domain/entities'
 import {
   listProducts,
   listSuggestions,
-  searchProducts,
+  searchProducts as fetchSearchProducts,
 } from '@/data/openapi/endpoints/default/default'
+import type {
+  SearchProductsParams,
+  SearchProductsSort,
+  SearchProductsSortOrder,
+} from '@/data/openapi/models'
 import { geocartProducts, geocartSearchSuggestions } from '@/data/geocart-home'
 import { ProductListItemToProductMapperExtension } from '@/data/mappers/product-list-item.mapper'
+import { SearchResponseDtoToSearchResultEntityMapperExtension } from '@/data/mappers/search-response.mapper'
 import { SearchSuggestionItemToSearchSuggestionMapperExtension } from '@/data/mappers/search-suggestion-item.mapper'
 
 const DEFAULT_POPULAR_PRODUCTS_LIMIT = 12
-const DEFAULT_CATALOG_PRODUCTS_LIMIT = 6
+const DEFAULT_SEARCH_PRODUCTS_LIMIT = 6
 const DEFAULT_SUGGESTIONS_LIMIT = 6
 const HOME_API_TIMEOUT_MS = 3500
-const CATALOG_API_TIMEOUT_MS = 3500
+const SEARCH_API_TIMEOUT_MS = 3500
 const SUGGESTIONS_API_TIMEOUT_MS = 2500
 const WHITE_QUERY_SUGGESTION_IDS = [
   'monitor-asus-rog-strix-white',
@@ -41,11 +47,18 @@ type GetSearchSuggestionsParams = {
   limit?: number
 }
 
-type GetCatalogProductsParams = {
+type SearchProductsDynamicParams = SearchProductsParams &
+  Record<string, string | number | undefined>
+
+type GetSearchProductsParams = {
   category?: string
+  filters?: Record<string, string>
+  fallbackResult?: SearchResult
   fallbackProducts?: Product[]
   limit?: number
   query?: string
+  sort?: SearchProductsSort
+  sortOrder?: SearchProductsSortOrder
 }
 
 const getSuggestionsByIds = (ids: string[], limit: number) =>
@@ -154,44 +167,52 @@ class CatalogRepository {
     return getFallbackSuggestions(trimmedQuery, limit)
   }
 
-  async getCatalogProducts({
+  async getSearchProducts({
     category,
+    filters = {},
+    fallbackResult,
     fallbackProducts = geocartProducts,
-    limit = DEFAULT_CATALOG_PRODUCTS_LIMIT,
+    limit = DEFAULT_SEARCH_PRODUCTS_LIMIT,
     query,
-  }: GetCatalogProductsParams = {}): Promise<Product[]> {
-    const fallback = fallbackProducts.slice(0, limit)
+    sort,
+    sortOrder,
+  }: GetSearchProductsParams = {}): Promise<SearchResult> {
+    const fallback =
+      fallbackResult ??
+      ({
+        title: '',
+        products: fallbackProducts.slice(0, limit),
+        filters: [],
+        categories: [],
+        next: null,
+      } satisfies SearchResult)
+    const params: SearchProductsDynamicParams = {
+      ...filters,
+      category,
+      limit,
+      q: query,
+      sort,
+      sortOrder,
+    }
 
     try {
-      const response = await searchProducts(
+      const response = await fetchSearchProducts(
+        params,
         {
-          category,
-          limit,
-          q: query,
-        },
-        {
-          timeout: CATALOG_API_TIMEOUT_MS,
+          timeout: SEARCH_API_TIMEOUT_MS,
           headers: {
             'Accept-Locale': 'en',
           },
         },
       )
 
-      const products = response.products.map((product, index) =>
-        ProductListItemToProductMapperExtension.toEntity(
-          product,
-          fallbackProducts[index % fallbackProducts.length],
-        ),
+      return SearchResponseDtoToSearchResultEntityMapperExtension.toEntity(
+        response,
+        fallbackProducts,
       )
-
-      if (products.length > 0) {
-        return products
-      }
     } catch {
       return fallback
     }
-
-    return fallback
   }
 }
 

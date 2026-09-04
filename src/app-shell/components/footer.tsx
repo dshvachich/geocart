@@ -3,13 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
-import { AppStoreContext } from "@/app-shell/app-store";
+import { AppStore } from "@/app-shell/app-store";
 import {
   controlStyles,
   iconStyles,
   layoutStyles,
 } from "@/app-shell/styles/shared.styles";
+import { useContainer } from "@/di/di-provider";
 import { uiAssets } from "./assets";
 import * as stylex from "@stylexjs/stylex";
 
@@ -29,7 +29,7 @@ const footerColumns = [
 ];
 
 export const Footer = observer(() => {
-  const appStore = useContext(AppStoreContext);
+  const appStore = useContainer().get(AppStore);
 
   return (
     <footer {...stylex.props(layoutStyles.section, styles.footer)}>

@@ -1,9 +1,9 @@
 import 'reflect-metadata'
 import { Container } from 'inversify'
-import { httpClient } from '@/network/http-client'
+import { AppStore } from '@/app-shell/app-store'
 
 const di = new Container()
 
-di.bind('httpClient').toConstantValue(httpClient)
+di.bind(AppStore).toConstantValue(new AppStore())
 
 export { di }

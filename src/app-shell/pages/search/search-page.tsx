@@ -12,11 +12,11 @@ import { productGridStyles } from "@/app-shell/components/product-grid";
 import { SectionLoader } from "@/app-shell/components/section-loader";
 import { uiAssets } from "@/app-shell/components/assets";
 import { controlStyles, layoutStyles } from "@/app-shell/styles/shared.styles";
-import type { SearchPageData } from "@/data/search-page";
 import type {
   SearchActiveFilter,
   SearchBreadcrumb,
   SearchCategory,
+  SearchPageData,
   SearchSortOption,
 } from "@/domain/entities";
 import {

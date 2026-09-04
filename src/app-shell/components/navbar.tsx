@@ -3,14 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { observer } from "mobx-react-lite";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import * as stylex from "@stylexjs/stylex";
-import { AppStoreContext } from "@/app-shell/app-store";
+import { AppStore } from "@/app-shell/app-store";
 import {
   controlStyles,
   iconStyles,
   layoutStyles,
 } from "@/app-shell/styles/shared.styles";
+import { useContainer } from "@/di/di-provider";
 import { createSearchHref } from "@/utils/search-query-utils";
 import { uiAssets } from "./assets";
 import { SearchBox } from "./search-box";
@@ -24,7 +25,7 @@ const languageOptions = [
 ];
 
 export const Navbar = observer(() => {
-  const appStore = useContext(AppStoreContext);
+  const appStore = useContainer().get(AppStore);
 
   useEffect(() => {
     const updateCompactState = () =>
@@ -457,7 +458,7 @@ const styles = stylex.create({
     boxShadow: "var(--shadow-dropdown)",
   },
   locationDropdown: {
-    right: 12,
+    right: 0,
     width: 176,
   },
   languageDropdown: {

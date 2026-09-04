@@ -97,7 +97,7 @@ const styles = stylex.create({
       "@media (max-width: 760px)": 208,
     },
     padding: {
-      default: null,
+      default: 16,
       "@media (max-width: 760px)": 8,
     },
     overflow: "hidden",
@@ -109,11 +109,11 @@ const styles = stylex.create({
     display: "block",
     width: "100%",
     height: {
-      default: 258,
+      default: "100%",
       "@media (max-width: 760px)": "100%",
     },
     marginTop: {
-      default: 16,
+      default: 0,
       "@media (max-width: 760px)": 0,
     },
   },

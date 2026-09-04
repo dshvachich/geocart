@@ -8,7 +8,6 @@ export type SearchBreadcrumb = {
 export type SearchActiveFilter = {
   id: string
   paramKey: string
-  paramValue?: string
   title: string
   count?: number
 }

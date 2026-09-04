@@ -1,12 +1,14 @@
 import type {
   Product,
-  SearchActiveFilter,
   SearchBreadcrumb,
   SearchCategory,
   SearchFilter,
+  SearchFiltersPageData,
+  SearchPageData,
   SearchResult,
   SearchSortOption,
 } from '@/domain/entities'
+import { getSearchActiveFilters } from '@/domain/helpers/search-filter.helpers'
 import { catalogRepository } from '@/data/repositories'
 import { geocartProducts } from '@/data/geocart-home'
 import {
@@ -188,23 +190,6 @@ type GetSearchPageDataParams = {
   searchParams: SearchQueryParams
 }
 
-export type SearchPageData = {
-  activeFilters: SearchActiveFilter[]
-  breadcrumbs: SearchBreadcrumb[]
-  eyebrow: string
-  filters: SearchFilter[]
-  products: Product[]
-  quickCategories: SearchCategory[]
-  selectedCategoryId?: string
-  sortOptions: SearchSortOption[]
-  title: string
-}
-
-export type SearchFiltersPageData = {
-  filters: SearchFilter[]
-  selectedCategoryId?: string
-}
-
 const getFallbackTitle = (query: string) => {
   if (query) {
     return `${query} in Tbilisi`
@@ -298,87 +283,6 @@ const getSelectedCategoryId = (
   categoryId ??
   DEFAULT_SEARCH_CATEGORY_ID
 
-const isPriceFilter = (filter: SearchFilter) =>
-  filter.label.toLowerCase().includes('price') || filter.label.includes('₾')
-
-const formatRangeValue = (filter: SearchFilter, value: number) => {
-  if (filter.type !== 'range') {
-    return String(value)
-  }
-
-  return `${value}${isPriceFilter(filter) ? ' ₾' : ''}`
-}
-
-const getRangeActiveLabel = (filter: SearchFilter) => {
-  if (filter.type !== 'range') {
-    return undefined
-  }
-
-  const hasSelectedMin = filter.selectedMin !== filter.min
-  const hasSelectedMax = filter.selectedMax !== filter.max
-
-  if (hasSelectedMin && hasSelectedMax) {
-    return `${formatRangeValue(filter, filter.selectedMin)} - ${formatRangeValue(
-      filter,
-      filter.selectedMax,
-    )}`
-  }
-
-  if (hasSelectedMin) {
-    return `From ${formatRangeValue(filter, filter.selectedMin)}`
-  }
-
-  if (hasSelectedMax) {
-    return `To ${formatRangeValue(filter, filter.selectedMax)}`
-  }
-
-  return undefined
-}
-
-const getVariantLabel = (variant: { label?: string; value: string }) =>
-  variant.label?.trim() || variant.value
-
-const getActiveFilters = (filters: SearchFilter[]): SearchActiveFilter[] =>
-  filters.flatMap((filter) => {
-    if (filter.type === 'range') {
-      const title = getRangeActiveLabel(filter)
-
-      if (!title) {
-        return []
-      }
-
-      return [
-        {
-          id: filter.id,
-          paramKey: filter.id,
-          title,
-        },
-      ]
-    }
-
-    if (filter.type === 'collapsed') {
-      return []
-    }
-
-    const selectedVariants = filter.variants.filter(
-      (variant) => variant.selected,
-    )
-
-    if (selectedVariants.length === 0) {
-      return []
-    }
-
-    return [
-      {
-        id: filter.id,
-        paramKey: filter.id,
-        paramValue: selectedVariants.map((variant) => variant.value).join(','),
-        title: getVariantLabel(selectedVariants[0]),
-        count: Math.max(selectedVariants.length - 1, 0),
-      },
-    ]
-  })
-
 const withSelectedSort = (
   options: SearchSortOption[],
   searchParams: SearchQueryParams,
@@ -422,7 +326,7 @@ export const getSearchPageData = async ({
   )
 
   return {
-    activeFilters: getActiveFilters(result.filters),
+    activeFilters: getSearchActiveFilters(result.filters),
     breadcrumbs: query ? [] : fallbackBreadcrumbs,
     eyebrow: query ? 'Search results' : '',
     filters: result.filters,

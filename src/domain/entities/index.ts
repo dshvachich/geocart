@@ -1,5 +1,10 @@
 export type { Banner } from './banner'
 export type {
+  HomePageData,
+  SearchFiltersPageData,
+  SearchPageData,
+} from './page-data'
+export type {
   SearchActiveFilter,
   SearchBreadcrumb,
   SearchCategory,

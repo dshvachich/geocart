@@ -1,14 +1,15 @@
 import type { Product, SearchResult, SearchSuggestion } from '@/domain/entities'
+import type {
+  CatalogRepository,
+  GetPopularProductsParams,
+  GetSearchProductsParams,
+  GetSearchSuggestionsParams,
+} from '@/domain/repositories'
 import {
   listProducts,
   listSuggestions,
   searchProducts as fetchSearchProducts,
 } from '@/data/openapi/endpoints/default/default'
-import type {
-  SearchProductsParams,
-  SearchProductsSort,
-  SearchProductsSortOrder,
-} from '@/data/openapi/models'
 import { geocartProducts, geocartSearchSuggestions } from '@/data/geocart-home'
 import { ProductListItemToProductMapperExtension } from '@/data/mappers/product-list-item.mapper'
 import { SearchResponseDtoToSearchResultEntityMapperExtension } from '@/data/mappers/search-response.mapper'
@@ -37,29 +38,7 @@ const PLAYSTATION_QUERY_SUGGESTION_IDS = [
   'playstation-accessories',
 ]
 
-type GetPopularProductsParams = {
-  limit?: number
-  page?: number
-}
-
-type GetSearchSuggestionsParams = {
-  query: string
-  limit?: number
-}
-
-type SearchProductsDynamicParams = SearchProductsParams &
-  Record<string, string | number | undefined>
-
-type GetSearchProductsParams = {
-  category?: string
-  filters?: Record<string, string>
-  fallbackResult?: SearchResult
-  fallbackProducts?: Product[]
-  limit?: number
-  query?: string
-  sort?: SearchProductsSort
-  sortOrder?: SearchProductsSortOrder
-}
+type SearchProductsDynamicParams = Record<string, string | number | undefined>
 
 const getSuggestionsByIds = (ids: string[], limit: number) =>
   ids
@@ -89,7 +68,7 @@ const getFallbackSuggestions = (query: string, limit: number) => {
     .slice(0, limit)
 }
 
-class CatalogRepository {
+class CatalogApiRepository implements CatalogRepository {
   async getPopularProducts({
     limit = DEFAULT_POPULAR_PRODUCTS_LIMIT,
     page = 0,
@@ -216,4 +195,4 @@ class CatalogRepository {
   }
 }
 
-export const catalogRepository = new CatalogRepository()
+export const catalogRepository = new CatalogApiRepository()

@@ -1,0 +1,94 @@
+import type {
+  SearchActiveFilter,
+  SearchFilter,
+  SearchFilterVariant,
+} from '@/domain/entities'
+
+const PRICE_CURRENCY_SYMBOL = '₾'
+
+export const isPriceSearchFilter = (filter: SearchFilter) =>
+  filter.label.toLowerCase().includes('price') ||
+  filter.label.includes(PRICE_CURRENCY_SYMBOL)
+
+export const formatSearchRangeFilterValue = (
+  filter: SearchFilter,
+  value: number,
+) => {
+  if (filter.type !== 'range') {
+    return String(value)
+  }
+
+  return `${value}${isPriceSearchFilter(filter) ? ` ${PRICE_CURRENCY_SYMBOL}` : ''}`
+}
+
+export const getSearchFilterVariantLabel = (
+  variant: Pick<SearchFilterVariant, 'label' | 'value'>,
+) => variant.label?.trim() || variant.value
+
+export const getSearchRangeActiveFilterTitle = (filter: SearchFilter) => {
+  if (filter.type !== 'range') {
+    return undefined
+  }
+
+  const hasSelectedMin = filter.selectedMin !== filter.min
+  const hasSelectedMax = filter.selectedMax !== filter.max
+
+  if (hasSelectedMin && hasSelectedMax) {
+    return `${formatSearchRangeFilterValue(filter, filter.selectedMin)} - ${formatSearchRangeFilterValue(
+      filter,
+      filter.selectedMax,
+    )}`
+  }
+
+  if (hasSelectedMin) {
+    return `From ${formatSearchRangeFilterValue(filter, filter.selectedMin)}`
+  }
+
+  if (hasSelectedMax) {
+    return `To ${formatSearchRangeFilterValue(filter, filter.selectedMax)}`
+  }
+
+  return undefined
+}
+
+export const getSearchActiveFilters = (
+  filters: SearchFilter[],
+): SearchActiveFilter[] =>
+  filters.flatMap((filter) => {
+    if (filter.type === 'range') {
+      const title = getSearchRangeActiveFilterTitle(filter)
+
+      if (!title) {
+        return []
+      }
+
+      return [
+        {
+          id: filter.id,
+          paramKey: filter.id,
+          title,
+        },
+      ]
+    }
+
+    if (filter.type === 'collapsed') {
+      return []
+    }
+
+    const selectedVariants = filter.variants.filter(
+      (variant) => variant.selected,
+    )
+
+    if (selectedVariants.length === 0) {
+      return []
+    }
+
+    return [
+      {
+        id: filter.id,
+        paramKey: filter.id,
+        title: getSearchFilterVariantLabel(selectedVariants[0]),
+        count: Math.max(selectedVariants.length - 1, 0),
+      },
+    ]
+  })

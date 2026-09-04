@@ -3,8 +3,12 @@ import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
 import { uiAssets } from "@/app-shell/components/assets";
 import { controlStyles, iconStyles } from "@/app-shell/styles/shared.styles";
-import type { SearchFiltersPageData } from "@/data/search-page";
+import {
+  formatSearchRangeFilterValue,
+  getSearchFilterVariantLabel,
+} from "@/domain/helpers/search-filter.helpers";
 import type {
+  SearchFiltersPageData,
   SearchFilter,
   SearchFilterVariant,
   SearchSelectableFilter,
@@ -33,20 +37,6 @@ type FilterTagProps = {
   searchParams: SearchQueryParams;
 };
 
-const isPriceFilter = (filter: SearchFilter) =>
-  filter.label.toLowerCase().includes("price") || filter.label.includes("₾");
-
-const formatRangeValue = (filter: SearchFilter, value: number) => {
-  if (filter.type !== "range") {
-    return String(value);
-  }
-
-  return `${value}${isPriceFilter(filter) ? " ₾" : ""}`;
-};
-
-const getVariantLabel = (variant: SearchFilterVariant) =>
-  variant.label?.trim() || variant.value;
-
 const getFilterTagHref = ({ filter, option, searchParams }: FilterTagProps) => {
   if (filter.type === "toggle") {
     return createSearchHref(
@@ -74,7 +64,7 @@ const FilterTag = ({ filter, option, searchParams }: FilterTagProps) => (
     {...stylex.props(styles.filterTag, option.selected && styles.selectedTag)}
     href={getFilterTagHref({ filter, option, searchParams })}
   >
-    {getVariantLabel(option)}
+    {getSearchFilterVariantLabel(option)}
   </Link>
 );
 
@@ -102,10 +92,10 @@ const RangeFilter = ({ filter }: FilterGroupProps) => {
       <div {...stylex.props(styles.filterBody)}>
         <div {...stylex.props(styles.rangePair)}>
           <div {...stylex.props(styles.inputValue)}>
-            From {formatRangeValue(filter, filter.selectedMin)}
+            From {formatSearchRangeFilterValue(filter, filter.selectedMin)}
           </div>
           <div {...stylex.props(styles.inputValue, styles.mutedInputValue)}>
-            To {formatRangeValue(filter, filter.selectedMax)}
+            To {formatSearchRangeFilterValue(filter, filter.selectedMax)}
           </div>
         </div>
       </div>

@@ -292,14 +292,8 @@ const styles = stylex.create({
     outlineWidth: 0,
     backgroundColor: "transparent",
     color: "var(--color-fg-primary)",
-    fontSize: {
-      default: 16,
-      "@media (max-width: 760px)": 14,
-    },
-    lineHeight: {
-      default: "24px",
-      "@media (max-width: 760px)": "20px",
-    },
+    fontSize: 16,
+    lineHeight: "24px",
     "::placeholder": {
       color: "var(--color-fg-secondary)",
     },

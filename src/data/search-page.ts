@@ -9,6 +9,7 @@ import type {
   SearchSortOption,
 } from "@/domain/entities";
 import { getSearchActiveFilters } from "@/domain/helpers/search-filter.helpers";
+import { DEFAULT_LOCALE, type SupportedLocale } from "@/domain/types/locale";
 import { catalogRepository } from "@/data/repositories";
 import { geocartProducts } from "@/data/geocart-home";
 import {
@@ -184,16 +185,47 @@ const sortOptions: SearchSortOption[] = [
   },
 ];
 
+const defaultSearchTitles = {
+  en: "Apple Mobile Phones",
+  ru: "Мобильные телефоны Apple",
+  ka: "Apple-ის მობილური ტელეფონები",
+} satisfies Record<SupportedLocale, string>;
+
+const searchResultEyebrows = {
+  en: "Search results",
+  ru: "Результаты поиска",
+  ka: "ძიების შედეგები",
+} satisfies Record<SupportedLocale, string>;
+
+const searchRangeLabels = {
+  en: {
+    from: "From",
+    to: "To",
+  },
+  ru: {
+    from: "От",
+    to: "До",
+  },
+  ka: {
+    from: "დან",
+    to: "მდე",
+  },
+} satisfies Record<SupportedLocale, { from: string; to: string }>;
+
 type GetSearchPageDataParams = {
+  locale?: SupportedLocale;
   searchParams: SearchQueryParams;
 };
 
-const getFallbackTitle = (query: string) => {
+const getFallbackTitle = (
+  query: string,
+  locale: SupportedLocale = DEFAULT_LOCALE,
+) => {
   if (query) {
-    return `${query} in Tbilisi`;
+    return query;
   }
 
-  return "Apple Mobile Phones in Tbilisi";
+  return defaultSearchTitles[locale];
 };
 
 const toSearchProducts = (products: Product[]) =>
@@ -257,13 +289,15 @@ const getFallbackFilters = (filterParams: Record<string, string>) =>
 const getFallbackSearchResult = ({
   categoryId,
   filterParams,
+  locale,
   query,
 }: {
   categoryId?: string;
   filterParams: Record<string, string>;
+  locale?: SupportedLocale;
   query: string;
 }): SearchResult => ({
-  title: getFallbackTitle(query),
+  title: getFallbackTitle(query, locale),
   products: geocartProducts.slice(0, 6),
   filters: getFallbackFilters(filterParams),
   categories: fallbackCategories.map((category) => ({
@@ -320,7 +354,10 @@ const withSelectedSort = (
       option.sortOrder === (searchParams.sortOrder ?? "asc"),
   }));
 
-const getSearchResult = async (searchParams: SearchQueryParams) => {
+const getSearchResult = async (
+  searchParams: SearchQueryParams,
+  locale: SupportedLocale,
+) => {
   const query = searchParams.q?.trim() ?? "";
   const category =
     searchParams.category ?? (query ? undefined : DEFAULT_SEARCH_CATEGORY_ID);
@@ -332,9 +369,11 @@ const getSearchResult = async (searchParams: SearchQueryParams) => {
     fallbackResult: getFallbackSearchResult({
       categoryId: category,
       filterParams,
+      locale,
       query,
     }),
     filters: filterParams,
+    locale,
     query: query || undefined,
     sort: searchParams.sort === "popularity" ? "popularity" : "price",
     sortOrder: searchParams.sortOrder === "desc" ? "desc" : "asc",
@@ -342,10 +381,11 @@ const getSearchResult = async (searchParams: SearchQueryParams) => {
 };
 
 export const getSearchPageData = async ({
+  locale = DEFAULT_LOCALE,
   searchParams,
 }: GetSearchPageDataParams): Promise<SearchPageData> => {
   const query = searchParams.q?.trim() ?? "";
-  const result = await getSearchResult(searchParams);
+  const result = await getSearchResult(searchParams, locale);
   const selectedCategoryId = getSelectedCategoryId(
     result.categories,
     searchParams.category,
@@ -356,9 +396,9 @@ export const getSearchPageData = async ({
   );
 
   return {
-    activeFilters: getSearchActiveFilters(result.filters),
+    activeFilters: getSearchActiveFilters(result.filters, searchRangeLabels[locale]),
     breadcrumbs: query ? [] : fallbackBreadcrumbs,
-    eyebrow: query ? "Search results" : "",
+    eyebrow: query ? searchResultEyebrows[locale] : "",
     filters: result.filters,
     products: toSearchProducts(
       withSearchCategory(result.products, selectedCategory),
@@ -366,14 +406,15 @@ export const getSearchPageData = async ({
     quickCategories: result.categories,
     selectedCategoryId,
     sortOptions: withSelectedSort(sortOptions, searchParams),
-    title: result.title || getFallbackTitle(query),
+    title: result.title || getFallbackTitle(query, locale),
   };
 };
 
 export const getSearchFiltersPageData = async ({
+  locale = DEFAULT_LOCALE,
   searchParams,
 }: GetSearchPageDataParams): Promise<SearchFiltersPageData> => {
-  const result = await getSearchResult(searchParams);
+  const result = await getSearchResult(searchParams, locale);
 
   return {
     filters: result.filters,

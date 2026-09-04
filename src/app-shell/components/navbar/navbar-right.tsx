@@ -6,7 +6,6 @@ import { controlStyles } from "@/app-shell/styles/shared.styles";
 import { useContainer } from "@/di/di-provider";
 import { NavbarActions } from "./navbar-actions";
 import { NavbarLanguageSelector } from "./navbar-language-selector";
-import { NavbarLocationSelector } from "./navbar-location-selector";
 import { navbarStyles as styles } from "./navbar.styles";
 
 type NavbarRightProps = {
@@ -22,16 +21,9 @@ export const NavbarRight = observer(({ isCompact }: NavbarRightProps) => {
     <div
       {...stylex.props(
         styles.navbarRight,
-        isCompact && styles.compactHidden,
+        isCompact && styles.compactNavbarRight,
       )}
     >
-      <NavbarLocationSelector appStore={appStore} />
-
-      <span
-        {...stylex.props(controlStyles.verticalDivider)}
-        aria-hidden="true"
-      />
-
       <NavbarActions favoritesStore={favoritesStore} />
 
       <span

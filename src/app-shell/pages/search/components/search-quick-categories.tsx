@@ -1,5 +1,7 @@
 import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
+import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import { layoutStyles } from "@/app-shell/styles/shared.styles";
 import type { SearchCategory } from "@/domain/entities";
 import {
@@ -18,6 +20,8 @@ export const SearchQuickCategories = ({
   categories,
   searchParams,
 }: SearchQuickCategoriesProps) => {
+  const { t } = useTranslation();
+
   if (categories.length === 0) {
     return null;
   }
@@ -46,7 +50,7 @@ export const SearchQuickCategories = ({
                 />
               </span>
             )}
-            <span>{category.label}</span>
+            <span>{getLocalizedCategoryTitle(t, category)}</span>
           </Link>
         ))}
       </div>

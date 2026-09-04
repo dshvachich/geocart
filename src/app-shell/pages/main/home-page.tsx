@@ -8,13 +8,15 @@ import { layoutStyles } from "@/app-shell/styles/shared.styles";
 import type { HomePageData } from "@/domain/entities";
 import * as stylex from "@stylexjs/stylex";
 
-type MainPageProps = HomePageData;
+type HomePageProps = {
+  initialData: HomePageData;
+};
 
-export const MainPage = ({ categories, products }: MainPageProps) => (
+export const HomePage = ({ initialData }: HomePageProps) => (
   <main {...stylex.props(layoutStyles.page)}>
     <Navbar />
-    <CategoryBar categories={categories} />
-    <ProductGrid products={products} />
+    <CategoryBar categories={initialData.categories} />
+    <ProductGrid products={initialData.products} />
     <SectionLoader />
     <Footer />
     <MobileTabbar />

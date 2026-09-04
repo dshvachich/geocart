@@ -54,20 +54,20 @@ export const searchBoxStyles = stylex.create({
       "@media (max-width: 760px)": "static",
     },
     top: {
-      default: 16,
+      default: "var(--search-box-overlay-top, 16px)",
       "@media (max-width: 760px)": null,
     },
     left: {
-      default: "calc((100vw - var(--layout-max-width)) / 2 + 313px)",
-      "@media (max-width: 1180px)": "50%",
+      default:
+        "var(--search-box-overlay-left, calc(max((100vw - var(--layout-max-width)) / 2, 0px) + 313px))",
       "@media (max-width: 760px)": null,
     },
     display: "flex",
     gap: 8,
     alignItems: "flex-start",
     width: {
-      default: 705,
-      "@media (max-width: 1180px)": "min(705px, calc(100vw - 32px))",
+      default:
+        "var(--search-box-overlay-width, min(705px, calc(100vw - 32px)))",
       "@media (max-width: 760px)": "100%",
     },
     maxWidth: {
@@ -84,7 +84,6 @@ export const searchBoxStyles = stylex.create({
     },
     transform: {
       default: null,
-      "@media (max-width: 1180px)": "translateX(-50%)",
       "@media (max-width: 760px)": "none",
     },
   },
@@ -101,17 +100,17 @@ export const searchBoxStyles = stylex.create({
       "@media (max-width: 760px)": "static",
     },
     top: {
-      default: 64,
+      default: "var(--search-box-hints-top, 64px)",
       "@media (max-width: 760px)": null,
     },
     left: {
-      default: "calc((100vw - var(--layout-max-width)) / 2 + 313px)",
-      "@media (max-width: 1180px)": "50%",
+      default:
+        "var(--search-box-overlay-left, calc(max((100vw - var(--layout-max-width)) / 2, 0px) + 313px))",
       "@media (max-width: 760px)": null,
     },
     width: {
-      default: 705,
-      "@media (max-width: 1180px)": "min(705px, calc(100vw - 32px))",
+      default:
+        "var(--search-box-overlay-width, min(705px, calc(100vw - 32px)))",
       "@media (max-width: 760px)": "100%",
     },
     maxWidth: {
@@ -133,7 +132,6 @@ export const searchBoxStyles = stylex.create({
     backgroundColor: "var(--color-bg-primary)",
     transform: {
       default: null,
-      "@media (max-width: 1180px)": "translateX(-50%)",
       "@media (max-width: 760px)": "none",
     },
   },

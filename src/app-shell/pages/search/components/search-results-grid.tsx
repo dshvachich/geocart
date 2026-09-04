@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 import { ProductCard } from "@/app-shell/components/product-card";
-import { productGridStyles } from "@/app-shell/components/product-grid";
+import { productGridStyles } from "@/app-shell/components/product-grid.styles";
 import { layoutStyles } from "@/app-shell/styles/shared.styles";
 import type { Product } from "@/domain/entities";
 import { searchPageStyles as styles } from "../search-page.styles";

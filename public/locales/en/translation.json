@@ -1,6 +1,173 @@
 {
   "common": {
+    "back": "Back",
+    "brand": "Geocart",
+    "breadcrumbs": "Breadcrumbs",
+    "cancel": "Cancel",
     "catalog": "Catalog",
+    "categories": "Categories",
+    "closeCatalog": "Close catalog",
+    "closeFilters": "Close filters",
+    "closeSearch": "Close search",
+    "compare": "Compare",
+    "favorites": "Favorites",
+    "home": "Home",
+    "language": "Language",
+    "loadingMoreProducts": "Loading more products",
+    "menu": "Menu",
+    "primaryNavigation": "Primary navigation",
     "search": "Search products"
+  },
+  "navbar": {
+    "favoritesLabel": "Favorites ({{count}})",
+    "homeLabel": "Geocart home"
+  },
+  "footer": {
+    "contact": "Say hello to us: hi@geocart.ge",
+    "copyright": "© geocart.ge 2026. All rights reserved",
+    "description": "Product discovery platform in Georgia.",
+    "made": "Made with love in Sakartvelo 🇬🇪",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "columns": {
+      "company": {
+        "title": "Company",
+        "links": {
+          "about": "About",
+          "mission": "Mission & Manifesto",
+          "contacts": "Contacts"
+        }
+      },
+      "buyers": {
+        "title": "For buyers",
+        "links": {
+          "aboutService": "About service",
+          "selectProduct": "How to select a product"
+        }
+      },
+      "partnership": {
+        "title": "Partnership",
+        "links": {
+          "brands": "For brands",
+          "shops": "For shops & sellers"
+        }
+      }
+    }
+  },
+  "hero": {
+    "featuredProduct": "Featured product",
+    "fitbitAir": {
+      "kicker": "Google Fitbit Air",
+      "title": "Make every move a healthy one"
+    },
+    "carouselControls": "Carousel controls",
+    "nextProduct": "Next product",
+    "previousProduct": "Previous product"
+  },
+  "product": {
+    "addFavorite": "Add {{product}} to favorites",
+    "from": "from",
+    "new": "New",
+    "offers_one": "{{count}} offer",
+    "offers_other": "{{count}} offers",
+    "popularProducts": "Popular products",
+    "removeFavorite": "Remove {{product}} from favorites"
+  },
+  "search": {
+    "categoriesHeading": "Categories",
+    "defaultTitle": "Apple Mobile Phones",
+    "filters": "Filters",
+    "from": "From",
+    "openFilters": "Open filters",
+    "openSorting": "Open sorting",
+    "productsHeading": "Products",
+    "resultsEyebrow": "Search results",
+    "showFirst": "Show first",
+    "to": "To",
+    "sort": {
+      "popular": "Popular",
+      "cheaper": "Cheaper",
+      "highest-rating": "Highest rating"
+    }
+  },
+  "favorites": {
+    "emptyText": "Products you save will appear here.",
+    "emptyTitle": "No favorite products yet",
+    "openCatalog": "Open catalog",
+    "showAll": "Show all favorite products",
+    "title": "Favorite products"
+  },
+  "catalog": {
+    "promoButton": "from 754 ₾",
+    "promoKicker": "Sony PlayStation",
+    "promoTitleLine1": "PlayStation 5 Pro",
+    "promoTitleLine2": "Ultimate Gaming"
+  },
+  "categories": {
+    "airpods": "AirPods",
+    "all-smartphones": "All Smartphones",
+    "apple": "Apple",
+    "apple-iphone": "Apple iPhone",
+    "apple-mobile-phones": "Apple",
+    "apple-watch": "Apple Watch",
+    "cases": "Cases",
+    "chargers": "Chargers",
+    "coffee-machines": "Coffee Machines",
+    "computers-gaming": "Computers & Gaming",
+    "gaming-consoles": "Gaming Consoles",
+    "galaxy-a57": "Galaxy A57",
+    "galaxy-buds": "Galaxy Buds",
+    "galaxy-s26": "Galaxy S26",
+    "galaxy-s26-plus": "Galaxy S26+",
+    "galaxy-s26-ultra": "Galaxy S26 Ultra",
+    "galaxy-watch": "Galaxy Watch",
+    "galaxy-z-flip8": "Galaxy Z Flip8",
+    "galaxy-z-fold8": "Galaxy Z Fold8",
+    "headphones": "Headphones",
+    "headsets": "Headsets",
+    "health-beauty": "Health & Beauty",
+    "home-kitchen": "Home & Kitchen",
+    "iphone-17": "iPhone 17",
+    "iphone-17-pro": "iPhone 17 Pro",
+    "iphone-17-pro-max": "iPhone 17 Pro Max",
+    "iphone-17e": "iPhone 17e",
+    "iphone-air": "iPhone Air",
+    "laptops": "Laptops",
+    "memory-cards": "Memory Cards",
+    "mobile-phones": "Mobile Phones",
+    "mobile-wearables": "Mobile & Wearables",
+    "phone-accessories": "Phone Accessories",
+    "phone-accessories-other": "Other",
+    "photo-video": "Photo & Video",
+    "portable-audio": "Portable Audio",
+    "power-banks": "Power Banks",
+    "push-button-phones": "Push-button phones",
+    "samsung": "Samsung",
+    "samsung-mobile-phones": "Samsung",
+    "samsung-smartphones": "Samsung Smartphones",
+    "screen-protectors": "Screen Protectors",
+    "smart-rings": "Smart Rings",
+    "smart-watches": "Smart Watches",
+    "smart-watches-fitness-trackers": "Smart Watches and Fitness Trackers",
+    "tablets": "Tablets",
+    "tv-audio-entertainment": "TV, Audio & Entertainment",
+    "uncategorized": "Other",
+    "vacuum-cleaners": "Vacuum Cleaners",
+    "vr-headsets": "VR Headsets",
+    "waarables": "Wearables",
+    "wearables-other": "Other",
+    "washers-dryers": "Washers & Dryers"
+  },
+  "filters": {
+    "brand": "Brand",
+    "color": "Color",
+    "display-size": "Display size",
+    "ip-protection": "IP Protection",
+    "memory": "Memory",
+    "os": "OS",
+    "price": "Price, ₾",
+    "ram": "RAM",
+    "refresh-rate": "Refresh rate",
+    "screen": "Screen"
   }
 }

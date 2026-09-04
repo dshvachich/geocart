@@ -1,5 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { type SearchSuggestion, SearchSuggestionType } from "@/domain/entities";
+import { normalizeLocale } from "@/domain/types/locale";
+import i18n from "@/i18n";
 
 type SuggestionsResponse = {
   suggestions?: SearchSuggestion[];
@@ -53,6 +55,7 @@ export class SearchBoxStore {
     const params = new URLSearchParams({
       q: query,
       limit: String(SEARCH_LIMIT),
+      locale: normalizeLocale(i18n.resolvedLanguage ?? i18n.language),
     });
 
     try {

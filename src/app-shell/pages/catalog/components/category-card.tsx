@@ -1,5 +1,7 @@
 import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
+import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import type { Category } from "@/domain/entities";
 import { getCategoryHref } from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
@@ -26,18 +28,27 @@ const getRootCardImageStyle = (index: number) => {
   }
 };
 
-export const CategoryCard = ({ category, index }: CategoryCardProps) => (
-  <Link {...stylex.props(styles.rootCard)} href={getCategoryHref(category)}>
-    <h2 {...stylex.props(styles.rootCardTitle)}>{category.title}</h2>
-    {category.imageSrc && (
-      <span {...stylex.props(styles.rootCardImageClip)} aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          {...stylex.props(styles.rootCardImage, getRootCardImageStyle(index))}
-          src={category.imageSrc}
-          alt=""
-        />
-      </span>
-    )}
-  </Link>
-);
+export const CategoryCard = ({ category, index }: CategoryCardProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Link {...stylex.props(styles.rootCard)} href={getCategoryHref(category)}>
+      <h2 {...stylex.props(styles.rootCardTitle)}>
+        {getLocalizedCategoryTitle(t, category)}
+      </h2>
+      {category.imageSrc && (
+        <span {...stylex.props(styles.rootCardImageClip)} aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            {...stylex.props(
+              styles.rootCardImage,
+              getRootCardImageStyle(index),
+            )}
+            src={category.imageSrc}
+            alt=""
+          />
+        </span>
+      )}
+    </Link>
+  );
+};

@@ -1,47 +1,84 @@
+'use client'
+
 import { makeAutoObservable } from 'mobx'
-import type { Location } from '@/domain/types/location'
+import i18n from '@/i18n'
+import {
+  DEFAULT_LOCALE,
+  normalizeLocale,
+  type SupportedLocale,
+} from '@/domain/types/locale'
+import { LOCALE_COOKIE_NAME, LOCALE_STORAGE_KEY } from '@/utils/locale-utils'
 
 export class AppStore {
-  language = 'EN'
+  language: SupportedLocale = DEFAULT_LOCALE
   isLanguageMenuOpen = false
-  isLocationMenuOpen = false
   isNavbarCompact = false
-  location: Location = {
-    city: 'Tbilisi',
-    country: 'Georgia',
-  }
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true })
   }
 
-  setLanguage(language: string) {
-    this.language = language
-    this.isLanguageMenuOpen = false
+  get languageLabel() {
+    return this.language.toUpperCase()
   }
 
-  setLocation(location: Location) {
-    this.location = location
-    this.isLocationMenuOpen = false
+  setLanguage(language: string) {
+    const nextLanguage = normalizeLocale(language)
+    this.isLanguageMenuOpen = false
+
+    if (nextLanguage === this.language) {
+      return
+    }
+
+    this.language = nextLanguage
+    this.persistLanguage(nextLanguage)
+    this.updateDocumentLanguage(nextLanguage)
+
+    void i18n.changeLanguage(nextLanguage).finally(() => {
+      if (typeof window !== 'undefined') {
+        window.location.reload()
+      }
+    })
   }
 
   setNavbarCompact(isCompact: boolean) {
     this.isNavbarCompact = isCompact
   }
 
-  toggleLanguageMenu() {
-    this.isLanguageMenuOpen = !this.isLanguageMenuOpen
+  syncLanguage(language: string | null | undefined) {
+    const nextLanguage = normalizeLocale(language)
 
-    if (this.isLanguageMenuOpen) {
-      this.isLocationMenuOpen = false
+    if (nextLanguage === this.language) {
+      return
     }
+
+    this.language = nextLanguage
+    this.updateDocumentLanguage(nextLanguage)
   }
 
-  toggleLocationMenu() {
-    this.isLocationMenuOpen = !this.isLocationMenuOpen
+  toggleLanguageMenu() {
+    this.isLanguageMenuOpen = !this.isLanguageMenuOpen
+  }
 
-    if (this.isLocationMenuOpen) {
-      this.isLanguageMenuOpen = false
+  private persistLanguage(language: SupportedLocale) {
+    if (typeof window === 'undefined') {
+      return
     }
+
+    try {
+      window.localStorage.setItem(LOCALE_STORAGE_KEY, language)
+    } catch {
+      // localStorage can be unavailable in private mode.
+    }
+
+    document.cookie = `${LOCALE_COOKIE_NAME}=${language}; path=/; max-age=31536000; samesite=lax`
+  }
+
+  private updateDocumentLanguage(language: SupportedLocale) {
+    if (typeof document === 'undefined') {
+      return
+    }
+
+    document.documentElement.lang = language
   }
 }

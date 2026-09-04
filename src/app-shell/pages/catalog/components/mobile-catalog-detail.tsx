@@ -2,31 +2,41 @@ import * as stylex from "@stylexjs/stylex";
 import { layoutStyles } from "@/app-shell/styles/shared.styles";
 import type { Category } from "@/domain/entities";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
+import { CatalogCategoryBreadcrumbs } from "./catalog-category-breadcrumbs";
 import { CategorySection } from "./category-section";
 import { MobileDetailToolbar } from "./mobile-detail-toolbar";
 
 type MobileCatalogDetailProps = {
-  parentCategory?: Category;
+  categoryPath: Category[];
   selectedCategory: Category;
 };
 
 export const MobileCatalogDetail = ({
-  parentCategory,
+  categoryPath,
   selectedCategory,
-}: MobileCatalogDetailProps) => (
-  <div {...stylex.props(styles.mobileOnly)}>
-    <MobileDetailToolbar parentCategory={parentCategory} />
+}: MobileCatalogDetailProps) => {
+  const parentCategory = categoryPath[categoryPath.length - 2];
 
-    <section {...stylex.props(layoutStyles.contentRail, styles.mobileTitleRow)}>
-      <h1 {...stylex.props(styles.mobileTitle)}>{selectedCategory.title}</h1>
-    </section>
+  return (
+    <div {...stylex.props(styles.mobileOnly)}>
+      <MobileDetailToolbar parentCategory={parentCategory} />
 
-    <div
-      {...stylex.props(layoutStyles.contentRail, styles.mobileDetailContent)}
-    >
-      {(selectedCategory.subCategories ?? []).map((category) => (
-        <CategorySection category={category} key={category.id} />
-      ))}
+      <section
+        {...stylex.props(layoutStyles.contentRail, styles.mobileTitleRow)}
+      >
+        <CatalogCategoryBreadcrumbs
+          categoryPath={categoryPath}
+          variant="mobile"
+        />
+      </section>
+
+      <div
+        {...stylex.props(layoutStyles.contentRail, styles.mobileDetailContent)}
+      >
+        {(selectedCategory.subCategories ?? []).map((category) => (
+          <CategorySection category={category} key={category.id} />
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};

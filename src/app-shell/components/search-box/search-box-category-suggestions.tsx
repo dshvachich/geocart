@@ -1,4 +1,5 @@
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
 import type { SearchSuggestion } from "@/domain/entities";
 import {
   getSuggestionLabel,
@@ -18,13 +19,17 @@ export const SearchBoxCategorySuggestions = ({
   query,
   suggestions,
 }: SearchBoxCategorySuggestionsProps) => {
+  const { t } = useTranslation();
+
   if (suggestions.length === 0) {
     return null;
   }
 
   return (
     <>
-      <div {...stylex.props(styles.hintHeading)}>Categories</div>
+      <div {...stylex.props(styles.hintHeading)}>
+        {t("search.categoriesHeading")}
+      </div>
       {suggestions.map((suggestion) => {
         const label = getSuggestionLabel(suggestion);
         const { prefix, suffix } = splitCategoryLabel(label, query);

@@ -4,18 +4,27 @@ import type {
   SearchResult,
   SearchSuggestion,
 } from '@/domain/entities'
+import type { SupportedLocale } from '@/domain/types/locale'
 
 export type CatalogSort = 'popularity' | 'price'
 export type CatalogSortOrder = 'asc' | 'desc'
 
+export type CatalogLocaleParams = {
+  locale?: SupportedLocale
+}
+
+export type GetCategoryTreeParams = CatalogLocaleParams
+
 export type GetPopularProductsParams = {
   limit?: number
+  locale?: SupportedLocale
   page?: number
 }
 
 export type GetSearchSuggestionsParams = {
-  query: string
   limit?: number
+  locale?: SupportedLocale
+  query: string
 }
 
 export type GetSearchProductsParams = {
@@ -24,13 +33,14 @@ export type GetSearchProductsParams = {
   fallbackResult?: SearchResult
   fallbackProducts?: Product[]
   limit?: number
+  locale?: SupportedLocale
   query?: string
   sort?: CatalogSort
   sortOrder?: CatalogSortOrder
 }
 
 export interface CatalogRepository {
-  getCategoryTree(): Promise<Category[]>
+  getCategoryTree(params?: GetCategoryTreeParams): Promise<Category[]>
   getPopularProducts(params?: GetPopularProductsParams): Promise<Product[]>
   getSearchSuggestions(
     params: GetSearchSuggestionsParams,

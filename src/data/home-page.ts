@@ -1,10 +1,17 @@
 import type { HomePageData } from '@/domain/entities'
+import type { SupportedLocale } from '@/domain/types/locale'
 import { catalogRepository } from '@/data/repositories'
 
-export const getHomePageData = async (): Promise<HomePageData> => {
+type GetInitialHomePageDataParams = {
+  locale?: SupportedLocale
+}
+
+export const getInitialHomePageData = async ({
+  locale,
+}: GetInitialHomePageDataParams = {}): Promise<HomePageData> => {
   const [categories, products] = await Promise.all([
-    catalogRepository.getCategoryTree(),
-    catalogRepository.getPopularProducts(),
+    catalogRepository.getCategoryTree({ locale }),
+    catalogRepository.getPopularProducts({ locale }),
   ])
 
   return {

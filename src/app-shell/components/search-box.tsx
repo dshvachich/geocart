@@ -2,22 +2,53 @@
 
 import { useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createSearchHref } from "@/utils/search-query-utils";
 import { SearchBoxField } from "./search-box/search-box-field";
 import { SearchBoxOverlay } from "./search-box/search-box-overlay";
-import type { SearchNavigationParams } from "./search-box/search-box.types";
-import { SearchBoxStore } from "./search-box.store";
+import { SearchBoxStore } from "./search-box/search-box.store";
+import type {
+  SearchBoxAnchorRect,
+  SearchNavigationParams,
+} from "./search-box/search-box.types";
 
 export const SearchBox = observer(() => {
   const router = useRouter();
   const searchStore = useMemo(() => new SearchBoxStore(), []);
+  const fieldRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [anchorRect, setAnchorRect] = useState<SearchBoxAnchorRect | null>(
+    null,
+  );
   const isOpen = searchStore.isOpen;
   const query = searchStore.query;
   const trimmedQuery = searchStore.trimmedQuery;
   const productSuggestions = searchStore.productSuggestions;
   const categorySuggestions = searchStore.categorySuggestions;
+
+  const updateAnchorRect = useCallback(() => {
+    const field = fieldRef.current;
+
+    if (!field) {
+      return;
+    }
+
+    const rect = field.getBoundingClientRect();
+
+    setAnchorRect({
+      height: rect.height,
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+    });
+  }, []);
 
   const navigateToSearch = useCallback(
     ({ category, query }: SearchNavigationParams) => {
@@ -38,6 +69,20 @@ export const SearchBox = observer(() => {
     [router, searchStore],
   );
 
+  const openSearch = useCallback(() => {
+    updateAnchorRect();
+    searchStore.openSearch();
+  }, [searchStore, updateAnchorRect]);
+
+  useLayoutEffect(() => {
+    if (!isOpen) {
+      setAnchorRect(null);
+      return;
+    }
+
+    updateAnchorRect();
+  }, [isOpen, updateAnchorRect]);
+
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -45,6 +90,33 @@ export const SearchBox = observer(() => {
 
     inputRef.current?.focus();
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    window.addEventListener("resize", updateAnchorRect);
+    window.addEventListener("scroll", updateAnchorRect, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateAnchorRect);
+      window.removeEventListener("scroll", updateAnchorRect);
+    };
+  }, [isOpen, updateAnchorRect]);
+
+  useEffect(() => {
+    const field = fieldRef.current;
+
+    if (!isOpen || !field || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const observer = new ResizeObserver(updateAnchorRect);
+    observer.observe(field);
+
+    return () => observer.disconnect();
+  }, [isOpen, updateAnchorRect]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -93,15 +165,17 @@ export const SearchBox = observer(() => {
   return (
     <>
       <SearchBoxField
+        fieldRef={fieldRef}
         value={query}
         variant="navbar"
         onChange={searchStore.updateQuery}
-        onFocus={searchStore.openSearch}
+        onFocus={openSearch}
         onSubmit={() => navigateToSearch({ query })}
       />
 
       {isOpen && (
         <SearchBoxOverlay
+          anchorRect={anchorRect}
           categorySuggestions={categorySuggestions}
           inputRef={inputRef}
           productSuggestions={productSuggestions}

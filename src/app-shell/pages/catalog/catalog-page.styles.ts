@@ -105,6 +105,23 @@ export const catalogPageStyles = stylex.create({
     gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
     gap: 8,
   },
+  desktopRootContent: {
+    maxWidth: "var(--layout-max-width)",
+    marginInline: "auto",
+    padding: {
+      default: "32px var(--layout-gutter)",
+      "@media (max-width: 1180px)": "24px 32px",
+    },
+  },
+  desktopRootGrid: {
+    display: "grid",
+    gridTemplateColumns: {
+      default: "repeat(3, minmax(0, 220px))",
+      "@media (max-width: 1180px)": "repeat(2, minmax(0, 1fr))",
+    },
+    gap: 16,
+    maxWidth: 704,
+  },
   rootCard: {
     position: "relative",
     display: "block",
@@ -206,6 +223,67 @@ export const catalogPageStyles = stylex.create({
     lineHeight: "32px",
     letterSpacing: 0,
   },
+  categoryBreadcrumbs: {
+    display: "flex",
+    minWidth: 0,
+    alignItems: "center",
+    gap: 8,
+    overflowX: "auto",
+    scrollbarWidth: "none",
+    whiteSpace: "nowrap",
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
+  },
+  categoryBreadcrumbsMobile: {
+    width: "100%",
+    minHeight: 32,
+  },
+  categoryBreadcrumbsDesktop: {
+    minHeight: 40,
+    marginBottom: 24,
+  },
+  categoryBreadcrumbLink: {
+    flex: "0 0 auto",
+    color: "var(--color-fg-primary)",
+    fontSize: {
+      default: 28,
+      "@media (max-width: 760px)": 24,
+    },
+    fontWeight: 600,
+    lineHeight: {
+      default: "40px",
+      "@media (max-width: 760px)": "32px",
+    },
+    textDecoration: "none",
+  },
+  categoryBreadcrumbCurrent: {
+    flex: "0 0 auto",
+    margin: 0,
+    color: "var(--color-fg-primary)",
+    fontSize: {
+      default: 28,
+      "@media (max-width: 760px)": 24,
+    },
+    fontWeight: 600,
+    lineHeight: {
+      default: "40px",
+      "@media (max-width: 760px)": "32px",
+    },
+  },
+  categoryBreadcrumbSeparator: {
+    flex: "0 0 auto",
+    color: "var(--color-fg-secondary)",
+    fontSize: {
+      default: 20,
+      "@media (max-width: 760px)": 16,
+    },
+    fontWeight: 500,
+    lineHeight: {
+      default: "32px",
+      "@media (max-width: 760px)": "24px",
+    },
+  },
   mobileDetailContent: {
     display: "flex",
     flexDirection: "column",
@@ -231,6 +309,7 @@ export const catalogPageStyles = stylex.create({
     paddingTop: 12,
     paddingBottom: 11,
     backgroundColor: "var(--color-bg-primary)",
+    textDecoration: "none",
   },
   groupHeaderText: {
     margin: 0,

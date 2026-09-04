@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
 import { uiAssets } from "@/app-shell/components/assets";
 import {
   controlStyles,
@@ -18,40 +19,44 @@ type MobileDetailToolbarProps = {
 
 export const MobileDetailToolbar = ({
   parentCategory,
-}: MobileDetailToolbarProps) => (
-  <header {...stylex.props(styles.mobileDetailHeader)}>
-    <div
-      {...stylex.props(layoutStyles.contentRail, styles.mobileDetailToolbar)}
-    >
-      <Link
-        {...stylex.props(controlStyles.iconButton)}
-        href={createCatalogHref(parentCategory?.id)}
-        aria-label="Back"
-      >
-        <Image
-          {...stylex.props(iconStyles.icon)}
-          src={uiAssets.arrowLeft}
-          alt=""
-          width={24}
-          height={24}
-        />
-      </Link>
+}: MobileDetailToolbarProps) => {
+  const { t } = useTranslation();
 
-      <CatalogSearchLink />
-
-      <Link
-        {...stylex.props(controlStyles.iconButton)}
-        href="/"
-        aria-label="Close catalog"
+  return (
+    <header {...stylex.props(styles.mobileDetailHeader)}>
+      <div
+        {...stylex.props(layoutStyles.contentRail, styles.mobileDetailToolbar)}
       >
-        <Image
-          {...stylex.props(iconStyles.icon)}
-          src={uiAssets.close}
-          alt=""
-          width={24}
-          height={24}
-        />
-      </Link>
-    </div>
-  </header>
-);
+        <Link
+          {...stylex.props(controlStyles.iconButton)}
+          href={createCatalogHref(parentCategory?.id)}
+          aria-label={t("common.back")}
+        >
+          <Image
+            {...stylex.props(iconStyles.icon)}
+            src={uiAssets.arrowLeft}
+            alt=""
+            width={24}
+            height={24}
+          />
+        </Link>
+
+        <CatalogSearchLink />
+
+        <Link
+          {...stylex.props(controlStyles.iconButton)}
+          href="/"
+          aria-label={t("common.closeCatalog")}
+        >
+          <Image
+            {...stylex.props(iconStyles.icon)}
+            src={uiAssets.close}
+            alt=""
+            width={24}
+            height={24}
+          />
+        </Link>
+      </div>
+    </header>
+  );
+};

@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 
-export const filtersPageStyles = stylex.create({
+export const searchFiltersPageStyles = stylex.create({
   page: {
     width: "100%",
     maxWidth: {

@@ -1,6 +1,175 @@
 {
   "common": {
-    "catalog": "Catalog",
-    "search": "Search products"
+    "back": "Назад",
+    "brand": "Geocart",
+    "breadcrumbs": "Навигационная цепочка",
+    "cancel": "Отмена",
+    "catalog": "Каталог",
+    "categories": "Категории",
+    "closeCatalog": "Закрыть каталог",
+    "closeFilters": "Закрыть фильтры",
+    "closeSearch": "Закрыть поиск",
+    "compare": "Сравнение",
+    "favorites": "Избранное",
+    "home": "Главная",
+    "language": "Язык",
+    "loadingMoreProducts": "Загрузка товаров",
+    "menu": "Меню",
+    "primaryNavigation": "Основная навигация",
+    "search": "Искать товары"
+  },
+  "navbar": {
+    "favoritesLabel": "Избранное ({{count}})",
+    "homeLabel": "На главную Geocart"
+  },
+  "footer": {
+    "contact": "Напишите нам: hi@geocart.ge",
+    "copyright": "© geocart.ge 2026. Все права защищены",
+    "description": "Платформа для поиска товаров в Грузии.",
+    "made": "Сделано с любовью в Сакартвело 🇬🇪",
+    "privacy": "Политика конфиденциальности",
+    "terms": "Условия использования",
+    "columns": {
+      "company": {
+        "title": "Компания",
+        "links": {
+          "about": "О нас",
+          "mission": "Миссия и манифест",
+          "contacts": "Контакты"
+        }
+      },
+      "buyers": {
+        "title": "Покупателям",
+        "links": {
+          "aboutService": "О сервисе",
+          "selectProduct": "Как выбрать товар"
+        }
+      },
+      "partnership": {
+        "title": "Партнерство",
+        "links": {
+          "brands": "Для брендов",
+          "shops": "Для магазинов и продавцов"
+        }
+      }
+    }
+  },
+  "hero": {
+    "featuredProduct": "Рекомендуемый товар",
+    "fitbitAir": {
+      "kicker": "Google Fitbit Air",
+      "title": "Каждое движение в пользу здоровья"
+    },
+    "carouselControls": "Управление каруселью",
+    "nextProduct": "Следующий товар",
+    "previousProduct": "Предыдущий товар"
+  },
+  "product": {
+    "addFavorite": "Добавить {{product}} в избранное",
+    "from": "от",
+    "new": "Новинка",
+    "offers_one": "{{count}} предложение",
+    "offers_few": "{{count}} предложения",
+    "offers_many": "{{count}} предложений",
+    "offers_other": "{{count}} предложения",
+    "popularProducts": "Популярные товары",
+    "removeFavorite": "Удалить {{product}} из избранного"
+  },
+  "search": {
+    "categoriesHeading": "Категории",
+    "defaultTitle": "Мобильные телефоны Apple",
+    "filters": "Фильтры",
+    "from": "От",
+    "openFilters": "Открыть фильтры",
+    "openSorting": "Открыть сортировку",
+    "productsHeading": "Товары",
+    "resultsEyebrow": "Результаты поиска",
+    "showFirst": "Сначала показать",
+    "to": "До",
+    "sort": {
+      "popular": "Популярные",
+      "cheaper": "Дешевле",
+      "highest-rating": "С высоким рейтингом"
+    }
+  },
+  "favorites": {
+    "emptyText": "Сохраненные товары появятся здесь.",
+    "emptyTitle": "В избранном пока нет товаров",
+    "openCatalog": "Открыть каталог",
+    "showAll": "Показать все избранные товары",
+    "title": "Избранные товары"
+  },
+  "catalog": {
+    "promoButton": "от 754 ₾",
+    "promoKicker": "Sony PlayStation",
+    "promoTitleLine1": "PlayStation 5 Pro",
+    "promoTitleLine2": "Максимум для игр"
+  },
+  "categories": {
+    "airpods": "AirPods",
+    "all-smartphones": "Все смартфоны",
+    "apple": "Apple",
+    "apple-iphone": "Apple iPhone",
+    "apple-mobile-phones": "Apple",
+    "apple-watch": "Apple Watch",
+    "cases": "Чехлы",
+    "chargers": "Зарядные устройства",
+    "coffee-machines": "Кофемашины",
+    "computers-gaming": "Компьютеры и игры",
+    "gaming-consoles": "Игровые консоли",
+    "galaxy-a57": "Galaxy A57",
+    "galaxy-buds": "Galaxy Buds",
+    "galaxy-s26": "Galaxy S26",
+    "galaxy-s26-plus": "Galaxy S26+",
+    "galaxy-s26-ultra": "Galaxy S26 Ultra",
+    "galaxy-watch": "Galaxy Watch",
+    "galaxy-z-flip8": "Galaxy Z Flip8",
+    "galaxy-z-fold8": "Galaxy Z Fold8",
+    "headphones": "Наушники",
+    "headsets": "Гарнитуры",
+    "health-beauty": "Здоровье и красота",
+    "home-kitchen": "Дом и кухня",
+    "iphone-17": "iPhone 17",
+    "iphone-17-pro": "iPhone 17 Pro",
+    "iphone-17-pro-max": "iPhone 17 Pro Max",
+    "iphone-17e": "iPhone 17e",
+    "iphone-air": "iPhone Air",
+    "laptops": "Ноутбуки",
+    "memory-cards": "Карты памяти",
+    "mobile-phones": "Мобильные телефоны",
+    "mobile-wearables": "Мобильные устройства и носимые гаджеты",
+    "phone-accessories": "Аксессуары для телефонов",
+    "phone-accessories-other": "Другое",
+    "photo-video": "Фото и видео",
+    "portable-audio": "Портативное аудио",
+    "power-banks": "Пауэрбанки",
+    "push-button-phones": "Кнопочные телефоны",
+    "samsung": "Samsung",
+    "samsung-mobile-phones": "Samsung",
+    "samsung-smartphones": "Смартфоны Samsung",
+    "screen-protectors": "Защитные стекла",
+    "smart-rings": "Умные кольца",
+    "smart-watches": "Умные часы",
+    "smart-watches-fitness-trackers": "Умные часы и фитнес-трекеры",
+    "tablets": "Планшеты",
+    "tv-audio-entertainment": "ТВ, аудио и развлечения",
+    "uncategorized": "Другое",
+    "vacuum-cleaners": "Пылесосы",
+    "vr-headsets": "VR-гарнитуры",
+    "waarables": "Носимые устройства",
+    "wearables-other": "Другое",
+    "washers-dryers": "Стиральные и сушильные машины"
+  },
+  "filters": {
+    "brand": "Бренд",
+    "color": "Цвет",
+    "display-size": "Размер дисплея",
+    "ip-protection": "Защита IP",
+    "memory": "Память",
+    "os": "ОС",
+    "price": "Цена, ₾",
+    "ram": "ОЗУ",
+    "refresh-rate": "Частота обновления",
+    "screen": "Экран"
   }
 }

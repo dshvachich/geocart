@@ -1,10 +1,11 @@
-export const formatPrice = (value: number, currency: string) => {
+export const formatPrice = (
+  value: number,
+  currency: string,
+  fromLabel = 'from',
+) => {
   const formattedValue = Number.isInteger(value)
     ? String(value)
     : value.toFixed(2)
 
-  return `from ${formattedValue} ${currency}`
+  return `${fromLabel} ${formattedValue} ${currency}`
 }
-
-export const formatOffers = (value: number) =>
-  `${value} ${value === 1 ? 'offer' : 'offers'}`

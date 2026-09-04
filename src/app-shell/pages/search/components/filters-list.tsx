@@ -1,7 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import type { SearchFilter } from "@/domain/entities";
 import type { SearchQueryParams } from "@/utils/search-query-utils";
-import { filtersPageStyles as styles } from "../filters-page.styles";
+import { searchFiltersPageStyles as styles } from "../search-filters-page.styles";
 import { FilterGroup } from "./filter-group";
 
 type FiltersListProps = {

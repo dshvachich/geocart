@@ -2,6 +2,7 @@ export type {
   CatalogRepository,
   CatalogSort,
   CatalogSortOrder,
+  GetCategoryTreeParams,
   GetPopularProductsParams,
   GetSearchProductsParams,
   GetSearchSuggestionsParams,

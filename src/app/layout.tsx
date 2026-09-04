@@ -1,17 +1,35 @@
 import type { Metadata } from 'next'
 import { AppProvider } from '@/app-shell/app-provider'
+import { getRequestLocale } from '@/app/locale'
+import type { SupportedLocale } from '@/domain/types/locale'
 import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'Geocart',
-  description: 'Product discovery platform in Georgia.',
+const metadataDescriptions = {
+  en: 'Product discovery platform in Georgia.',
+  ru: 'Платформа для поиска товаров в Грузии.',
+  ka: 'პროდუქტების აღმოჩენის პლატფორმა საქართველოში.',
+} satisfies Record<SupportedLocale, string>
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  const locale = await getRequestLocale()
+
+  return {
+    title: 'Geocart',
+    description: metadataDescriptions[locale],
+  }
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const locale = await getRequestLocale()
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body>
-        <AppProvider>{children}</AppProvider>
+        <AppProvider initialLocale={locale}>{children}</AppProvider>
       </body>
     </html>
   )

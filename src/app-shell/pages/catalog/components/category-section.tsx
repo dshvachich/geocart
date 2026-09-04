@@ -1,5 +1,7 @@
 import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
+import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import type { Category } from "@/domain/entities";
 import {
   getCategoryHref,
@@ -13,6 +15,7 @@ type CategorySectionProps = {
 };
 
 export const CategorySection = ({ category }: CategorySectionProps) => {
+  const { t } = useTranslation();
   const { linkCategories, tagCategories } = splitCategoryChildren(category);
 
   if ((category.subCategories?.length ?? 0) === 0) {
@@ -22,9 +25,14 @@ export const CategorySection = ({ category }: CategorySectionProps) => {
   return (
     <section {...stylex.props(styles.categorySection)}>
       <div {...stylex.props(styles.groupHeader)}>
-        <div {...stylex.props(styles.groupHeaderRow)}>
-          <p {...stylex.props(styles.groupHeaderText)}>{category.title}</p>
-        </div>
+        <Link
+          {...stylex.props(styles.groupHeaderRow)}
+          href={getCategoryHref(category)}
+        >
+          <p {...stylex.props(styles.groupHeaderText)}>
+            {getLocalizedCategoryTitle(t, category)}
+          </p>
+        </Link>
         <div {...stylex.props(styles.groupHeaderBorder)} />
       </div>
 
@@ -36,7 +44,7 @@ export const CategorySection = ({ category }: CategorySectionProps) => {
               href={getCategoryHref(tagCategory)}
               key={tagCategory.id}
             >
-              {tagCategory.title}
+              {getLocalizedCategoryTitle(t, tagCategory)}
             </Link>
           ))}
         </div>

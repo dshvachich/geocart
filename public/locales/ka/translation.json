@@ -1,0 +1,173 @@
+{
+  "common": {
+    "back": "უკან",
+    "brand": "Geocart",
+    "breadcrumbs": "ნავიგაციის ბილიკი",
+    "cancel": "გაუქმება",
+    "catalog": "კატალოგი",
+    "categories": "კატეგორიები",
+    "closeCatalog": "კატალოგის დახურვა",
+    "closeFilters": "ფილტრების დახურვა",
+    "closeSearch": "ძიების დახურვა",
+    "compare": "შედარება",
+    "favorites": "რჩეულები",
+    "home": "მთავარი",
+    "language": "ენა",
+    "loadingMoreProducts": "პროდუქტების ჩატვირთვა",
+    "menu": "მენიუ",
+    "primaryNavigation": "ძირითადი ნავიგაცია",
+    "search": "პროდუქტების ძიება"
+  },
+  "navbar": {
+    "favoritesLabel": "რჩეულები ({{count}})",
+    "homeLabel": "Geocart-ის მთავარი გვერდი"
+  },
+  "footer": {
+    "contact": "მოგვწერეთ: hi@geocart.ge",
+    "copyright": "© geocart.ge 2026. ყველა უფლება დაცულია",
+    "description": "პროდუქტების აღმოჩენის პლატფორმა საქართველოში.",
+    "made": "სიყვარულით შექმნილია საქართველოში 🇬🇪",
+    "privacy": "კონფიდენციალურობის პოლიტიკა",
+    "terms": "წესები და პირობები",
+    "columns": {
+      "company": {
+        "title": "კომპანია",
+        "links": {
+          "about": "ჩვენ შესახებ",
+          "mission": "მისია და მანიფესტი",
+          "contacts": "კონტაქტები"
+        }
+      },
+      "buyers": {
+        "title": "მყიდველებისთვის",
+        "links": {
+          "aboutService": "სერვისის შესახებ",
+          "selectProduct": "როგორ შევარჩიოთ პროდუქტი"
+        }
+      },
+      "partnership": {
+        "title": "პარტნიორობა",
+        "links": {
+          "brands": "ბრენდებისთვის",
+          "shops": "მაღაზიებისა და გამყიდველებისთვის"
+        }
+      }
+    }
+  },
+  "hero": {
+    "featuredProduct": "რჩეული პროდუქტი",
+    "fitbitAir": {
+      "kicker": "Google Fitbit Air",
+      "title": "ყოველი მოძრაობა ჯანმრთელობისთვის"
+    },
+    "carouselControls": "კარუსელის მართვა",
+    "nextProduct": "შემდეგი პროდუქტი",
+    "previousProduct": "წინა პროდუქტი"
+  },
+  "product": {
+    "addFavorite": "{{product}} რჩეულებში დამატება",
+    "from": "დან",
+    "new": "ახალი",
+    "offers_one": "{{count}} შეთავაზება",
+    "offers_other": "{{count}} შეთავაზება",
+    "popularProducts": "პოპულარული პროდუქტები",
+    "removeFavorite": "{{product}} რჩეულებიდან წაშლა"
+  },
+  "search": {
+    "categoriesHeading": "კატეგორიები",
+    "defaultTitle": "Apple-ის მობილური ტელეფონები",
+    "filters": "ფილტრები",
+    "from": "დან",
+    "openFilters": "ფილტრების გახსნა",
+    "openSorting": "სორტირების გახსნა",
+    "productsHeading": "პროდუქტები",
+    "resultsEyebrow": "ძიების შედეგები",
+    "showFirst": "პირველად აჩვენე",
+    "to": "მდე",
+    "sort": {
+      "popular": "პოპულარული",
+      "cheaper": "უფრო იაფი",
+      "highest-rating": "მაღალი რეიტინგით"
+    }
+  },
+  "favorites": {
+    "emptyText": "შენახული პროდუქტები აქ გამოჩნდება.",
+    "emptyTitle": "რჩეულებში ჯერ პროდუქტები არ არის",
+    "openCatalog": "კატალოგის გახსნა",
+    "showAll": "ყველა რჩეული პროდუქტის ჩვენება",
+    "title": "რჩეული პროდუქტები"
+  },
+  "catalog": {
+    "promoButton": "754 ₾-დან",
+    "promoKicker": "Sony PlayStation",
+    "promoTitleLine1": "PlayStation 5 Pro",
+    "promoTitleLine2": "საუკეთესო გეიმინგისთვის"
+  },
+  "categories": {
+    "airpods": "AirPods",
+    "all-smartphones": "ყველა სმარტფონი",
+    "apple": "Apple",
+    "apple-iphone": "Apple iPhone",
+    "apple-mobile-phones": "Apple",
+    "apple-watch": "Apple Watch",
+    "cases": "ქეისები",
+    "chargers": "დამტენები",
+    "coffee-machines": "ყავის აპარატები",
+    "computers-gaming": "კომპიუტერები და გეიმინგი",
+    "gaming-consoles": "სათამაშო კონსოლები",
+    "galaxy-a57": "Galaxy A57",
+    "galaxy-buds": "Galaxy Buds",
+    "galaxy-s26": "Galaxy S26",
+    "galaxy-s26-plus": "Galaxy S26+",
+    "galaxy-s26-ultra": "Galaxy S26 Ultra",
+    "galaxy-watch": "Galaxy Watch",
+    "galaxy-z-flip8": "Galaxy Z Flip8",
+    "galaxy-z-fold8": "Galaxy Z Fold8",
+    "headphones": "ყურსასმენები",
+    "headsets": "ჰედსეტები",
+    "health-beauty": "ჯანმრთელობა და სილამაზე",
+    "home-kitchen": "სახლი და სამზარეულო",
+    "iphone-17": "iPhone 17",
+    "iphone-17-pro": "iPhone 17 Pro",
+    "iphone-17-pro-max": "iPhone 17 Pro Max",
+    "iphone-17e": "iPhone 17e",
+    "iphone-air": "iPhone Air",
+    "laptops": "ლეპტოპები",
+    "memory-cards": "მეხსიერების ბარათები",
+    "mobile-phones": "მობილური ტელეფონები",
+    "mobile-wearables": "მობილური და ტარებადი მოწყობილობები",
+    "phone-accessories": "ტელეფონის აქსესუარები",
+    "phone-accessories-other": "სხვა",
+    "photo-video": "ფოტო და ვიდეო",
+    "portable-audio": "პორტატული აუდიო",
+    "power-banks": "პაუერბანკები",
+    "push-button-phones": "ღილაკიანი ტელეფონები",
+    "samsung": "Samsung",
+    "samsung-mobile-phones": "Samsung",
+    "samsung-smartphones": "Samsung-ის სმარტფონები",
+    "screen-protectors": "ეკრანის დამცავები",
+    "smart-rings": "ჭკვიანი ბეჭდები",
+    "smart-watches": "ჭკვიანი საათები",
+    "smart-watches-fitness-trackers": "ჭკვიანი საათები და ფიტნეს ტრეკერები",
+    "tablets": "ტაბლეტები",
+    "tv-audio-entertainment": "ტელევიზია, აუდიო და გართობა",
+    "uncategorized": "სხვა",
+    "vacuum-cleaners": "მტვერსასრუტები",
+    "vr-headsets": "VR-ჰედსეტები",
+    "waarables": "ტარებადი მოწყობილობები",
+    "wearables-other": "სხვა",
+    "washers-dryers": "სარეცხი და საშრობი მანქანები"
+  },
+  "filters": {
+    "brand": "ბრენდი",
+    "color": "ფერი",
+    "display-size": "ეკრანის ზომა",
+    "ip-protection": "IP დაცვა",
+    "memory": "მეხსიერება",
+    "os": "OS",
+    "price": "ფასი, ₾",
+    "ram": "RAM",
+    "refresh-rate": "განახლების სიხშირე",
+    "screen": "ეკრანი"
+  }
+}

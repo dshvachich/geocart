@@ -1,33 +1,49 @@
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
+import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import type { Category } from "@/domain/entities";
-import { createDesktopColumns } from "../catalog-page.helpers";
+import {
+  createDesktopColumns,
+  type CategoryPath,
+} from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
+import { CatalogCategoryBreadcrumbs } from "./catalog-category-breadcrumbs";
 import { CategorySection } from "./category-section";
 import { DesktopSidebar } from "./desktop-sidebar";
 
 type DesktopCatalogContentProps = {
   categories: Category[];
-  rootCategory: Category;
+  categoryPath: CategoryPath;
 };
 
 export const DesktopCatalogContent = ({
   categories,
-  rootCategory,
+  categoryPath,
 }: DesktopCatalogContentProps) => {
-  const columns = createDesktopColumns(rootCategory.subCategories ?? []);
+  const { t } = useTranslation();
+  const columns = createDesktopColumns(
+    categoryPath.selectedCategory.subCategories ?? [],
+  );
+  const selectedCategoryTitle = getLocalizedCategoryTitle(
+    t,
+    categoryPath.selectedCategory,
+  );
 
   return (
     <div {...stylex.props(styles.desktopContent)}>
       <DesktopSidebar
         categories={categories}
-        selectedCategoryId={rootCategory.id}
+        selectedCategoryId={categoryPath.rootCategory.id}
       />
 
       <section
         {...stylex.props(styles.desktopMain)}
-        aria-label={rootCategory.title}
+        aria-label={selectedCategoryTitle}
       >
-        <h1 {...stylex.props(styles.desktopTitle)}>{rootCategory.title}</h1>
+        <CatalogCategoryBreadcrumbs
+          categoryPath={categoryPath.path}
+          variant="desktop"
+        />
 
         <div {...stylex.props(styles.desktopColumns)}>
           {columns.map((column, index) => (

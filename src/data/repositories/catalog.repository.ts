@@ -6,10 +6,12 @@ import type {
 } from '@/domain/entities'
 import type {
   CatalogRepository,
+  GetCategoryTreeParams,
   GetPopularProductsParams,
   GetSearchProductsParams,
   GetSearchSuggestionsParams,
 } from '@/domain/repositories'
+import { DEFAULT_LOCALE, type SupportedLocale } from '@/domain/types/locale'
 import {
   listCategories,
   listProducts,
@@ -52,6 +54,10 @@ const PLAYSTATION_QUERY_SUGGESTION_IDS = [
 
 type SearchProductsDynamicParams = Record<string, string | number | undefined>
 
+const getLocaleHeaders = (locale: SupportedLocale = DEFAULT_LOCALE) => ({
+  'Accept-Locale': locale,
+})
+
 const getSuggestionsByIds = (ids: string[], limit: number) =>
   ids
     .map((id) =>
@@ -81,13 +87,13 @@ const getFallbackSuggestions = (query: string, limit: number) => {
 }
 
 class CatalogApiRepository implements CatalogRepository {
-  async getCategoryTree(): Promise<Category[]> {
+  async getCategoryTree({
+    locale,
+  }: GetCategoryTreeParams = {}): Promise<Category[]> {
     try {
       const categories = await listCategories({
         timeout: CATEGORIES_API_TIMEOUT_MS,
-        headers: {
-          'Accept-Locale': 'en',
-        },
+        headers: getLocaleHeaders(locale),
       })
 
       const categoryTree = categories.map((category, index) =>
@@ -109,6 +115,7 @@ class CatalogApiRepository implements CatalogRepository {
 
   async getPopularProducts({
     limit = DEFAULT_POPULAR_PRODUCTS_LIMIT,
+    locale,
     page = 0,
   }: GetPopularProductsParams = {}): Promise<Product[]> {
     try {
@@ -119,9 +126,7 @@ class CatalogApiRepository implements CatalogRepository {
         },
         {
           timeout: HOME_API_TIMEOUT_MS,
-          headers: {
-            'Accept-Locale': 'en',
-          },
+          headers: getLocaleHeaders(locale),
         },
       )
 
@@ -146,6 +151,7 @@ class CatalogApiRepository implements CatalogRepository {
   async getSearchSuggestions({
     query,
     limit = DEFAULT_SUGGESTIONS_LIMIT,
+    locale,
   }: GetSearchSuggestionsParams): Promise<SearchSuggestion[]> {
     const trimmedQuery = query.trim()
 
@@ -161,9 +167,7 @@ class CatalogApiRepository implements CatalogRepository {
         },
         {
           timeout: SUGGESTIONS_API_TIMEOUT_MS,
-          headers: {
-            'Accept-Locale': 'en',
-          },
+          headers: getLocaleHeaders(locale),
         },
       )
 
@@ -190,6 +194,7 @@ class CatalogApiRepository implements CatalogRepository {
     fallbackResult,
     fallbackProducts = geocartProducts,
     limit = DEFAULT_SEARCH_PRODUCTS_LIMIT,
+    locale,
     query,
     sort,
     sortOrder,
@@ -215,9 +220,7 @@ class CatalogApiRepository implements CatalogRepository {
     try {
       const response = await fetchSearchProducts(params, {
         timeout: SEARCH_API_TIMEOUT_MS,
-        headers: {
-          'Accept-Locale': 'en',
-        },
+        headers: getLocaleHeaders(locale),
       })
 
       return SearchResponseDtoToSearchResultEntityMapperExtension.toEntity(

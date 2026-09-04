@@ -1,15 +1,12 @@
-import { MainPage } from '@/app-shell/pages/main/main-page'
-import { getHomePageData } from '@/data/home-page'
+import { HomePage } from '@/app-shell/pages/main/home-page'
+import { getRequestLocale } from '@/app/locale'
+import { getInitialHomePageData } from '@/data/home-page'
 
 export const dynamic = 'force-dynamic'
 
-export default async function Home() {
-  const homePageData = await getHomePageData()
+export default async function HomeRoute() {
+  const locale = await getRequestLocale()
+  const initialHomePageData = await getInitialHomePageData({ locale })
 
-  return (
-    <MainPage
-      categories={homePageData.categories}
-      products={homePageData.products}
-    />
-  )
+  return <HomePage initialData={initialHomePageData} />
 }

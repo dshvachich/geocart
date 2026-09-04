@@ -1,16 +1,21 @@
 import Image from "next/image";
 import * as stylex from "@stylexjs/stylex";
 import { uiAssets } from "@/app-shell/components/assets";
-import { iconStyles } from "@/app-shell/styles/shared.styles";
-import { catalogPageStyles as styles } from "../catalog-page.styles";
+import { controlStyles, iconStyles } from "@/app-shell/styles/shared.styles";
 
-type HeaderDropdownProps = {
+type FooterControlProps = {
   icon: string;
   label: string;
 };
 
-export const HeaderDropdown = ({ icon, label }: HeaderDropdownProps) => (
-  <button {...stylex.props(styles.headerControl)} type="button">
+export const FooterControl = ({ icon, label }: FooterControlProps) => (
+  <button
+    {...stylex.props(
+      controlStyles.inlineControl,
+      controlStyles.inlineControlOnDark,
+    )}
+    type="button"
+  >
     <Image
       {...stylex.props(iconStyles.icon)}
       src={icon}
@@ -21,7 +26,7 @@ export const HeaderDropdown = ({ icon, label }: HeaderDropdownProps) => (
     <span>{label}</span>
     <Image
       {...stylex.props(iconStyles.iconSmall)}
-      src={uiAssets.caret}
+      src={uiAssets.footerCaret}
       alt=""
       width={12}
       height={12}

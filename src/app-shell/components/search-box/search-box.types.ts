@@ -5,6 +5,13 @@ export type SearchNavigationParams = {
   query: string;
 };
 
+export type SearchBoxAnchorRect = {
+  height: number;
+  left: number;
+  top: number;
+  width: number;
+};
+
 export type SearchSuggestionsProps = {
   categorySuggestions: SearchSuggestion[];
   onSearch: (params: SearchNavigationParams) => void;

@@ -8,8 +8,8 @@ import type {
   SearchSelectableFilter,
 } from "@/domain/entities";
 import type { SearchQueryParams } from "@/utils/search-query-utils";
-import { getFilterTagHref } from "../filters-page.helpers";
-import { filtersPageStyles as styles } from "../filters-page.styles";
+import { getFilterTagHref } from "../search-filters-page.helpers";
+import { searchFiltersPageStyles as styles } from "../search-filters-page.styles";
 
 type FilterTagProps = {
   filter: SearchSelectableFilter;

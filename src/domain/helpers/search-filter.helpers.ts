@@ -5,6 +5,13 @@ import type {
 } from '@/domain/entities'
 
 const PRICE_CURRENCY_SYMBOL = '₾'
+const DEFAULT_RANGE_FROM_LABEL = 'From'
+const DEFAULT_RANGE_TO_LABEL = 'To'
+
+export type SearchRangeFormatLabels = {
+  from: string
+  to: string
+}
 
 export const isPriceSearchFilter = (filter: SearchFilter) =>
   filter.label.toLowerCase().includes('price') ||
@@ -25,7 +32,13 @@ export const getSearchFilterVariantLabel = (
   variant: Pick<SearchFilterVariant, 'label' | 'value'>,
 ) => variant.label?.trim() || variant.value
 
-export const getSearchRangeActiveFilterTitle = (filter: SearchFilter) => {
+export const getSearchRangeActiveFilterTitle = (
+  filter: SearchFilter,
+  labels: SearchRangeFormatLabels = {
+    from: DEFAULT_RANGE_FROM_LABEL,
+    to: DEFAULT_RANGE_TO_LABEL,
+  },
+) => {
   if (filter.type !== 'range') {
     return undefined
   }
@@ -41,11 +54,11 @@ export const getSearchRangeActiveFilterTitle = (filter: SearchFilter) => {
   }
 
   if (hasSelectedMin) {
-    return `From ${formatSearchRangeFilterValue(filter, filter.selectedMin)}`
+    return `${labels.from} ${formatSearchRangeFilterValue(filter, filter.selectedMin)}`
   }
 
   if (hasSelectedMax) {
-    return `To ${formatSearchRangeFilterValue(filter, filter.selectedMax)}`
+    return `${labels.to} ${formatSearchRangeFilterValue(filter, filter.selectedMax)}`
   }
 
   return undefined
@@ -53,10 +66,11 @@ export const getSearchRangeActiveFilterTitle = (filter: SearchFilter) => {
 
 export const getSearchActiveFilters = (
   filters: SearchFilter[],
+  labels?: SearchRangeFormatLabels,
 ): SearchActiveFilter[] =>
   filters.flatMap((filter) => {
     if (filter.type === 'range') {
-      const title = getSearchRangeActiveFilterTitle(filter)
+      const title = getSearchRangeActiveFilterTitle(filter, labels)
 
       if (!title) {
         return []

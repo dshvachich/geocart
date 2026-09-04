@@ -1,9 +1,13 @@
 import { uiAssets } from "@/app-shell/components/assets";
-
-export const navbarLocationOptions = ["Tbilisi", "Batumi"];
+import type { SupportedLocale } from "@/domain/types/locale";
 
 export const navbarLanguageOptions = [
-  { code: "GE", flag: uiAssets.flagGe, title: "ქართული" },
-  { code: "EN", flag: uiAssets.flagUs, title: "English" },
-  { code: "RU", flag: uiAssets.flagRu, title: "Русский" },
-];
+  { locale: "ka", label: "KA", flag: uiAssets.flagGe, title: "ქართული" },
+  { locale: "en", label: "EN", flag: uiAssets.flagUs, title: "English" },
+  { locale: "ru", label: "RU", flag: uiAssets.flagRu, title: "Русский" },
+] satisfies Array<{
+  locale: SupportedLocale;
+  label: string;
+  flag: string;
+  title: string;
+}>;

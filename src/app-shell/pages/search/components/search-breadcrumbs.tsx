@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
 import { uiAssets } from "@/app-shell/components/assets";
+import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import type { SearchBreadcrumb } from "@/domain/entities";
 import {
   createSearchHref,
@@ -20,12 +22,17 @@ export const SearchBreadcrumbs = ({
   breadcrumbs,
   searchParams,
 }: SearchBreadcrumbsProps) => {
+  const { t } = useTranslation();
+
   if (breadcrumbs.length === 0) {
     return null;
   }
 
   return (
-    <nav {...stylex.props(styles.breadcrumbs)} aria-label="Breadcrumbs">
+    <nav
+      {...stylex.props(styles.breadcrumbs)}
+      aria-label={t("common.breadcrumbs")}
+    >
       {breadcrumbs.map((breadcrumb, index) => (
         <Fragment key={breadcrumb.id}>
           {index > 0 && (
@@ -43,7 +50,7 @@ export const SearchBreadcrumbs = ({
               setSearchParam(searchParams, "category", breadcrumb.id),
             )}
           >
-            {breadcrumb.title}
+            {getLocalizedCategoryTitle(t, breadcrumb)}
           </Link>
         </Fragment>
       ))}

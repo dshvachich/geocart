@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { SearchPage } from '@/app-shell/pages/search/search-page'
+import { getRequestLocale } from '@/app/locale'
 import { getSearchPageData } from '@/data/search-page'
 import {
   createSearchHref,
@@ -13,9 +14,11 @@ type SearchRouteProps = {
   searchParams?: Promise<RouteSearchParams>
 }
 
-export default async function Search({ searchParams }: SearchRouteProps) {
+export default async function SearchRoute({ searchParams }: SearchRouteProps) {
+  const locale = await getRequestLocale()
   const normalizedSearchParams = normalizeSearchParams(await searchParams)
   const data = await getSearchPageData({
+    locale,
     searchParams: normalizedSearchParams,
   })
 

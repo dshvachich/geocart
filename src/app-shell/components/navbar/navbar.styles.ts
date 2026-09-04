@@ -71,6 +71,12 @@ export const navbarStyles = stylex.create({
       "@media (max-width: 760px)": "none",
     },
   },
+  compactNavbarRight: {
+    display: {
+      default: "flex",
+      "@media (max-width: 760px)": "none",
+    },
+  },
   navbarMain: {
     display: "flex",
     flex: "1 1 auto",
@@ -183,10 +189,7 @@ export const navbarStyles = stylex.create({
     top: "calc(100% + 8px)",
     right: 0,
     zIndex: 70,
-    display: {
-      default: "flex",
-      "@media (max-width: 760px)": "none",
-    },
+    display: "flex",
     flexDirection: "column",
     alignItems: "stretch",
     padding: "7px 0",
@@ -196,10 +199,6 @@ export const navbarStyles = stylex.create({
     borderRadius: 12,
     backgroundColor: "var(--color-bg-primary)",
     boxShadow: "var(--shadow-dropdown)",
-  },
-  locationDropdown: {
-    right: 12,
-    width: 176,
   },
   languageDropdown: {
     right: -4,

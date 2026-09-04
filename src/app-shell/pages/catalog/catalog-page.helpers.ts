@@ -4,7 +4,9 @@ import { createSearchHref } from "@/utils/search-query-utils";
 export const CATALOG_PAGE_PATH = "/catalog";
 
 export type CategoryPath = {
+  path: Category[];
   rootCategory: Category;
+  selectedCategory: Category;
 };
 
 export const createCatalogHref = (categoryId?: string) => {
@@ -49,11 +51,9 @@ export const getCategoryPath = (
   categories: Category[],
   selectedCategoryId: string | undefined,
 ): CategoryPath | null => {
-  const explicitPath = selectedCategoryId
+  const path = selectedCategoryId
     ? findCategoryPath(categories, selectedCategoryId)
     : null;
-  const fallbackPath = categories[0] ? [categories[0]] : null;
-  const path = explicitPath ?? fallbackPath;
   const selectedCategory = path?.[path.length - 1];
   const rootCategory = path?.[0];
 
@@ -62,7 +62,9 @@ export const getCategoryPath = (
   }
 
   return {
+    path,
     rootCategory,
+    selectedCategory,
   };
 };
 

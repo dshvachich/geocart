@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
 import { uiAssets } from "@/app-shell/components/assets";
+import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import type { Category } from "@/domain/entities";
 import { createSearchHref } from "@/utils/search-query-utils";
-import {
-  createCatalogHref,
-} from "../catalog-page.helpers";
+import { getCategoryHref } from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
 
 type DesktopSidebarProps = {
@@ -17,60 +17,71 @@ type DesktopSidebarProps = {
 export const DesktopSidebar = ({
   categories,
   selectedCategoryId,
-}: DesktopSidebarProps) => (
-  <aside {...stylex.props(styles.desktopAside)}>
-    <nav {...stylex.props(styles.desktopCategoryPanel)} aria-label="Categories">
-      <p {...stylex.props(styles.desktopSidebarHeading)}>Categories</p>
+}: DesktopSidebarProps) => {
+  const { t } = useTranslation();
 
-      <div {...stylex.props(styles.desktopSidebarRows)}>
-        {categories.map((category) => {
-          const isSelected = category.id === selectedCategoryId;
+  return (
+    <aside {...stylex.props(styles.desktopAside)}>
+      <nav
+        {...stylex.props(styles.desktopCategoryPanel)}
+        aria-label={t("common.categories")}
+      >
+        <p {...stylex.props(styles.desktopSidebarHeading)}>
+          {t("common.categories")}
+        </p>
 
-          return (
-            <Link
-              {...stylex.props(
-                styles.desktopSidebarRow,
-                isSelected && styles.desktopSidebarRowSelected,
-              )}
-              href={createCatalogHref(category.id)}
-              key={category.id}
-            >
-              <span>{category.title}</span>
-              <Image
-                {...stylex.props(styles.desktopSidebarIcon)}
-                src={uiAssets.angleRight}
-                alt=""
-                width={24}
-                height={24}
-              />
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+        <div {...stylex.props(styles.desktopSidebarRows)}>
+          {categories.map((category) => {
+            const isSelected = category.id === selectedCategoryId;
 
-    <article {...stylex.props(styles.desktopPromo)}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        {...stylex.props(styles.desktopPromoImage)}
-        src={uiAssets.catalogPromoPlaystation}
-        alt=""
-      />
-      <div {...stylex.props(styles.desktopPromoContent)}>
-        <div {...stylex.props(styles.desktopPromoText)}>
-          <p {...stylex.props(styles.desktopPromoKicker)}>Sony PlayStation</p>
-          <h2 {...stylex.props(styles.desktopPromoTitle)}>
-            <span>PlayStation 5 Pro</span>
-            <span>Ultimate Gaming</span>
-          </h2>
+            return (
+              <Link
+                {...stylex.props(
+                  styles.desktopSidebarRow,
+                  isSelected && styles.desktopSidebarRowSelected,
+                )}
+                href={getCategoryHref(category)}
+                key={category.id}
+              >
+                <span>{getLocalizedCategoryTitle(t, category)}</span>
+                <Image
+                  {...stylex.props(styles.desktopSidebarIcon)}
+                  src={uiAssets.angleRight}
+                  alt=""
+                  width={24}
+                  height={24}
+                />
+              </Link>
+            );
+          })}
         </div>
-        <Link
-          {...stylex.props(styles.desktopPromoButton)}
-          href={createSearchHref({ q: "PlayStation 5 Pro" })}
-        >
-          from 754 ₾
-        </Link>
-      </div>
-    </article>
-  </aside>
-);
+      </nav>
+
+      <article {...stylex.props(styles.desktopPromo)}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          {...stylex.props(styles.desktopPromoImage)}
+          src={uiAssets.catalogPromoPlaystation}
+          alt=""
+        />
+        <div {...stylex.props(styles.desktopPromoContent)}>
+          <div {...stylex.props(styles.desktopPromoText)}>
+            <p {...stylex.props(styles.desktopPromoKicker)}>
+              {t("catalog.promoKicker")}
+            </p>
+            <h2 {...stylex.props(styles.desktopPromoTitle)}>
+              <span>{t("catalog.promoTitleLine1")}</span>
+              <span>{t("catalog.promoTitleLine2")}</span>
+            </h2>
+          </div>
+          <Link
+            {...stylex.props(styles.desktopPromoButton)}
+            href={createSearchHref({ q: "PlayStation 5 Pro" })}
+          >
+            {t("catalog.promoButton")}
+          </Link>
+        </div>
+      </article>
+    </aside>
+  );
+};

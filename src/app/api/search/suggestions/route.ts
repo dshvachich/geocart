@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { catalogRepository } from '@/data/repositories'
+import { normalizeLocale } from '@/domain/types/locale'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,6 +20,9 @@ const parseLimit = (value: string | null) => {
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const query = url.searchParams.get('q')?.trim() ?? ''
+  const locale = normalizeLocale(
+    url.searchParams.get('locale') ?? request.headers.get('accept-language'),
+  )
 
   if (!query) {
     return NextResponse.json({ suggestions: [] })
@@ -26,6 +30,7 @@ export async function GET(request: Request) {
 
   const suggestions = await catalogRepository.getSearchSuggestions({
     query,
+    locale,
     limit: parseLimit(url.searchParams.get('limit')),
   })
 

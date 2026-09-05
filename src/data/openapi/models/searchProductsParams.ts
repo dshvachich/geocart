@@ -4,8 +4,8 @@
  * marketi
  * OpenAPI spec version: 1
  */
-import type { SearchProductsSort } from "./searchProductsSort";
-import type { SearchProductsSortOrder } from "./searchProductsSortOrder";
+import type { ProductSort } from "./productSort";
+import type { SortOrder } from "./sortOrder";
 
 export type SearchProductsParams = {
   /**
@@ -21,18 +21,10 @@ export type SearchProductsParams = {
    * @maximum 100
    */
   limit?: number;
-  /**
-   * Сортировка. По умолчанию - по популярности
-   */
-  sort?: SearchProductsSort;
+  sort?: ProductSort;
   /**
    * Направление сортировки. По умолчанию - по убыванию
    */
-  sortOrder?: SearchProductsSortOrder;
-  /**
- * Курсор пагинации для получения следующей страницы.
-Возвращается в поле ответа `next`
-
- */
+  sortOrder?: SortOrder;
   cursor?: string;
 };

@@ -18,73 +18,26 @@ import {
   listSuggestions,
   searchProducts as fetchSearchProducts,
 } from '@/data/openapi/endpoints/default/default'
-import {
-  geocartCategoryTree,
-  geocartProducts,
-  geocartSearchSuggestions,
-} from '@/data/geocart-home'
 import { CategoryDtoToCategoryEntityMapperExtension } from '@/data/mappers/category.mapper'
 import { ProductListItemToProductMapperExtension } from '@/data/mappers/product-list-item.mapper'
 import { SearchResponseDtoToSearchResultEntityMapperExtension } from '@/data/mappers/search-response.mapper'
 import { SearchSuggestionItemToSearchSuggestionMapperExtension } from '@/data/mappers/search-suggestion-item.mapper'
 
 const DEFAULT_POPULAR_PRODUCTS_LIMIT = 12
+const DEFAULT_POPULAR_PRODUCTS_SORT = 'popularity'
+const DEFAULT_POPULAR_PRODUCTS_SORT_ORDER = 'desc'
 const DEFAULT_SEARCH_PRODUCTS_LIMIT = 6
 const DEFAULT_SUGGESTIONS_LIMIT = 6
 const CATEGORIES_API_TIMEOUT_MS = 3500
 const HOME_API_TIMEOUT_MS = 3500
 const SEARCH_API_TIMEOUT_MS = 3500
 const SUGGESTIONS_API_TIMEOUT_MS = 2500
-const WHITE_QUERY_SUGGESTION_IDS = [
-  'monitor-asus-rog-strix-white',
-  'palit-geforce-rtx-white',
-  'gigabyte-b850m-aorus-ice',
-  'white-smartphones',
-  'white-gaming-consoles',
-  'white-laptops',
-]
-const PLAYSTATION_QUERY_SUGGESTION_IDS = [
-  'playstation-5-slim-1tb-white',
-  'playstation-ps5-slim-digital-white',
-  'playstation-5-slim-1tb-white-repeat',
-  'playstation-games',
-  'playstation-gaming-consoles',
-  'playstation-accessories',
-]
 
 type SearchProductsDynamicParams = Record<string, string | number | undefined>
 
 const getLocaleHeaders = (locale: SupportedLocale = DEFAULT_LOCALE) => ({
   'Accept-Locale': locale,
 })
-
-const getSuggestionsByIds = (ids: string[], limit: number) =>
-  ids
-    .map((id) =>
-      geocartSearchSuggestions.find((suggestion) => suggestion.id === id),
-    )
-    .filter((suggestion): suggestion is SearchSuggestion => Boolean(suggestion))
-    .slice(0, limit)
-
-const getFallbackSuggestions = (query: string, limit: number) => {
-  const normalizedQuery = query.toLowerCase()
-
-  if (normalizedQuery.startsWith('white')) {
-    return getSuggestionsByIds(WHITE_QUERY_SUGGESTION_IDS, limit)
-  }
-
-  if (normalizedQuery.includes('playstation')) {
-    return getSuggestionsByIds(PLAYSTATION_QUERY_SUGGESTION_IDS, limit)
-  }
-
-  return geocartSearchSuggestions
-    .filter((suggestion) =>
-      (suggestion.label ?? suggestion.id)
-        .toLowerCase()
-        .includes(normalizedQuery),
-    )
-    .slice(0, limit)
-}
 
 class CatalogApiRepository implements CatalogRepository {
   async getCategoryTree({
@@ -96,33 +49,34 @@ class CatalogApiRepository implements CatalogRepository {
         headers: getLocaleHeaders(locale),
       })
 
-      const categoryTree = categories.map((category, index) =>
-        CategoryDtoToCategoryEntityMapperExtension.toEntity(
-          category,
-          geocartCategoryTree[index],
-        ),
+      const categoryTree = categories.map((category) =>
+        CategoryDtoToCategoryEntityMapperExtension.toEntity(category),
       )
 
       if (categoryTree.length > 0) {
         return categoryTree
       }
     } catch {
-      return geocartCategoryTree
+      return []
     }
 
-    return geocartCategoryTree
+    return []
   }
 
   async getPopularProducts({
+    cursor,
     limit = DEFAULT_POPULAR_PRODUCTS_LIMIT,
     locale,
-    page = 0,
+    sort = DEFAULT_POPULAR_PRODUCTS_SORT,
+    sortOrder = DEFAULT_POPULAR_PRODUCTS_SORT_ORDER,
   }: GetPopularProductsParams = {}): Promise<Product[]> {
     try {
       const response = await listProducts(
         {
+          cursor,
           limit,
-          page,
+          sort,
+          sortOrder,
         },
         {
           timeout: HOME_API_TIMEOUT_MS,
@@ -131,21 +85,18 @@ class CatalogApiRepository implements CatalogRepository {
       )
 
       const products =
-        response.products?.map((product, index) =>
-          ProductListItemToProductMapperExtension.toEntity(
-            product,
-            geocartProducts[index % geocartProducts.length],
-          ),
+        response.products?.map((product) =>
+          ProductListItemToProductMapperExtension.toEntity(product),
         ) ?? []
 
       if (products.length > 0) {
         return products
       }
     } catch {
-      return geocartProducts
+      return []
     }
 
-    return geocartProducts
+    return []
   }
 
   async getSearchSuggestions({
@@ -182,35 +133,26 @@ class CatalogApiRepository implements CatalogRepository {
         return suggestions
       }
     } catch {
-      return getFallbackSuggestions(trimmedQuery, limit)
+      return []
     }
 
-    return getFallbackSuggestions(trimmedQuery, limit)
+    return []
   }
 
   async getSearchProducts({
     category,
+    cursor,
     filters = {},
-    fallbackResult,
-    fallbackProducts = geocartProducts,
     limit = DEFAULT_SEARCH_PRODUCTS_LIMIT,
     locale,
     query,
     sort,
     sortOrder,
   }: GetSearchProductsParams = {}): Promise<SearchResult> {
-    const fallback =
-      fallbackResult ??
-      ({
-        title: '',
-        products: fallbackProducts.slice(0, limit),
-        filters: [],
-        categories: [],
-        next: null,
-      } satisfies SearchResult)
     const params: SearchProductsDynamicParams = {
       ...filters,
       category,
+      cursor,
       limit,
       q: query,
       sort,
@@ -225,10 +167,18 @@ class CatalogApiRepository implements CatalogRepository {
 
       return SearchResponseDtoToSearchResultEntityMapperExtension.toEntity(
         response,
-        fallbackProducts,
       )
     } catch {
-      return fallback
+      return {
+        title: '',
+        products: [],
+        filters: [],
+        categories: [],
+        cursor: {
+          next: null,
+          prev: null,
+        },
+      }
     }
   }
 }

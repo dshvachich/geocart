@@ -8,22 +8,13 @@ import { NavbarActions } from "./navbar-actions";
 import { NavbarLanguageSelector } from "./navbar-language-selector";
 import { navbarStyles as styles } from "./navbar.styles";
 
-type NavbarRightProps = {
-  isCompact: boolean;
-};
-
-export const NavbarRight = observer(({ isCompact }: NavbarRightProps) => {
+export const NavbarRight = observer(() => {
   const container = useContainer();
   const appStore = container.get(AppStore);
   const favoritesStore = container.get(FavoritesStore);
 
   return (
-    <div
-      {...stylex.props(
-        styles.navbarRight,
-        isCompact && styles.compactNavbarRight,
-      )}
-    >
+    <div {...stylex.props(styles.navbarRight)}>
       <NavbarActions favoritesStore={favoritesStore} />
 
       <span

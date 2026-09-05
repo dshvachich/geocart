@@ -8,7 +8,7 @@ import type { CategoryType } from "./categoryType";
 
 export interface Category {
   id: string;
-  type?: CategoryType;
+  type: CategoryType;
   label: string;
   /** @nullable */
   imageUrl: string | null;

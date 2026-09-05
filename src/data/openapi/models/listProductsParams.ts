@@ -4,6 +4,8 @@
  * marketi
  * OpenAPI spec version: 1
  */
+import type { ProductSort } from "./productSort";
+import type { SortOrder } from "./sortOrder";
 
 export type ListProductsParams = {
   ids?: string[];
@@ -12,9 +14,7 @@ export type ListProductsParams = {
    * @maximum 50
    */
   limit: number;
-  /**
-   * @minimum 0
-   * @maximum 50
-   */
-  page: number;
+  sort?: ProductSort;
+  sortOrder?: SortOrder;
+  cursor?: string;
 };

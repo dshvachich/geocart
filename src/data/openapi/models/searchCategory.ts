@@ -9,5 +9,5 @@ export interface SearchCategory {
   id: string;
   label: string;
   selected: boolean;
-  imageUrl?: string;
+  imageUrl: string;
 }

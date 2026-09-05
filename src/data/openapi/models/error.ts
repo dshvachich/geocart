@@ -4,8 +4,10 @@
  * marketi
  * OpenAPI spec version: 1
  */
-import type { ErrorError } from "./errorError";
+import type { ErrorData } from "./errorData";
 
 export interface Error {
-  error: ErrorError;
+  code: string;
+  message: string;
+  data?: ErrorData;
 }

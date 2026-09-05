@@ -3,7 +3,7 @@ info:
   title: marketi
   version: "1"
 servers:
-  - url: http://137.184.128.46:8080
+  - url: /api
 
 paths:
   /catalog/categories:
@@ -40,16 +40,26 @@ paths:
             type: integer
             minimum: 1
             maximum: 50
-        - name: page
-          required: true
+        - name: sort
+          required: false
           in: query
           schema:
-            type: integer
-            minimum: 0
-            maximum: 50
+            $ref: '#/components/schemas/ProductSort'
+        - name: sortOrder
+          required: false
+          in: query
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+        - name: cursor
+          required: false
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           $ref: '#/components/responses/ProductListResponse'
+        "400":
+          $ref: '#/components/responses/ErrorResponse'
 
   /catalog/search:
     get:
@@ -99,21 +109,15 @@ paths:
             maximum: 100
         - name: sort
           in: query
-          description: Сортировка. По умолчанию - по популярности
           schema:
-            type: string
-            enum: [popularity, price]
+            $ref: '#/components/schemas/ProductSort'
         - name: sortOrder
           in: query
           description: Направление сортировки. По умолчанию - по убыванию
           schema:
-            type: string
-            enum: [asc, desc]
+            $ref: '#/components/schemas/SortOrder'
         - name: cursor
           in: query
-          description: |
-            Курсор пагинации для получения следующей страницы.
-            Возвращается в поле ответа `next`
           schema:
             type: string
       responses:
@@ -166,7 +170,10 @@ components:
         application/json:
           schema:
             type: object
+            required: [cursor, products]
             properties:
+              cursor:
+                $ref: '#/components/schemas/Cursor'
               products:
                 $ref: '#/components/schemas/ProductList'
 
@@ -202,19 +209,26 @@ components:
   schemas:
     Error:
       type: object
-      required: [error]
+      required: [code, message]
       properties:
-        error:
+        code:
+          type: string
+        message:
+          type: string
+        data:
           type: object
-          required: [id, message]
-          properties:
-            id:
-              type: string
-            message:
-              type: string
-            data:
-              type: object
-              additionalProperties: true
+          additionalProperties: true
+
+    Cursor:
+      type: object
+      x-go-type: paging.Cursor
+      properties:
+        next:
+          type: string
+          nullable: true
+        prev:
+          type: string
+          nullable: true
 
     CategoryList:
       type: array
@@ -223,7 +237,7 @@ components:
 
     Category:
       type: object
-      required: [id, label, imageUrl]
+      required: [id, label, imageUrl, type]
       properties:
         id:
           type: string
@@ -289,7 +303,7 @@ components:
 
     SearchResponse:
       type: object
-      required: [title, products, filters, categories, next]
+      required: [title, products, filters, categories, cursor]
       properties:
         title:
           type: string
@@ -303,13 +317,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SearchCategory'
-        next:
-          type: string
-          nullable: true
+        cursor:
+          $ref: '#/components/schemas/Cursor'
 
     SearchCategory:
       type: object
-      required: [id, label, selected]
+      required: [id, label, selected, imageUrl]
       properties:
         id:
           type: string
@@ -320,6 +333,7 @@ components:
         imageUrl:
           type: string
           format: url
+          x-go-type: null.String
 
     SearchFilter:
       type: object
@@ -340,7 +354,7 @@ components:
 
     SearchFilterVariant:
       type: object
-      required: [value, selected]
+      required: [value, label, selected]
       properties:
         value:
           type: string
@@ -384,3 +398,15 @@ components:
           type: integer
         selectedMax:
           type: integer
+
+    ProductSort:
+      type: string
+      enum: [popularity, price]
+      default: price
+      x-go-type: domain.ProductSort
+
+    SortOrder:
+      type: string
+      enum: [asc, desc]
+      default: asc
+      x-go-type: paging.Order

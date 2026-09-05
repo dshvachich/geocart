@@ -44,12 +44,12 @@ export const SearchFilterDtoToSearchFilterEntityMapperExtension = {
       }
     }
 
-    const fallbackFilter = filter as { id: string; label: string }
+    const unknownFilter = filter as { id: string; label: string }
 
     return {
       type: 'collapsed',
-      id: fallbackFilter.id,
-      label: fallbackFilter.label,
+      id: unknownFilter.id,
+      label: unknownFilter.label,
     }
   },
 }

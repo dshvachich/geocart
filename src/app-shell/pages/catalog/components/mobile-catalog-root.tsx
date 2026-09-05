@@ -4,7 +4,6 @@ import { MobileTabbar } from "@/app-shell/components/mobile-tabbar";
 import type { Category } from "@/domain/entities";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
 import { CategoryCard } from "./category-card";
-import { MobileRootHeader } from "./mobile-root-header";
 
 type MobileCatalogRootProps = {
   categories: Category[];
@@ -15,8 +14,6 @@ export const MobileCatalogRoot = ({ categories }: MobileCatalogRootProps) => {
 
   return (
     <div {...stylex.props(styles.mobileOnly, styles.mobileCatalogRoot)}>
-      <MobileRootHeader />
-
       <section
         {...stylex.props(styles.rootCategoriesSection)}
         aria-label={t("common.catalog")}

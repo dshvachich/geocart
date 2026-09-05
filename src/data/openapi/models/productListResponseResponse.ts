@@ -4,8 +4,10 @@
  * marketi
  * OpenAPI spec version: 1
  */
+import type { Cursor } from "./cursor";
 import type { ProductList } from "./productList";
 
 export type ProductListResponseResponse = {
-  products?: ProductList;
+  cursor: Cursor;
+  products: ProductList;
 };

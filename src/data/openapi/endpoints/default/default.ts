@@ -26,7 +26,7 @@ export const listCategories = (
   options?: SecondParameter<typeof orvalClient<CategoryListResponseResponse>>,
 ) => {
   return orvalClient<CategoryListResponseResponse>(
-    { url: `http://137.184.128.46:8080/catalog/categories`, method: "GET" },
+    { url: `/catalog/categories`, method: "GET" },
     options,
   );
 };
@@ -39,11 +39,7 @@ export const listProducts = (
   options?: SecondParameter<typeof orvalClient<ProductListResponseResponse>>,
 ) => {
   return orvalClient<ProductListResponseResponse>(
-    {
-      url: `http://137.184.128.46:8080/catalog/products`,
-      method: "GET",
-      params,
-    },
+    { url: `/catalog/products`, method: "GET", params },
     options,
   );
 };
@@ -77,7 +73,7 @@ export const searchProducts = (
   options?: SecondParameter<typeof orvalClient<SearchResponseResponse>>,
 ) => {
   return orvalClient<SearchResponseResponse>(
-    { url: `http://137.184.128.46:8080/catalog/search`, method: "GET", params },
+    { url: `/catalog/search`, method: "GET", params },
     options,
   );
 };
@@ -92,11 +88,7 @@ export const listSuggestions = (
   >,
 ) => {
   return orvalClient<SearchSuggestionResponseResponse>(
-    {
-      url: `http://137.184.128.46:8080/catalog/search/suggest`,
-      method: "GET",
-      params,
-    },
+    { url: `/catalog/search/suggest`, method: "GET", params },
     options,
   );
 };

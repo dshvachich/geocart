@@ -14,7 +14,10 @@ export const navbarStyles = stylex.create({
     },
   },
   navbar: {
-    display: "flex",
+    display: {
+      default: "flex",
+      "@media (max-width: 760px)": "none",
+    },
     alignItems: "center",
     flexWrap: {
       default: "nowrap",
@@ -25,25 +28,8 @@ export const navbarStyles = stylex.create({
       "@media (max-width: 1180px)": 12,
       "@media (max-width: 760px)": "8px 12px",
     },
-    minHeight: {
-      default: 72,
-      "@media (max-width: 760px)": "auto",
-    },
-    paddingTop: {
-      default: null,
-      "@media (max-width: 760px)": 8,
-    },
-    paddingBottom: {
-      default: null,
-      "@media (max-width: 760px)": 16,
-    },
+    minHeight: 72,
     backgroundColor: "var(--color-bg-primary)",
-  },
-  compactNavbar: {
-    paddingBottom: {
-      default: null,
-      "@media (max-width: 760px)": 8,
-    },
   },
   brandLogo: {
     flex: {
@@ -65,18 +51,6 @@ export const navbarStyles = stylex.create({
       "@media (max-width: 760px)": "32px",
     },
   },
-  compactHidden: {
-    display: {
-      default: null,
-      "@media (max-width: 760px)": "none",
-    },
-  },
-  compactNavbarRight: {
-    display: {
-      default: "flex",
-      "@media (max-width: 760px)": "none",
-    },
-  },
   navbarMain: {
     display: "flex",
     flex: "1 1 auto",
@@ -94,12 +68,6 @@ export const navbarStyles = stylex.create({
     order: {
       default: 0,
       "@media (max-width: 1180px)": 3,
-    },
-  },
-  compactNavbarMain: {
-    order: {
-      default: null,
-      "@media (max-width: 760px)": 0,
     },
   },
   catalogButton: {
@@ -260,5 +228,30 @@ export const navbarStyles = stylex.create({
       default: "inline-flex",
       "@media (max-width: 760px)": "none",
     },
+  },
+  mobileNavbar: {
+    display: {
+      default: "none",
+      "@media (max-width: 760px)": "block",
+    },
+    backgroundColor: "var(--color-bg-primary)",
+  },
+  mobileNavbarTop: {
+    display: "flex",
+    minHeight: 56,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 8,
+    paddingBottom: 8,
+    backgroundColor: "var(--color-bg-primary)",
+  },
+  mobileNavbarMain: {
+    display: "flex",
+    minHeight: 56,
+    alignItems: "flex-start",
+    gap: 8,
+    paddingTop: 8,
+    paddingBottom: 8,
+    backgroundColor: "var(--color-bg-primary)",
   },
 });

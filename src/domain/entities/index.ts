@@ -10,6 +10,7 @@ export type {
   SearchBreadcrumb,
   SearchCategory,
   SearchCollapsedFilter,
+  SearchCursor,
   SearchFilter,
   SearchFilterVariant,
   SearchRangeFilter,

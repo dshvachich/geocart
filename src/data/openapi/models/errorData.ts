@@ -5,4 +5,4 @@
  * OpenAPI spec version: 1
  */
 
-export type ErrorErrorData = { [key: string]: unknown };
+export type ErrorData = { [key: string]: unknown };

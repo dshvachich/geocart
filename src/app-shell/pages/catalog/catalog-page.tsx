@@ -1,6 +1,7 @@
 "use client";
 
 import * as stylex from "@stylexjs/stylex";
+import { Navbar } from "@/app-shell/components/navbar";
 import { layoutStyles } from "@/app-shell/styles/shared.styles";
 import type { CatalogPageData } from "@/domain/entities";
 import { getCategoryPath } from "./catalog-page.helpers";
@@ -18,6 +19,8 @@ export const CatalogPage = ({ data, selectedCategoryId }: CatalogPageProps) => {
 
   return (
     <main {...stylex.props(layoutStyles.page)}>
+      <Navbar />
+
       {!categoryPath && <MobileCatalogRoot categories={data.categories} />}
 
       {categoryPath && (

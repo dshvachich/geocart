@@ -38,4 +38,4 @@ make check
 
 `npm run generate:openapi` generates TypeScript models and Axios request functions from `openapi.yaml` into `src/data/openapi`.
 
-Generated requests use the `/api/v1` server prefix from the OpenAPI schema. Set `NEXT_PUBLIC_API_BASE_URL` to the API host root, for example `https://api.example.com`.
+Generated requests use the `/api` server prefix from the shared HTTP client. Set `NEXT_PUBLIC_API_BASE_URL` to the API host root, for example `https://api.example.com`.

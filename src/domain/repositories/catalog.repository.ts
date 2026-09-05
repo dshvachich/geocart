@@ -16,9 +16,11 @@ export type CatalogLocaleParams = {
 export type GetCategoryTreeParams = CatalogLocaleParams
 
 export type GetPopularProductsParams = {
+  cursor?: string
   limit?: number
   locale?: SupportedLocale
-  page?: number
+  sort?: CatalogSort
+  sortOrder?: CatalogSortOrder
 }
 
 export type GetSearchSuggestionsParams = {
@@ -29,9 +31,8 @@ export type GetSearchSuggestionsParams = {
 
 export type GetSearchProductsParams = {
   category?: string
+  cursor?: string
   filters?: Record<string, string>
-  fallbackResult?: SearchResult
-  fallbackProducts?: Product[]
   limit?: number
   locale?: SupportedLocale
   query?: string

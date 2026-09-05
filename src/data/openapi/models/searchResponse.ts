@@ -7,12 +7,12 @@
 import type { ProductList } from "./productList";
 import type { SearchFilter } from "./searchFilter";
 import type { SearchCategory } from "./searchCategory";
+import type { Cursor } from "./cursor";
 
 export interface SearchResponse {
   title: string;
   products: ProductList;
   filters: SearchFilter[];
   categories: SearchCategory[];
-  /** @nullable */
-  next: string | null;
+  cursor: Cursor;
 }

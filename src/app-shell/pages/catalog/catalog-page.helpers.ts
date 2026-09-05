@@ -68,6 +68,22 @@ export const getCategoryPath = (
   };
 };
 
+export const getDefaultCategoryPath = (
+  categories: Category[],
+): CategoryPath | null => {
+  const rootCategory = categories[0];
+
+  if (!rootCategory) {
+    return null;
+  }
+
+  return {
+    path: [rootCategory],
+    rootCategory,
+    selectedCategory: rootCategory,
+  };
+};
+
 export const splitCategoryChildren = (category: Category) => {
   const children = category.subCategories ?? [];
 

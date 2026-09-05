@@ -36,13 +36,15 @@ export const CategoryBar = ({ categories }: CategoryBarProps) => {
                 width={96}
                 height={96}
               />
-              <Image
-                {...stylex.props(styles.image)}
-                src={category.imageSrc}
-                alt=""
-                width={140}
-                height={140}
-              />
+              {category.imageSrc && (
+                <Image
+                  {...stylex.props(styles.image)}
+                  src={category.imageSrc}
+                  alt=""
+                  width={140}
+                  height={140}
+                />
+              )}
             </span>
             <span {...stylex.props(styles.title)}>
               {getLocalizedCategoryTitle(t, category)}

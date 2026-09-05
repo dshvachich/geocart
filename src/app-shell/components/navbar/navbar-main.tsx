@@ -3,17 +3,8 @@ import { SearchBox } from "@/app-shell/components/search-box";
 import { navbarStyles as styles } from "./navbar.styles";
 import { NavbarCatalogLink } from "./navbar-catalog-link";
 
-type NavbarMainProps = {
-  isCompact: boolean;
-};
-
-export const NavbarMain = ({ isCompact }: NavbarMainProps) => (
-  <div
-    {...stylex.props(
-      styles.navbarMain,
-      isCompact && styles.compactNavbarMain,
-    )}
-  >
+export const NavbarMain = () => (
+  <div {...stylex.props(styles.navbarMain)}>
     <NavbarCatalogLink />
     <SearchBox />
   </div>

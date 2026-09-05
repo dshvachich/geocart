@@ -4,7 +4,6 @@ import type { Category } from "@/domain/entities";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
 import { CatalogCategoryBreadcrumbs } from "./catalog-category-breadcrumbs";
 import { CategorySection } from "./category-section";
-import { MobileDetailToolbar } from "./mobile-detail-toolbar";
 
 type MobileCatalogDetailProps = {
   categoryPath: Category[];
@@ -15,12 +14,8 @@ export const MobileCatalogDetail = ({
   categoryPath,
   selectedCategory,
 }: MobileCatalogDetailProps) => {
-  const parentCategory = categoryPath[categoryPath.length - 2];
-
   return (
     <div {...stylex.props(styles.mobileOnly)}>
-      <MobileDetailToolbar parentCategory={parentCategory} />
-
       <section
         {...stylex.props(layoutStyles.contentRail, styles.mobileTitleRow)}
       >

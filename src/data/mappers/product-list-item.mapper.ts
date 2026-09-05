@@ -6,15 +6,14 @@ const GEL_CURRENCY = "₾";
 const tetriToGel = (value: number) => Number((value / 100).toFixed(2));
 
 export const ProductListItemToProductMapperExtension = {
-  toEntity(product: ProductListItem, fallbackProduct?: Product): Product {
+  toEntity(product: ProductListItem): Product {
     return {
       id: product.id,
       name: product.name,
       price: tetriToGel(product.minPriceTetri),
       currency: GEL_CURRENCY,
       offers: product.offersCount,
-      imageSrc: product.imageUrls[0] ?? fallbackProduct?.imageSrc ?? "",
-      category: fallbackProduct?.category,
+      imageSrc: product.imageUrls[0] ?? "",
       isNew: product.isNew,
     };
   },

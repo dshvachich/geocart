@@ -1,10 +1,11 @@
 import * as stylex from "@stylexjs/stylex";
 import type { Category } from "@/domain/entities";
-import type { CategoryPath } from "../catalog-page.helpers";
+import {
+  getDefaultCategoryPath,
+  type CategoryPath,
+} from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
 import { DesktopCatalogContent } from "./desktop-catalog-content";
-import { DesktopCatalogNavbar } from "./desktop-catalog-navbar";
-import { DesktopCatalogRoot } from "./desktop-catalog-root";
 
 type DesktopCatalogProps = {
   categories: Category[];
@@ -14,16 +15,17 @@ type DesktopCatalogProps = {
 export const DesktopCatalog = ({
   categories,
   categoryPath,
-}: DesktopCatalogProps) => (
-  <div {...stylex.props(styles.desktopOnly)}>
-    <DesktopCatalogNavbar />
-    {categoryPath ? (
-      <DesktopCatalogContent
-        categories={categories}
-        categoryPath={categoryPath}
-      />
-    ) : (
-      <DesktopCatalogRoot categories={categories} />
-    )}
-  </div>
-);
+}: DesktopCatalogProps) => {
+  const desktopCategoryPath = categoryPath ?? getDefaultCategoryPath(categories);
+
+  return (
+    <div {...stylex.props(styles.desktopOnly)}>
+      {desktopCategoryPath && (
+        <DesktopCatalogContent
+          categories={categories}
+          categoryPath={desktopCategoryPath}
+        />
+      )}
+    </div>
+  );
+};

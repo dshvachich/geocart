@@ -7,6 +7,6 @@
 
 export interface SearchFilterVariant {
   value: string;
-  label?: string;
+  label: string;
   selected: boolean;
 }

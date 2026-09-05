@@ -10,7 +10,11 @@ export const NavbarCatalogLink = () => {
   const { t } = useTranslation();
 
   return (
-    <Link {...stylex.props(styles.catalogButton)} href="/catalog">
+    <Link
+      {...stylex.props(styles.catalogButton)}
+      href="/catalog"
+      aria-label={t("common.catalog")}
+    >
       <span
         {...stylex.props(styles.catalogIconSlot, styles.catalogIconDefault)}
         aria-hidden="true"

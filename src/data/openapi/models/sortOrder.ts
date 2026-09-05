@@ -5,11 +5,10 @@
  * OpenAPI spec version: 1
  */
 
-export type SearchProductsSortOrder =
-  (typeof SearchProductsSortOrder)[keyof typeof SearchProductsSortOrder];
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const SearchProductsSortOrder = {
+export const SortOrder = {
   asc: "asc",
   desc: "desc",
 } as const;

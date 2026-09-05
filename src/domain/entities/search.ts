@@ -61,10 +61,15 @@ export type SearchFilter =
   | SearchSelectableFilter
   | SearchCollapsedFilter
 
+export type SearchCursor = {
+  next?: string | null
+  prev?: string | null
+}
+
 export type SearchResult = {
   title: string
   products: Product[]
   filters: SearchFilter[]
   categories: SearchCategory[]
-  next: string | null
+  cursor: SearchCursor
 }

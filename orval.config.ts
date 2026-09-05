@@ -10,9 +10,6 @@ export default defineConfig({
       target: './src/data/openapi/endpoints/geocart.ts',
       schemas: './src/data/openapi/models',
       client: 'axios-functions',
-      baseUrl: {
-        getBaseUrlFromSpecification: true,
-      },
       indexFiles: true,
       prettier: true,
       clean: true,

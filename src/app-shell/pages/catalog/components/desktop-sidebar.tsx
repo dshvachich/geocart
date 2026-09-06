@@ -6,7 +6,10 @@ import { uiAssets } from "@/app-shell/components/assets";
 import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import type { Category } from "@/domain/entities";
 import { createSearchHref } from "@/utils/search-query-utils";
-import { getCategoryHref } from "../catalog-page.helpers";
+import {
+  getCategoryHref,
+  ROOT_CATEGORY_LEVEL,
+} from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
 
 type DesktopSidebarProps = {
@@ -33,6 +36,11 @@ export const DesktopSidebar = ({
         <div {...stylex.props(styles.desktopSidebarRows)}>
           {categories.map((category) => {
             const isSelected = category.id === selectedCategoryId;
+            const href = getCategoryHref(category, ROOT_CATEGORY_LEVEL);
+
+            if (!href) {
+              return null;
+            }
 
             return (
               <Link
@@ -40,7 +48,7 @@ export const DesktopSidebar = ({
                   styles.desktopSidebarRow,
                   isSelected && styles.desktopSidebarRowSelected,
                 )}
-                href={getCategoryHref(category)}
+                href={href}
                 key={category.id}
               >
                 <span>{getLocalizedCategoryTitle(t, category)}</span>

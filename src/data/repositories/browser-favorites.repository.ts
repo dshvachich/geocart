@@ -1,4 +1,5 @@
 import type { Product } from "@/domain/entities";
+import { normalizeProductImages } from "@/domain/helpers/product-images.helpers";
 import type { FavoritesRepository } from "@/domain/repositories";
 
 const FAVORITES_STORAGE_KEY = "geocart.favorite-products";
@@ -16,6 +17,14 @@ const isString = (value: unknown): value is string => typeof value === "string";
 
 const isNumber = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value);
+
+const getProductImages = (value: Record<string, unknown>) => {
+  if (!Array.isArray(value.images)) {
+    return undefined;
+  }
+
+  return normalizeProductImages(value.images.filter(isString));
+};
 
 const getProductCategory = (
   value: Record<string, unknown>,
@@ -57,6 +66,7 @@ const toProduct = (value: unknown): Product | null => {
     currency: value.currency,
     offers: value.offers,
     imageSrc: value.imageSrc,
+    images: getProductImages(value),
     category: getProductCategory(value),
     isNew: typeof value.isNew === "boolean" ? value.isNew : undefined,
     isFavorite: true,

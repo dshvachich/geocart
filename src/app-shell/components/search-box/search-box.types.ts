@@ -2,6 +2,7 @@ import type { SearchSuggestion } from "@/domain/entities";
 
 export type SearchNavigationParams = {
   category?: string;
+  productId?: string;
   query: string;
 };
 

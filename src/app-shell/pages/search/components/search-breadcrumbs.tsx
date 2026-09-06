@@ -5,23 +5,15 @@ import * as stylex from "@stylexjs/stylex";
 import { useTranslation } from "react-i18next";
 import { uiAssets } from "@/app-shell/components/assets";
 import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
+import { createCatalogHref } from "@/app-shell/pages/catalog/catalog-page.helpers";
 import type { SearchBreadcrumb } from "@/domain/entities";
-import {
-  createSearchHref,
-  setSearchParam,
-  type SearchQueryParams,
-} from "@/utils/search-query-utils";
 import { searchPageStyles as styles } from "../search-page.styles";
 
 type SearchBreadcrumbsProps = {
   breadcrumbs: SearchBreadcrumb[];
-  searchParams: SearchQueryParams;
 };
 
-export const SearchBreadcrumbs = ({
-  breadcrumbs,
-  searchParams,
-}: SearchBreadcrumbsProps) => {
+export const SearchBreadcrumbs = ({ breadcrumbs }: SearchBreadcrumbsProps) => {
   const { t } = useTranslation();
 
   if (breadcrumbs.length === 0) {
@@ -46,9 +38,7 @@ export const SearchBreadcrumbs = ({
           )}
           <Link
             {...stylex.props(styles.breadcrumbLink)}
-            href={createSearchHref(
-              setSearchParam(searchParams, "category", breadcrumb.id),
-            )}
+            href={createCatalogHref(breadcrumb.id)}
           >
             {getLocalizedCategoryTitle(t, breadcrumb)}
           </Link>

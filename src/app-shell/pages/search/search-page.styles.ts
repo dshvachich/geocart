@@ -4,6 +4,42 @@ export const searchPageStyles = stylex.create({
   surfaceSection: {
     backgroundColor: "var(--color-bg-primary)",
   },
+  content: {
+    display: {
+      default: "flex",
+      "@media (max-width: 760px)": "block",
+    },
+    alignItems: "flex-start",
+    gap: 32,
+    paddingTop: 8,
+    paddingRight: {
+      default: "var(--layout-gutter)",
+      "@media (max-width: 760px)": 0,
+    },
+    paddingBottom: {
+      default: 64,
+      "@media (max-width: 760px)": 40,
+    },
+    paddingLeft: {
+      default: "var(--layout-gutter)",
+      "@media (max-width: 760px)": 0,
+    },
+  },
+  desktopFilters: {
+    display: {
+      default: "flex",
+      "@media (max-width: 760px)": "none",
+    },
+    width: 264,
+    flex: "0 0 264px",
+    flexDirection: "column",
+  },
+  resultsPane: {
+    display: "flex",
+    minWidth: 0,
+    flex: "1 1 auto",
+    flexDirection: "column",
+  },
   header: {
     display: "flex",
     flexDirection: "column",
@@ -125,23 +161,35 @@ export const searchPageStyles = stylex.create({
   },
   controls: {
     display: "flex",
+    justifyContent: "space-between",
     gap: 8,
     alignItems: "center",
     width: "100%",
-    maxWidth: {
-      default: "var(--layout-max-width)",
-      "@media (max-width: 760px)": "none",
-    },
-    marginInline: "auto",
     overflowX: "auto",
     scrollbarWidth: "none",
     padding: {
-      default: "8px var(--layout-gutter) 16px",
+      default: "8px 0 16px",
       "@media (max-width: 760px)": "8px 0 16px var(--layout-gutter-mobile)",
     },
     "::-webkit-scrollbar": {
       display: "none",
     },
+  },
+  controlsMain: {
+    display: "flex",
+    minWidth: {
+      default: 0,
+      "@media (max-width: 760px)": "max-content",
+    },
+    flex: {
+      default: "1 1 auto",
+      "@media (max-width: 760px)": "0 0 auto",
+    },
+    gap: {
+      default: 16,
+      "@media (max-width: 760px)": 8,
+    },
+    alignItems: "center",
   },
   actionGroup: {
     display: "flex",
@@ -152,13 +200,44 @@ export const searchPageStyles = stylex.create({
   actionButton: {
     display: "inline-flex",
     minWidth: 48,
-    height: 32,
+    height: {
+      default: 40,
+      "@media (max-width: 760px)": 32,
+    },
     alignItems: "center",
     justifyContent: "center",
+    gap: 4,
     padding: "4px 12px",
     borderWidth: 0,
     borderRadius: 34,
     backgroundColor: "var(--color-bg-secondary)",
+  },
+  sortButton: {
+    color: "var(--color-fg-primary)",
+    fontSize: 16,
+    fontWeight: 500,
+    lineHeight: "24px",
+  },
+  sortButtonText: {
+    display: {
+      default: "inline",
+      "@media (max-width: 760px)": "none",
+    },
+    whiteSpace: "nowrap",
+  },
+  sortButtonCaret: {
+    display: {
+      default: "block",
+      "@media (max-width: 760px)": "none",
+    },
+    width: 12,
+    height: 12,
+  },
+  mobileFilterButton: {
+    display: {
+      default: "none",
+      "@media (max-width: 760px)": "inline-flex",
+    },
   },
   selectedFilters: {
     display: "flex",
@@ -168,19 +247,60 @@ export const searchPageStyles = stylex.create({
   },
   selectedFilter: {
     display: "inline-flex",
-    height: 32,
+    height: 40,
     flex: "0 0 auto",
     alignItems: "center",
     gap: 4,
-    padding: "4px 8px 4px 12px",
+    padding: "8px 12px 8px 16px",
     borderWidth: 0,
     borderRadius: 34,
     backgroundColor: "var(--color-bg-secondary)",
     color: "var(--color-fg-primary)",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 500,
-    lineHeight: "20px",
+    lineHeight: "24px",
     whiteSpace: "nowrap",
+  },
+  viewSegment: {
+    display: {
+      default: "flex",
+      "@media (max-width: 760px)": "none",
+    },
+    flex: "0 0 auto",
+    gap: 2,
+    alignItems: "center",
+    height: 40,
+    padding: 2,
+    borderRadius: 34,
+    backgroundColor: "var(--color-bg-secondary)",
+  },
+  viewButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+  },
+  activeViewButton: {
+    backgroundColor: "var(--color-bg-primary)",
+  },
+  resultsGrid: {
+    maxWidth: "none",
+    gridTemplateColumns: {
+      default: "repeat(4, minmax(0, 1fr))",
+      "@media (max-width: 1180px)": "repeat(3, minmax(0, 1fr))",
+      "@media (max-width: 760px)": "repeat(2, minmax(0, 1fr))",
+    },
+    justifyContent: "stretch",
+    paddingRight: {
+      default: 0,
+      "@media (max-width: 760px)": 8,
+    },
+    paddingLeft: {
+      default: 0,
+      "@media (max-width: 760px)": 8,
+    },
   },
   selectedFilterCount: {
     color: "var(--color-fg-secondary)",

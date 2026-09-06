@@ -2,6 +2,8 @@ import * as stylex from "@stylexjs/stylex";
 
 export const layoutStyles = stylex.create({
   page: {
+    display: "flex",
+    flexDirection: "column",
     minHeight: "100vh",
     backgroundColor: "var(--color-bg-primary)",
   },

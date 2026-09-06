@@ -61,6 +61,25 @@ paths:
         "400":
           $ref: '#/components/responses/ErrorResponse'
 
+  /catalog/products/{id}:
+    get:
+      operationId: getProduct
+      description: |
+        Детальная карточка продукта
+      parameters:
+        - $ref: '#/components/parameters/AcceptLocale'
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        "200":
+          $ref: '#/components/responses/ProductResponse'
+        "400":
+          $ref: '#/components/responses/ErrorResponse'
+
   /catalog/search:
     get:
       operationId: searchProducts
@@ -188,13 +207,21 @@ components:
 
     SearchSuggestionResponse:
       description: |
-            Подсказки содержат ID, отображаемое название и тип сущности,
-            к которой они относятся. Актуальный набор типов сущностей указан
-            в схеме подсказки
+        Подсказки содержат ID, отображаемое название и тип сущности,
+        к которой они относятся. Актуальный набор типов сущностей указан
+        в схеме подсказки
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SearchSuggestion'
+
+    ProductResponse:
+      description: |
+        Детальная карточка продукта
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
 
   parameters:
     AcceptLocale:
@@ -282,7 +309,7 @@ components:
 
     SearchSuggestionItem:
       type: object
-      required: [id, name, type]
+      required: [id, label, type]
       properties:
         id:
           type: string
@@ -294,7 +321,7 @@ components:
 
     SearchSuggestion:
       type: object
-      required: [products, categories]
+      required: [suggestions]
       properties:
         suggestions:
           type: array
@@ -398,6 +425,122 @@ components:
           type: integer
         selectedMax:
           type: integer
+
+    Product:
+      type: object
+      required: [id, name, isNew, description, imageUrls, offers, attributes, categoryBreadcrumbs, variants]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        imageUrls:
+          type: array
+          items:
+            type: string
+        isNew:
+          type: boolean
+        categoryBreadcrumbs:
+          type: array
+          items:
+            type: string
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOffer'
+        attributes:
+          $ref: '#/components/schemas/ProductAttributeList'
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariantGroup'
+
+    ProductVariantGroup:
+      type: object
+      required: [label, options]
+      properties:
+        label:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariantOption'
+
+    ProductVariantOption:
+      type: object
+      required: [productId, label, selected, exact]
+      properties:
+        productId:
+          type: string
+          format: uuid
+        label:
+          type: string
+        selected:
+          type: boolean
+        exact:
+          type: boolean
+
+    ProductOffer:
+      type: object
+      required: [merchant, url, priceTetri, originalPriceTetri, ratioToBestPrice]
+      properties:
+        merchant:
+          $ref: '#/components/schemas/ProductOfferMerchant'
+        url:
+          type: string
+        priceTetri:
+          type: integer
+        originalPriceTetri:
+          type: integer
+        ratioToBestPrice:
+          type: number
+          format: float
+
+    ProductOfferMerchant:
+      type: object
+      required: [name, url, logoUrl, phone]
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        logoUrl:
+          type: string
+        phone:
+          type: string
+          format: null-string
+
+    ProductAttributeList:
+      type: object
+      required: [groups]
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttributeGroup'
+
+    ProductAttributeGroup:
+      type: object
+      required: [label, attributes]
+      properties:
+        label:
+          type: string
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttribute'
+
+    ProductAttribute:
+      type: object
+      required: [label, value]
+      properties:
+        label:
+          type: string
+        value:
+          type: string
 
     ProductSort:
       type: string

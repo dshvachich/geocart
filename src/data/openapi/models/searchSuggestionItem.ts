@@ -8,6 +8,6 @@ import type { SearchSuggestionItemType } from "./searchSuggestionItemType";
 
 export interface SearchSuggestionItem {
   id: string;
-  label?: string;
+  label: string;
   type: SearchSuggestionItemType;
 }

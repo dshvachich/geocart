@@ -8,14 +8,24 @@ import { catalogPageStyles as styles } from "../catalog-page.styles";
 
 type CategoryLinkRowProps = {
   category: Category;
+  categoryLevel: number;
 };
 
-export const CategoryLinkRow = ({ category }: CategoryLinkRowProps) => {
+export const CategoryLinkRow = ({
+  category,
+  categoryLevel,
+}: CategoryLinkRowProps) => {
   const { t } = useTranslation();
+  const title = getLocalizedCategoryTitle(t, category);
+  const href = getCategoryHref(category, categoryLevel);
+
+  if (!href) {
+    return <span {...stylex.props(styles.linkRow)}>{title}</span>;
+  }
 
   return (
-    <Link {...stylex.props(styles.linkRow)} href={getCategoryHref(category)}>
-      {getLocalizedCategoryTitle(t, category)}
+    <Link {...stylex.props(styles.linkRow)} href={href}>
+      {title}
     </Link>
   );
 };

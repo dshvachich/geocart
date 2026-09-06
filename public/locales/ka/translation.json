@@ -67,10 +67,12 @@
   "product": {
     "addFavorite": "{{product}} რჩეულებში დამატება",
     "from": "დან",
+    "nextImage": "პროდუქტის შემდეგი სურათის ჩვენება",
     "new": "ახალი",
     "offers_one": "{{count}} შეთავაზება",
     "offers_other": "{{count}} შეთავაზება",
     "popularProducts": "პოპულარული პროდუქტები",
+    "previousImage": "პროდუქტის წინა სურათის ჩვენება",
     "removeFavorite": "{{product}} რჩეულებიდან წაშლა"
   },
   "search": {

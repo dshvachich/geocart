@@ -10,18 +10,24 @@ import { ProductCardMedia } from "./product-card/product-card-media";
 import { productCardStyles as styles } from "./product-card/product-card.styles";
 
 type ProductCardProps = {
+  isHoverImageSwitchEnabled?: boolean;
   product: Product;
   priority?: boolean;
 };
 
 export const ProductCard = observer(
-  ({ product, priority = false }: ProductCardProps) => {
+  ({
+    isHoverImageSwitchEnabled = false,
+    product,
+    priority = false,
+  }: ProductCardProps) => {
     const favoritesStore = useContainer().get(FavoritesStore);
     const isFavorite = favoritesStore.isFavorite(product.id);
 
     return (
       <article {...stylex.props(styles.card)}>
         <ProductCardMedia
+          isHoverImageSwitchEnabled={isHoverImageSwitchEnabled}
           isFavorite={isFavorite}
           priority={priority}
           product={product}

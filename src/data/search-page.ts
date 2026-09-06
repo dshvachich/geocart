@@ -1,10 +1,14 @@
 import type {
+  Category,
   Product,
+  SearchBreadcrumb,
   SearchCategory,
   SearchFiltersPageData,
   SearchPageData,
+  SearchResult,
   SearchSortOption,
 } from "@/domain/entities";
+import { findCategoryPath } from "@/domain/helpers/category-tree.helpers";
 import { getSearchActiveFilters } from "@/domain/helpers/search-filter.helpers";
 import { DEFAULT_LOCALE, type SupportedLocale } from "@/domain/types/locale";
 import { catalogRepository } from "@/data/repositories";
@@ -60,18 +64,26 @@ type GetSearchPageDataParams = {
   searchParams: SearchQueryParams;
 };
 
+const PRODUCT_ID_SEARCH_PARAM = "productId";
+
 const toSearchProducts = (products: Product[]) =>
   products.map((product) => ({
     ...product,
     isNew: true,
   }));
 
+const toSearchBreadcrumbs = (
+  categoryPath: Category[] | null,
+): SearchBreadcrumb[] =>
+  categoryPath?.map((category) => ({
+    id: category.id,
+    title: category.title,
+  })) ?? [];
+
 const getSelectedCategoryId = (
   categories: SearchCategory[],
   categoryId?: string,
-) =>
-  categories.find((category) => category.selected)?.id ??
-  categoryId;
+) => categories.find((category) => category.selected)?.id ?? categoryId;
 
 const getSelectedCategory = (
   categories: SearchCategory[],
@@ -108,9 +120,37 @@ const withSelectedSort = (
   options.map((option) => ({
     ...option,
     isSelected:
-      option.sort === (searchParams.sort ?? "price") &&
-      option.sortOrder === (searchParams.sortOrder ?? "asc"),
+      option.sort === (searchParams.sort ?? "popularity") &&
+      option.sortOrder === (searchParams.sortOrder ?? "desc"),
   }));
+
+const withSuggestedProductFallback = async (
+  result: SearchResult,
+  searchParams: SearchQueryParams,
+  locale: SupportedLocale,
+): Promise<SearchResult> => {
+  const productId = searchParams[PRODUCT_ID_SEARCH_PARAM]?.trim();
+
+  if (result.products.length > 0 || !productId) {
+    return result;
+  }
+
+  const productList = await catalogRepository.getProductsByIds({
+    ids: [productId],
+    limit: 1,
+    locale,
+  });
+
+  if (productList.products.length === 0) {
+    return result;
+  }
+
+  return {
+    ...result,
+    cursor: productList.cursor,
+    products: productList.products,
+  };
+};
 
 const getSearchResult = async (
   searchParams: SearchQueryParams,
@@ -126,8 +166,8 @@ const getSearchResult = async (
     filters: filterParams,
     locale,
     query: query || undefined,
-    sort: searchParams.sort === "popularity" ? "popularity" : "price",
-    sortOrder: searchParams.sortOrder === "desc" ? "desc" : "asc",
+    sort: searchParams.sort === "price" ? "price" : "popularity",
+    sortOrder: searchParams.sortOrder === "asc" ? "asc" : "desc",
   });
 };
 
@@ -136,7 +176,11 @@ export const getSearchPageData = async ({
   searchParams,
 }: GetSearchPageDataParams): Promise<SearchPageData> => {
   const query = searchParams.q?.trim() ?? "";
-  const result = await getSearchResult(searchParams, locale);
+  const result = await withSuggestedProductFallback(
+    await getSearchResult(searchParams, locale),
+    searchParams,
+    locale,
+  );
   const selectedCategoryId = getSelectedCategoryId(
     result.categories,
     searchParams.category,
@@ -145,19 +189,34 @@ export const getSearchPageData = async ({
     result.categories,
     selectedCategoryId,
   );
+  const categoryPath = selectedCategoryId
+    ? findCategoryPath(
+        await catalogRepository.getCategoryTree({ locale }),
+        selectedCategoryId,
+      )
+    : null;
+  const selectedCategoryFromPath = categoryPath?.[categoryPath.length - 1];
 
   return {
-    activeFilters: getSearchActiveFilters(result.filters, searchRangeLabels[locale]),
-    breadcrumbs: [],
+    activeFilters: getSearchActiveFilters(
+      result.filters,
+      searchRangeLabels[locale],
+    ),
+    breadcrumbs: toSearchBreadcrumbs(categoryPath),
     eyebrow: query ? searchResultEyebrows[locale] : "",
     filters: result.filters,
+    hasMoreProducts: Boolean(result.cursor.next),
     products: toSearchProducts(
       withSearchCategory(result.products, selectedCategory),
     ),
     quickCategories: result.categories,
     selectedCategoryId,
     sortOptions: withSelectedSort(sortOptions, searchParams),
-    title: result.title || selectedCategory?.label || query,
+    title:
+      result.title ||
+      selectedCategory?.label ||
+      selectedCategoryFromPath?.title ||
+      query,
   };
 };
 

@@ -4,6 +4,7 @@ import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-tit
 import type { Category } from "@/domain/entities";
 import {
   createDesktopColumns,
+  getChildCategoryLevel,
   type CategoryPath,
 } from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
@@ -24,6 +25,7 @@ export const DesktopCatalogContent = ({
   const columns = createDesktopColumns(
     categoryPath.selectedCategory.subCategories ?? [],
   );
+  const sectionCategoryLevel = getChildCategoryLevel(categoryPath.path.length);
   const selectedCategoryTitle = getLocalizedCategoryTitle(
     t,
     categoryPath.selectedCategory,
@@ -56,7 +58,11 @@ export const DesktopCatalogContent = ({
               key={index}
             >
               {column.map((category) => (
-                <CategorySection category={category} key={category.id} />
+                <CategorySection
+                  category={category}
+                  categoryLevel={sectionCategoryLevel}
+                  key={category.id}
+                />
               ))}
             </div>
           ))}

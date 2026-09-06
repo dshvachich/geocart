@@ -2,6 +2,7 @@ import * as stylex from "@stylexjs/stylex";
 
 export const footerStyles = stylex.create({
   footer: {
+    marginTop: "auto",
     backgroundColor: "var(--color-bg-dark)",
     color: "var(--color-fg-dark-secondary)",
   },

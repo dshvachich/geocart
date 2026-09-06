@@ -4,6 +4,7 @@ export type {
   CatalogSortOrder,
   GetCategoryTreeParams,
   GetPopularProductsParams,
+  GetProductsByIdsParams,
   GetSearchProductsParams,
   GetSearchSuggestionsParams,
 } from "./catalog.repository";

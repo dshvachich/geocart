@@ -28,6 +28,7 @@ export const SearchBoxProductSuggestions = ({
           type="button"
           onClick={() =>
             onSearch({
+              productId: suggestion.id,
               query: getSuggestionLabel(suggestion),
             })
           }

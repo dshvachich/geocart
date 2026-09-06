@@ -13,12 +13,14 @@ import {
 type GetFilterTagHrefParams = {
   filter: SearchSelectableFilter;
   option: SearchFilterVariant;
+  path?: string;
   searchParams: SearchQueryParams;
 };
 
 export const getFilterTagHref = ({
   filter,
   option,
+  path = SEARCH_FILTERS_PAGE_PATH,
   searchParams,
 }: GetFilterTagHrefParams) => {
   if (filter.type === "toggle") {
@@ -28,7 +30,7 @@ export const getFilterTagHref = ({
         filter.id,
         option.selected ? undefined : option.value,
       ),
-      SEARCH_FILTERS_PAGE_PATH,
+      path,
     );
   }
 
@@ -38,6 +40,6 @@ export const getFilterTagHref = ({
       params: searchParams,
       value: option.value,
     }),
-    SEARCH_FILTERS_PAGE_PATH,
+    path,
   );
 };

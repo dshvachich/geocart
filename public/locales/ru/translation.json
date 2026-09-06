@@ -67,12 +67,14 @@
   "product": {
     "addFavorite": "Добавить {{product}} в избранное",
     "from": "от",
+    "nextImage": "Показать следующее изображение товара",
     "new": "Новинка",
     "offers_one": "{{count}} предложение",
     "offers_few": "{{count}} предложения",
     "offers_many": "{{count}} предложений",
     "offers_other": "{{count}} предложения",
     "popularProducts": "Популярные товары",
+    "previousImage": "Показать предыдущее изображение товара",
     "removeFavorite": "Удалить {{product}} из избранного"
   },
   "search": {

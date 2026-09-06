@@ -71,6 +71,7 @@ export const categoryBarStyles = stylex.create({
     objectFit: "contain",
   },
   title: {
+    width: "100%",
     minHeight: 24,
     fontSize: {
       default: 16,
@@ -81,9 +82,7 @@ export const categoryBarStyles = stylex.create({
       default: "24px",
       "@media (max-width: 760px)": "20px",
     },
-    whiteSpace: {
-      default: "nowrap",
-      "@media (max-width: 760px)": "normal",
-    },
+    overflowWrap: "break-word",
+    whiteSpace: "normal",
   },
 });

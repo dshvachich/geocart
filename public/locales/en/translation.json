@@ -67,10 +67,12 @@
   "product": {
     "addFavorite": "Add {{product}} to favorites",
     "from": "from",
+    "nextImage": "Show next product image",
     "new": "New",
     "offers_one": "{{count}} offer",
     "offers_other": "{{count}} offers",
     "popularProducts": "Popular products",
+    "previousImage": "Show previous product image",
     "removeFavorite": "Remove {{product}} from favorites"
   },
   "search": {

@@ -9,13 +9,14 @@ type GetInitialHomePageDataParams = {
 export const getInitialHomePageData = async ({
   locale,
 }: GetInitialHomePageDataParams = {}): Promise<HomePageData> => {
-  const [categories, products] = await Promise.all([
+  const [categories, productList] = await Promise.all([
     catalogRepository.getCategoryTree({ locale }),
     catalogRepository.getPopularProducts({ locale }),
   ])
 
   return {
     categories,
-    products,
+    cursor: productList.cursor,
+    products: productList.products,
   }
 }

@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
 import { useTranslation } from "react-i18next";
 import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
+import { createCatalogHref } from "@/app-shell/pages/catalog/catalog-page.helpers";
 import { layoutStyles } from "@/app-shell/styles/shared.styles";
 import type { Category } from "@/domain/entities";
 import { uiAssets } from "./assets";
@@ -23,10 +25,10 @@ export const CategoryBar = ({ categories }: CategoryBarProps) => {
     >
       <div {...stylex.props(layoutStyles.contentRail, styles.bar)}>
         {categories.map((category) => (
-          <button
+          <Link
             {...stylex.props(styles.button)}
+            href={createCatalogHref(category.id)}
             key={category.id}
-            type="button"
           >
             <span {...stylex.props(styles.illustration)} aria-hidden="true">
               <Image
@@ -37,19 +39,20 @@ export const CategoryBar = ({ categories }: CategoryBarProps) => {
                 height={96}
               />
               {category.imageSrc && (
-                <Image
-                  {...stylex.props(styles.image)}
-                  src={category.imageSrc}
-                  alt=""
-                  width={140}
-                  height={140}
-                />
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    {...stylex.props(styles.image)}
+                    src={category.imageSrc}
+                    alt=""
+                  />
+                </>
               )}
             </span>
             <span {...stylex.props(styles.title)}>
               {getLocalizedCategoryTitle(t, category)}
             </span>
-          </button>
+          </Link>
         ))}
       </div>
     </section>

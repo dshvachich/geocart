@@ -1,8 +1,6 @@
 import Link from "next/link";
 import * as stylex from "@stylexjs/stylex";
-import {
-  getSearchFilterVariantLabel,
-} from "@/domain/helpers/search-filter.helpers";
+import { getSearchFilterVariantLabel } from "@/domain/helpers/search-filter.helpers";
 import type {
   SearchFilterVariant,
   SearchSelectableFilter,
@@ -14,17 +12,19 @@ import { searchFiltersPageStyles as styles } from "../search-filters-page.styles
 type FilterTagProps = {
   filter: SearchSelectableFilter;
   option: SearchFilterVariant;
+  path?: string;
   searchParams: SearchQueryParams;
 };
 
 export const FilterTag = ({
   filter,
   option,
+  path,
   searchParams,
 }: FilterTagProps) => (
   <Link
     {...stylex.props(styles.filterTag, option.selected && styles.selectedTag)}
-    href={getFilterTagHref({ filter, option, searchParams })}
+    href={getFilterTagHref({ filter, option, path, searchParams })}
   >
     {getSearchFilterVariantLabel(option)}
   </Link>

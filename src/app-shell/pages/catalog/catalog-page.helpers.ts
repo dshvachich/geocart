@@ -1,7 +1,13 @@
 import type { Category } from "@/domain/entities";
+import {
+  findCategoryPath,
+  hasCategoryChildren,
+} from "@/domain/helpers/category-tree.helpers";
 import { createSearchHref } from "@/utils/search-query-utils";
 
 export const CATALOG_PAGE_PATH = "/catalog";
+export const ROOT_CATEGORY_LEVEL = 1;
+export const MAX_CATEGORY_LEVEL = 3;
 
 export type CategoryPath = {
   path: Category[];
@@ -17,30 +23,37 @@ export const createCatalogHref = (categoryId?: string) => {
   return `${CATALOG_PAGE_PATH}?category=${encodeURIComponent(categoryId)}`;
 };
 
-export const findCategoryPath = (
-  categories: Category[],
-  categoryId: string,
-): Category[] | null => {
-  for (const category of categories) {
-    if (category.id === categoryId) {
-      return [category];
-    }
-
-    const childPath = findCategoryPath(
-      category.subCategories ?? [],
-      categoryId,
-    );
-
-    if (childPath) {
-      return [category, ...childPath];
-    }
+const normalizeCategoryLevel = (categoryLevel: number) => {
+  if (categoryLevel <= ROOT_CATEGORY_LEVEL) {
+    return ROOT_CATEGORY_LEVEL;
   }
 
-  return null;
+  if (categoryLevel >= MAX_CATEGORY_LEVEL) {
+    return MAX_CATEGORY_LEVEL;
+  }
+
+  return categoryLevel;
 };
 
-export const getCategoryHref = (category: Category) => {
-  if ((category.subCategories?.length ?? 0) > 0) {
+export const getChildCategoryLevel = (categoryLevel: number) =>
+  normalizeCategoryLevel(categoryLevel + 1);
+
+export const isCategoryClickableInCatalog = (
+  category: Category,
+  categoryLevel: number,
+) =>
+  normalizeCategoryLevel(categoryLevel) === ROOT_CATEGORY_LEVEL ||
+  !hasCategoryChildren(category);
+
+export const getCategoryHref = (
+  category: Category,
+  categoryLevel: number,
+) => {
+  if (!isCategoryClickableInCatalog(category, categoryLevel)) {
+    return null;
+  }
+
+  if (hasCategoryChildren(category)) {
     return createCatalogHref(category.id);
   }
 

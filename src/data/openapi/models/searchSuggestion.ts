@@ -7,5 +7,5 @@
 import type { SearchSuggestionItem } from "./searchSuggestionItem";
 
 export interface SearchSuggestion {
-  suggestions?: SearchSuggestionItem[];
+  suggestions: SearchSuggestionItem[];
 }

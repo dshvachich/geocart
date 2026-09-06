@@ -1,4 +1,5 @@
 import type { Category } from './category'
+import type { PageCursor } from './pagination'
 import type { Product } from './product'
 import type {
   SearchActiveFilter,
@@ -10,6 +11,7 @@ import type {
 
 export type HomePageData = {
   categories: Category[]
+  cursor: PageCursor
   products: Product[]
 }
 
@@ -22,6 +24,7 @@ export type SearchPageData = {
   breadcrumbs: SearchBreadcrumb[]
   eyebrow: string
   filters: SearchFilter[]
+  hasMoreProducts: boolean
   products: Product[]
   quickCategories: SearchCategory[]
   selectedCategoryId?: string

@@ -5,6 +5,7 @@ export type {
   SearchFiltersPageData,
   SearchPageData,
 } from "./page-data";
+export type { PageCursor } from "./pagination";
 export type {
   SearchActiveFilter,
   SearchBreadcrumb,
@@ -19,6 +20,6 @@ export type {
   SearchSortOption,
 } from "./search";
 export type { Category } from "./category";
-export type { Product, ProductCategory } from "./product";
+export type { Product, ProductCategory, ProductListResult } from "./product";
 export { SearchSuggestionType } from "./search-suggestion";
 export type { SearchSuggestion } from "./search-suggestion";

@@ -1,6 +1,7 @@
 import * as stylex from "@stylexjs/stylex";
 import { layoutStyles } from "@/app-shell/styles/shared.styles";
 import type { Category } from "@/domain/entities";
+import { getChildCategoryLevel } from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
 import { CatalogCategoryBreadcrumbs } from "./catalog-category-breadcrumbs";
 import { CategorySection } from "./category-section";
@@ -14,6 +15,8 @@ export const MobileCatalogDetail = ({
   categoryPath,
   selectedCategory,
 }: MobileCatalogDetailProps) => {
+  const sectionCategoryLevel = getChildCategoryLevel(categoryPath.length);
+
   return (
     <div {...stylex.props(styles.mobileOnly)}>
       <section
@@ -29,7 +32,11 @@ export const MobileCatalogDetail = ({
         {...stylex.props(layoutStyles.contentRail, styles.mobileDetailContent)}
       >
         {(selectedCategory.subCategories ?? []).map((category) => (
-          <CategorySection category={category} key={category.id} />
+          <CategorySection
+            category={category}
+            categoryLevel={sectionCategoryLevel}
+            key={category.id}
+          />
         ))}
       </div>
     </div>

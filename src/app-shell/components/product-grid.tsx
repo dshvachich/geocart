@@ -11,10 +11,14 @@ import {
 } from "./product-grid.styles";
 
 type ProductGridProps = {
+  isHoverImageSwitchEnabled?: boolean;
   products: Product[];
 };
 
-export const ProductGrid = ({ products }: ProductGridProps) => {
+export const ProductGrid = ({
+  isHoverImageSwitchEnabled = false,
+  products,
+}: ProductGridProps) => {
   const { t } = useTranslation();
 
   return (
@@ -31,6 +35,7 @@ export const ProductGrid = ({ products }: ProductGridProps) => {
         {products.map((product, index) => (
           <ProductCard
             key={product.id}
+            isHoverImageSwitchEnabled={isHoverImageSwitchEnabled}
             product={product}
             priority={index < 6}
           />

@@ -16,7 +16,11 @@ export const CollapsedFilter = ({ filter }: CollapsedFilterProps) => {
 
   return (
     <section {...stylex.props(styles.filterGroup)}>
-      <FilterHeader filter={filter} />
+      <FilterHeader
+        filter={filter}
+        isExpanded={false}
+        onToggle={() => undefined}
+      />
       <div {...stylex.props(styles.divider)} />
     </section>
   );

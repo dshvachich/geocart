@@ -8,21 +8,33 @@ import { searchFiltersPageStyles as styles } from "../search-filters-page.styles
 
 type FilterHeaderProps = {
   filter: SearchFilter;
+  controlsId?: string;
+  isExpanded: boolean;
+  onToggle: () => void;
 };
 
-export const FilterHeader = ({ filter }: FilterHeaderProps) => {
+export const FilterHeader = ({
+  controlsId,
+  filter,
+  isExpanded,
+  onToggle,
+}: FilterHeaderProps) => {
   const { t } = useTranslation();
 
   return (
-    <button {...stylex.props(styles.filterHeader)} type="button">
+    <button
+      {...stylex.props(styles.filterHeader)}
+      type="button"
+      aria-controls={controlsId}
+      aria-expanded={isExpanded}
+      onClick={onToggle}
+    >
       <span {...stylex.props(styles.filterHeaderText)}>
         {t(`filters.${filter.id}`, { defaultValue: filter.label })}
       </span>
       <Image
         {...stylex.props(iconStyles.icon)}
-        src={
-          filter.type === "collapsed" ? uiAssets.angleDown : uiAssets.angleUp
-        }
+        src={isExpanded ? uiAssets.angleUp : uiAssets.angleDown}
         alt=""
         width={24}
         height={24}

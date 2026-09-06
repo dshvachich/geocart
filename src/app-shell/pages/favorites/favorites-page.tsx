@@ -55,6 +55,7 @@ export const FavoritesPage = observer(() => {
             {products.map((product, index) => (
               <ProductCard
                 key={product.id}
+                isHoverImageSwitchEnabled
                 product={product}
                 priority={index < 6}
               />

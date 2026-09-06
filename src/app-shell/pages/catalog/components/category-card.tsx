@@ -3,7 +3,10 @@ import * as stylex from "@stylexjs/stylex";
 import { useTranslation } from "react-i18next";
 import { getLocalizedCategoryTitle } from "@/app-shell/localization/category-title";
 import type { Category } from "@/domain/entities";
-import { getCategoryHref } from "../catalog-page.helpers";
+import {
+  getCategoryHref,
+  ROOT_CATEGORY_LEVEL,
+} from "../catalog-page.helpers";
 import { catalogPageStyles as styles } from "../catalog-page.styles";
 
 type CategoryCardProps = {
@@ -30,9 +33,14 @@ const getRootCardImageStyle = (index: number) => {
 
 export const CategoryCard = ({ category, index }: CategoryCardProps) => {
   const { t } = useTranslation();
+  const href = getCategoryHref(category, ROOT_CATEGORY_LEVEL);
+
+  if (!href) {
+    return null;
+  }
 
   return (
-    <Link {...stylex.props(styles.rootCard)} href={getCategoryHref(category)}>
+    <Link {...stylex.props(styles.rootCard)} href={href}>
       <h2 {...stylex.props(styles.rootCardTitle)}>
         {getLocalizedCategoryTitle(t, category)}
       </h2>

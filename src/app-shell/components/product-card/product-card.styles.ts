@@ -40,6 +40,7 @@ export const productCardStyles = stylex.create({
       default: 0,
       "@media (max-width: 760px)": 0,
     },
+    touchAction: "pan-y",
   },
   productImage: {
     width: "100%",

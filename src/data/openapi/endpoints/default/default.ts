@@ -9,6 +9,7 @@ import type {
   ListProductsParams,
   ListSuggestionsParams,
   ProductListResponseResponse,
+  ProductResponseResponse,
   SearchProductsParams,
   SearchResponseResponse,
   SearchSuggestionResponseResponse,
@@ -40,6 +41,19 @@ export const listProducts = (
 ) => {
   return orvalClient<ProductListResponseResponse>(
     { url: `/catalog/products`, method: "GET", params },
+    options,
+  );
+};
+/**
+ * Детальная карточка продукта
+
+ */
+export const getProduct = (
+  id: string,
+  options?: SecondParameter<typeof orvalClient<ProductResponseResponse>>,
+) => {
+  return orvalClient<ProductResponseResponse>(
+    { url: `/catalog/products/${id}`, method: "GET" },
     options,
   );
 };

@@ -51,7 +51,7 @@ export const SearchBox = observer(() => {
   }, []);
 
   const navigateToSearch = useCallback(
-    ({ category, query }: SearchNavigationParams) => {
+    ({ category, productId, query }: SearchNavigationParams) => {
       const trimmedSearchQuery = query.trim();
 
       if (!trimmedSearchQuery) {
@@ -61,6 +61,7 @@ export const SearchBox = observer(() => {
       router.push(
         createSearchHref({
           category,
+          productId,
           q: trimmedSearchQuery,
         }),
       );

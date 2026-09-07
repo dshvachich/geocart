@@ -154,7 +154,7 @@ export const productCardStyles = stylex.create({
     },
     WebkitBoxOrient: "vertical",
     WebkitLineClamp: {
-      default: 2,
+      default: 3,
       "@media (max-width: 760px)": 3,
     },
   },

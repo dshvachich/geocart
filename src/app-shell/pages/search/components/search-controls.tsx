@@ -43,7 +43,9 @@ export const SearchControls = ({
             <Image src={uiAssets.sort} alt="" width={24} height={24} />
             {selectedSortOption && (
               <span {...stylex.props(styles.sortButtonText)}>
-                {selectedSortOption.title}
+                {t(`search.sort.${selectedSortOption.id}`, {
+                  defaultValue: selectedSortOption.title,
+                })}
               </span>
             )}
             <Image

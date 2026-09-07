@@ -23,9 +23,18 @@ export const FilterTag = ({
   searchParams,
 }: FilterTagProps) => (
   <Link
-    {...stylex.props(styles.filterTag, option.selected && styles.selectedTag)}
+    {...stylex.props(
+      styles.filterTag,
+      option.selected ? styles.selectedTag : styles.defaultTag,
+    )}
     href={getFilterTagHref({ filter, option, path, searchParams })}
   >
-    {getSearchFilterVariantLabel(option)}
+    <span
+      {...stylex.props(
+        option.selected ? styles.selectedTagText : styles.defaultTagText,
+      )}
+    >
+      {getSearchFilterVariantLabel(option)}
+    </span>
   </Link>
 );

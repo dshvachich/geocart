@@ -1,7 +1,6 @@
 import type {
-  Category,
   Product,
-  SearchBreadcrumb,
+  ProductListResult,
   SearchCategory,
   SearchFiltersPageData,
   SearchPageData,
@@ -38,12 +37,6 @@ const sortOptions: SearchSortOption[] = [
   },
 ];
 
-const searchResultEyebrows = {
-  en: "Search results",
-  ru: "Результаты поиска",
-  ka: "ძიების შედეგები",
-} satisfies Record<SupportedLocale, string>;
-
 const searchRangeLabels = {
   en: {
     from: "From",
@@ -71,14 +64,6 @@ const toSearchProducts = (products: Product[]) =>
     ...product,
     isNew: true,
   }));
-
-const toSearchBreadcrumbs = (
-  categoryPath: Category[] | null,
-): SearchBreadcrumb[] =>
-  categoryPath?.map((category) => ({
-    id: category.id,
-    title: category.title,
-  })) ?? [];
 
 const getSelectedCategoryId = (
   categories: SearchCategory[],
@@ -202,10 +187,8 @@ export const getSearchPageData = async ({
       result.filters,
       searchRangeLabels[locale],
     ),
-    breadcrumbs: toSearchBreadcrumbs(categoryPath),
-    eyebrow: query ? searchResultEyebrows[locale] : "",
+    cursor: result.cursor,
     filters: result.filters,
-    hasMoreProducts: Boolean(result.cursor.next),
     products: toSearchProducts(
       withSearchCategory(result.products, selectedCategory),
     ),
@@ -217,6 +200,28 @@ export const getSearchPageData = async ({
       selectedCategory?.label ||
       selectedCategoryFromPath?.title ||
       query,
+  };
+};
+
+export const getSearchProductsPageData = async ({
+  locale = DEFAULT_LOCALE,
+  searchParams,
+}: GetSearchPageDataParams): Promise<ProductListResult> => {
+  const result = await getSearchResult(searchParams, locale);
+  const selectedCategoryId = getSelectedCategoryId(
+    result.categories,
+    searchParams.category,
+  );
+  const selectedCategory = getSelectedCategory(
+    result.categories,
+    selectedCategoryId,
+  );
+
+  return {
+    cursor: result.cursor,
+    products: toSearchProducts(
+      withSearchCategory(result.products, selectedCategory),
+    ),
   };
 };
 

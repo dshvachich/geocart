@@ -64,6 +64,7 @@ export const FavoritesPage = observer(() => {
         </section>
       )}
 
+      <div {...stylex.props(layoutStyles.footerGap)} aria-hidden="true" />
       <Footer />
       <MobileTabbar activeItem="favorites" />
     </main>

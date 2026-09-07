@@ -98,16 +98,22 @@ export const searchFiltersPageStyles = stylex.create({
     padding: "6px 12px",
     borderWidth: 0,
     borderRadius: 24,
-    backgroundColor: "var(--color-bg-secondary)",
-    color: "var(--color-fg-primary)",
     fontSize: 14,
     fontWeight: 500,
     lineHeight: "20px",
     whiteSpace: "nowrap",
   },
+  defaultTag: {
+    backgroundColor: "var(--color-bg-secondary)",
+  },
   selectedTag: {
     backgroundColor: "var(--color-bg-dark)",
-    color: "var(--color-fg-on-dark)",
+  },
+  defaultTagText: {
+    color: "var(--color-fg-primary)",
+  },
+  selectedTagText: {
+    color: "#ffffff",
   },
   divider: {
     height: 1,

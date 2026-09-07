@@ -23,6 +23,14 @@ export const layoutStyles = stylex.create({
       "@media (max-width: 760px)": "var(--layout-gutter-mobile)",
     },
   },
+  footerGap: {
+    width: "100%",
+    height: {
+      default: 80,
+      "@media (max-width: 760px)": 56,
+    },
+    backgroundColor: "var(--color-bg-primary)",
+  },
 });
 
 export const iconStyles = stylex.create({

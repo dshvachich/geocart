@@ -31,6 +31,7 @@ export const HomePage = observer(({ initialData }: HomePageProps) => {
   ]);
   const hasMoreProducts = homePageStore.hasMoreProducts;
   const isLoadingMore = homePageStore.isLoadingMore;
+  const hasPaginationSlot = hasMoreProducts || isLoadingMore;
 
   useEffect(() => {
     const paginationBoundary = paginationBoundaryRef.current;
@@ -63,7 +64,7 @@ export const HomePage = observer(({ initialData }: HomePageProps) => {
         isHoverImageSwitchEnabled
         products={homePageStore.products}
       />
-      {(hasMoreProducts || isLoadingMore) && (
+      {hasPaginationSlot && (
         <div {...stylex.props(styles.paginationSlot)}>
           {isLoadingMore && <SectionLoader />}
           {hasMoreProducts && (
@@ -74,6 +75,9 @@ export const HomePage = observer(({ initialData }: HomePageProps) => {
             />
           )}
         </div>
+      )}
+      {!hasPaginationSlot && (
+        <div {...stylex.props(layoutStyles.footerGap)} aria-hidden="true" />
       )}
       <Footer />
       <MobileTabbar />

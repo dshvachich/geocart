@@ -33,6 +33,7 @@ export const SearchQuickCategories = ({
           <Link
             {...stylex.props(
               styles.categoryPill,
+              !category.imageSrc && styles.categoryPillWithoutImage,
               category.selected && styles.selectedCategoryPill,
             )}
             href={createSearchHref(

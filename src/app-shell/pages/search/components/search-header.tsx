@@ -1,25 +1,27 @@
 import * as stylex from "@stylexjs/stylex";
+import { useTranslation } from "react-i18next";
 import { layoutStyles } from "@/app-shell/styles/shared.styles";
-import type { SearchBreadcrumb } from "@/domain/entities";
 import { searchPageStyles as styles } from "../search-page.styles";
-import { SearchBreadcrumbs } from "./search-breadcrumbs";
 
 type SearchHeaderProps = {
-  breadcrumbs: SearchBreadcrumb[];
-  eyebrow: string;
+  showEyebrow: boolean;
   title: string;
 };
 
 export const SearchHeader = ({
-  breadcrumbs,
-  eyebrow,
+  showEyebrow,
   title,
-}: SearchHeaderProps) => (
-  <section {...stylex.props(layoutStyles.section, styles.surfaceSection)}>
-    <div {...stylex.props(layoutStyles.contentRail, styles.header)}>
-      <SearchBreadcrumbs breadcrumbs={breadcrumbs} />
-      {eyebrow && <p {...stylex.props(styles.eyebrow)}>{eyebrow}</p>}
-      <h1 {...stylex.props(styles.title)}>{title}</h1>
-    </div>
-  </section>
-);
+}: SearchHeaderProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <section {...stylex.props(layoutStyles.section, styles.surfaceSection)}>
+      <div {...stylex.props(layoutStyles.contentRail, styles.header)}>
+        {showEyebrow && (
+          <p {...stylex.props(styles.eyebrow)}>{t("search.resultsEyebrow")}</p>
+        )}
+        <h1 {...stylex.props(styles.title)}>{title}</h1>
+      </div>
+    </section>
+  );
+};

@@ -7,6 +7,7 @@ import type {
 const PRICE_CURRENCY_SYMBOL = '₾'
 const DEFAULT_RANGE_FROM_LABEL = 'From'
 const DEFAULT_RANGE_TO_LABEL = 'To'
+const TETRI_IN_GEL = 100
 
 export type SearchRangeFormatLabels = {
   from: string
@@ -25,7 +26,16 @@ export const formatSearchRangeFilterValue = (
     return String(value)
   }
 
-  return `${value}${isPriceSearchFilter(filter) ? ` ${PRICE_CURRENCY_SYMBOL}` : ''}`
+  if (!isPriceSearchFilter(filter)) {
+    return String(value)
+  }
+
+  const amount = value / TETRI_IN_GEL
+  const formattedAmount = Number.isInteger(amount)
+    ? String(amount)
+    : amount.toFixed(2)
+
+  return `${formattedAmount} ${PRICE_CURRENCY_SYMBOL}`
 }
 
 export const getSearchFilterVariantLabel = (

@@ -3,7 +3,6 @@ import type { PageCursor } from './pagination'
 import type { Product } from './product'
 import type {
   SearchActiveFilter,
-  SearchBreadcrumb,
   SearchCategory,
   SearchFilter,
   SearchSortOption,
@@ -21,10 +20,8 @@ export type CatalogPageData = {
 
 export type SearchPageData = {
   activeFilters: SearchActiveFilter[]
-  breadcrumbs: SearchBreadcrumb[]
-  eyebrow: string
+  cursor: PageCursor
   filters: SearchFilter[]
-  hasMoreProducts: boolean
   products: Product[]
   quickCategories: SearchCategory[]
   selectedCategoryId?: string

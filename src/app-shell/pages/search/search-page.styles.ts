@@ -10,15 +10,18 @@ export const searchPageStyles = stylex.create({
       "@media (max-width: 760px)": "block",
     },
     alignItems: "flex-start",
-    gap: 32,
-    paddingTop: 8,
+    gap: {
+      default: 36,
+      "@media (max-width: 760px)": 32,
+    },
+    paddingTop: 0,
     paddingRight: {
-      default: "var(--layout-gutter)",
+      default: 60,
       "@media (max-width: 760px)": 0,
     },
     paddingBottom: {
-      default: 64,
-      "@media (max-width: 760px)": 40,
+      default: 0,
+      "@media (max-width: 760px)": 0,
     },
     paddingLeft: {
       default: "var(--layout-gutter)",
@@ -33,6 +36,7 @@ export const searchPageStyles = stylex.create({
     width: 264,
     flex: "0 0 264px",
     flexDirection: "column",
+    paddingTop: 12,
   },
   resultsPane: {
     display: "flex",
@@ -60,7 +64,10 @@ export const searchPageStyles = stylex.create({
     minHeight: 20,
     overflowX: "auto",
     color: "var(--color-fg-secondary)",
-    fontSize: 12,
+    fontSize: {
+      default: 14,
+      "@media (max-width: 760px)": 12,
+    },
     lineHeight: "20px",
     scrollbarWidth: "none",
     whiteSpace: "nowrap",
@@ -80,7 +87,11 @@ export const searchPageStyles = stylex.create({
   eyebrow: {
     margin: 0,
     color: "var(--color-fg-secondary)",
-    fontSize: 12,
+    fontSize: {
+      default: 14,
+      "@media (max-width: 760px)": 12,
+    },
+    fontWeight: 400,
     lineHeight: "20px",
   },
   title: {
@@ -88,15 +99,19 @@ export const searchPageStyles = stylex.create({
       default: 760,
       "@media (max-width: 760px)": "none",
     },
+    minHeight: {
+      default: null,
+      "@media (max-width: 760px)": 64,
+    },
     margin: 0,
     color: "var(--color-fg-primary)",
     fontSize: {
-      default: 36,
+      default: 28,
       "@media (max-width: 760px)": 24,
     },
     fontWeight: 600,
     lineHeight: {
-      default: "44px",
+      default: "40px",
       "@media (max-width: 760px)": "32px",
     },
     letterSpacing: 0,
@@ -136,6 +151,11 @@ export const searchPageStyles = stylex.create({
     fontSize: 16,
     fontWeight: 500,
     lineHeight: "24px",
+    whiteSpace: "nowrap",
+  },
+  categoryPillWithoutImage: {
+    paddingRight: 24,
+    paddingLeft: 24,
   },
   selectedCategoryPill: {
     borderColor: "var(--color-divider-soft)",
@@ -168,7 +188,7 @@ export const searchPageStyles = stylex.create({
     overflowX: "auto",
     scrollbarWidth: "none",
     padding: {
-      default: "8px 0 16px",
+      default: "16px 8px",
       "@media (max-width: 760px)": "8px 0 16px var(--layout-gutter-mobile)",
     },
     "::-webkit-scrollbar": {
@@ -247,18 +267,30 @@ export const searchPageStyles = stylex.create({
   },
   selectedFilter: {
     display: "inline-flex",
-    height: 40,
+    height: {
+      default: 40,
+      "@media (max-width: 760px)": 32,
+    },
     flex: "0 0 auto",
     alignItems: "center",
     gap: 4,
-    padding: "8px 12px 8px 16px",
+    padding: {
+      default: "8px 8px 8px 12px",
+      "@media (max-width: 760px)": "4px 8px 4px 12px",
+    },
     borderWidth: 0,
     borderRadius: 34,
     backgroundColor: "var(--color-bg-secondary)",
     color: "var(--color-fg-primary)",
-    fontSize: 16,
+    fontSize: {
+      default: 16,
+      "@media (max-width: 760px)": 14,
+    },
     fontWeight: 500,
-    lineHeight: "24px",
+    lineHeight: {
+      default: "24px",
+      "@media (max-width: 760px)": "20px",
+    },
     whiteSpace: "nowrap",
   },
   viewSegment: {
@@ -286,6 +318,7 @@ export const searchPageStyles = stylex.create({
     backgroundColor: "var(--color-bg-primary)",
   },
   resultsGrid: {
+    gridAutoRows: "auto",
     maxWidth: "none",
     gridTemplateColumns: {
       default: "repeat(4, minmax(0, 1fr))",
@@ -301,6 +334,16 @@ export const searchPageStyles = stylex.create({
       default: 0,
       "@media (max-width: 760px)": 8,
     },
+  },
+  resultsPaginationSlot: {
+    gridColumn: "1 / -1",
+    width: "100%",
+    minHeight: 168,
+    backgroundColor: "var(--color-bg-primary)",
+  },
+  paginationBoundary: {
+    width: "100%",
+    height: 1,
   },
   selectedFilterCount: {
     color: "var(--color-fg-secondary)",

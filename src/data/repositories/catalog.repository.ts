@@ -28,7 +28,7 @@ import { SearchSuggestionItemToSearchSuggestionMapperExtension } from "@/data/ma
 const DEFAULT_POPULAR_PRODUCTS_LIMIT = 30;
 const DEFAULT_POPULAR_PRODUCTS_SORT = "popularity";
 const DEFAULT_POPULAR_PRODUCTS_SORT_ORDER = "desc";
-const DEFAULT_SEARCH_PRODUCTS_LIMIT = 6;
+const DEFAULT_SEARCH_PRODUCTS_LIMIT = 30;
 const DEFAULT_SUGGESTIONS_LIMIT = 6;
 const EMPTY_CURSOR = {
   next: null,

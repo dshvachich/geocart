@@ -24,8 +24,7 @@ type SearchPageProps = {
   searchParams: SearchQueryParams;
 };
 
-const PRODUCTS_PRELOAD_OFFSET = 360;
-const PRODUCTS_PRELOAD_ROOT_MARGIN = `${PRODUCTS_PRELOAD_OFFSET}px 0px`;
+const PRODUCTS_PRELOAD_ROOT_MARGIN = "1200px 0px";
 
 export const SearchPage = observer(
   ({ data, searchParams }: SearchPageProps) => {
@@ -47,47 +46,20 @@ export const SearchPage = observer(
         return;
       }
 
-      const loadMoreProducts = () => {
-        void searchPageStore.loadMoreProducts(appStore.language);
-      };
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry?.isIntersecting) {
+            void searchPageStore.loadMoreProducts(appStore.language);
+          }
+        },
+        {
+          rootMargin: PRODUCTS_PRELOAD_ROOT_MARGIN,
+        },
+      );
 
-      const loadMoreProductsIfNeeded = () => {
-        const boundaryTop = paginationBoundary.getBoundingClientRect().top;
+      observer.observe(paginationBoundary);
 
-        if (boundaryTop <= window.innerHeight + PRODUCTS_PRELOAD_OFFSET) {
-          loadMoreProducts();
-        }
-      };
-
-      const observer =
-        typeof IntersectionObserver === "undefined"
-          ? null
-          : new IntersectionObserver(
-              ([entry]) => {
-                if (entry?.isIntersecting) {
-                  loadMoreProducts();
-                }
-              },
-              {
-                rootMargin: PRODUCTS_PRELOAD_ROOT_MARGIN,
-              },
-            );
-
-      if (observer) {
-        observer.observe(paginationBoundary);
-      }
-
-      loadMoreProductsIfNeeded();
-      window.addEventListener("scroll", loadMoreProductsIfNeeded, {
-        passive: true,
-      });
-      window.addEventListener("resize", loadMoreProductsIfNeeded);
-
-      return () => {
-        observer?.disconnect();
-        window.removeEventListener("scroll", loadMoreProductsIfNeeded);
-        window.removeEventListener("resize", loadMoreProductsIfNeeded);
-      };
+      return () => observer.disconnect();
     }, [appStore.language, hasMoreProducts, isLoadingMore, searchPageStore]);
 
     return (

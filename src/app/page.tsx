@@ -1,4 +1,4 @@
-import { HomePage } from '@/app-shell/pages/main/home-page'
+import { HomePage } from '@/app-shell/pages/home/home-page'
 import { getRequestLocale } from '@/app/locale'
 import { getInitialHomePageData } from '@/data/home-page'
 

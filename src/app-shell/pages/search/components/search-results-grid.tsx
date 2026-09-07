@@ -27,7 +27,12 @@ export const SearchResultsGrid = ({
     )}
   >
     {products.map((product, index) => (
-      <ProductCard key={product.id} product={product} priority={index < 4} />
+      <ProductCard
+        key={product.id}
+        isHoverImageSwitchEnabled
+        product={product}
+        priority={index < 4}
+      />
     ))}
     {(hasMoreProducts || isLoadingMore) && (
       <div {...stylex.props(styles.resultsPaginationSlot)}>

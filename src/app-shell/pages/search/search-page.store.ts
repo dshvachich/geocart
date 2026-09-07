@@ -8,7 +8,7 @@ type SearchProductsResponse = {
   products: Product[];
 };
 
-const SEARCH_PRODUCTS_PAGE_SIZE = "6";
+const SEARCH_PRODUCTS_PAGE_SIZE = "30";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;

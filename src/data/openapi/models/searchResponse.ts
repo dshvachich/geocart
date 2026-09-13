@@ -4,14 +4,14 @@
  * marketi
  * OpenAPI spec version: 1
  */
-import type { ProductList } from "./productList";
+import type { SearchProductListItem } from "./searchProductListItem";
 import type { SearchFilter } from "./searchFilter";
 import type { SearchCategory } from "./searchCategory";
 import type { Cursor } from "./cursor";
 
 export interface SearchResponse {
   title: string;
-  products: ProductList;
+  products: SearchProductListItem[];
   filters: SearchFilter[];
   categories: SearchCategory[];
   cursor: Cursor;

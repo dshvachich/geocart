@@ -106,7 +106,7 @@ export class FavoritesStore {
     this.resetMissingSelectedCategory();
   }
 
-  isFavorite(productId: string) {
+  isFavorite(productId: Product["id"]) {
     return this.products.some((product) => product.id === productId);
   }
 
@@ -122,7 +122,7 @@ export class FavoritesStore {
     this.persistProducts();
   }
 
-  removeProduct(productId: string) {
+  removeProduct(productId: Product["id"]) {
     this.ensureHydrated();
 
     this.products = this.products.filter((product) => product.id !== productId);

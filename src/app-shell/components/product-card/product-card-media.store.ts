@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import type { MouseEvent } from 'react';
 
 const SWIPE_MIN_DISTANCE = 32;
 
@@ -6,6 +7,7 @@ export class ProductCardMediaStore {
   selectedImageIndex = 0;
   private swipeStartX: number | null = null;
   private swipeStartY: number | null = null;
+  private suppressNextClick = false;
 
   constructor(private readonly images: string[]) {
     makeAutoObservable<
@@ -57,6 +59,7 @@ export class ProductCardMediaStore {
   }
 
   startSwipe(clientX: number, clientY: number) {
+    this.suppressNextClick = false;
     if (!this.hasMultipleImages) {
       return;
     }
@@ -91,11 +94,19 @@ export class ProductCardMediaStore {
     }
 
     if (distanceX < 0) {
+      this.suppressNextClick = true;
       this.showNextImage();
       return;
     }
 
+    this.suppressNextClick = true;
     this.showPreviousImage();
+  }
+
+  handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (!this.suppressNextClick) { return; }
+    this.suppressNextClick = false;
+    event.preventDefault();
   }
 
   private showPreviousImage() {

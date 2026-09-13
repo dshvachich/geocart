@@ -1,7 +1,7 @@
-import { redirect } from 'next/navigation'
-import { SearchFiltersPage } from '@/app-shell/pages/search/search-filters-page'
+import { Suspense } from 'react'
+import { SearchFiltersLoadingPage } from '@/app-shell/pages/search/search-filters-loading-page'
 import { getRequestLocale } from '@/app/locale'
-import { getSearchFiltersPageData } from '@/data/search-page'
+import { SearchFiltersContent } from './search-filters-content'
 import {
   createSearchHref,
   normalizeSearchParams,
@@ -20,22 +20,13 @@ export default async function SearchFiltersRoute({
 }: SearchFiltersRouteProps) {
   const locale = await getRequestLocale()
   const normalizedSearchParams = normalizeSearchParams(await searchParams)
-  const data = await getSearchFiltersPageData({
-    locale,
-    searchParams: normalizedSearchParams,
-  })
 
-  if (!normalizedSearchParams.category && data.selectedCategoryId) {
-    redirect(
-      createSearchHref(
-        {
-          ...normalizedSearchParams,
-          category: data.selectedCategoryId,
-        },
-        SEARCH_FILTERS_PAGE_PATH,
-      ),
-    )
-  }
-
-  return <SearchFiltersPage data={data} searchParams={normalizedSearchParams} />
+  return (
+    <Suspense
+      key={createSearchHref(normalizedSearchParams, SEARCH_FILTERS_PAGE_PATH)}
+      fallback={<SearchFiltersLoadingPage searchParams={normalizedSearchParams} />}
+    >
+      <SearchFiltersContent locale={locale} searchParams={normalizedSearchParams} />
+    </Suspense>
+  )
 }

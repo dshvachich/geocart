@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { createCatalogErrorResponse } from '@/app/api/catalog-error-response'
 import { catalogRepository } from '@/data/repositories'
 import { normalizeLocale } from '@/domain/types/locale'
 
@@ -24,11 +25,15 @@ export async function GET(request: Request) {
     url.searchParams.get('locale') ?? request.headers.get('accept-language'),
   )
 
-  const productList = await catalogRepository.getPopularProducts({
-    cursor,
-    locale,
-    limit: parseLimit(url.searchParams.get('limit')),
-  })
+  try {
+    const productList = await catalogRepository.getPopularProducts({
+      cursor,
+      locale,
+      limit: parseLimit(url.searchParams.get('limit')),
+    })
 
-  return NextResponse.json(productList)
+    return NextResponse.json(productList)
+  } catch (error) {
+    return createCatalogErrorResponse(error)
+  }
 }

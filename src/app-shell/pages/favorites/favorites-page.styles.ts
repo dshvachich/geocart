@@ -17,6 +17,9 @@ export const favoritesPageStyles = stylex.create({
     },
     backgroundColor: "var(--color-bg-primary)",
   },
+  emptyHeader: {
+    paddingBottom: 8,
+  },
   title: {
     margin: 0,
     color: "var(--color-fg-primary)",

@@ -27,4 +27,8 @@ export type SearchProductsParams = {
    */
   sortOrder?: SortOrder;
   cursor?: string;
+  /**
+   * Фильтры в формате `f[x]=value1,value2`, `f[x]=value1-value2`
+   */
+  f?: { [key: string]: string };
 };

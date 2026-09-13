@@ -1,4 +1,5 @@
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { CatalogRequestError } from '@/domain/entities/catalog-request-error'
 import { SearchPage } from '@/app-shell/pages/search/search-page'
 import { getRequestLocale } from '@/app/locale'
 import { getSearchPageData } from '@/data/search-page'
@@ -20,6 +21,12 @@ export default async function SearchRoute({ searchParams }: SearchRouteProps) {
   const data = await getSearchPageData({
     locale,
     searchParams: normalizedSearchParams,
+  }).catch((error: unknown) => {
+    if (error instanceof CatalogRequestError && error.kind === 'not-found') {
+      notFound()
+    }
+
+    throw error
   })
 
   if (!normalizedSearchParams.category && data.selectedCategoryId) {

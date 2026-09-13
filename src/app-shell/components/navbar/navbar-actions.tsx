@@ -5,6 +5,8 @@ import * as stylex from "@stylexjs/stylex";
 import { useTranslation } from "react-i18next";
 import { uiAssets } from "@/app-shell/components/assets";
 import type { FavoritesStore } from "@/app-shell/stores/favorites.store";
+import { ComparisonStore } from "@/app-shell/stores/comparison.store";
+import { useContainer } from "@/di/di-provider";
 import { controlStyles, iconStyles } from "@/app-shell/styles/shared.styles";
 import { navbarStyles as styles } from "./navbar.styles";
 
@@ -14,6 +16,7 @@ type NavbarActionsProps = {
 
 export const NavbarActions = observer(({ favoritesStore }: NavbarActionsProps) => {
   const { t } = useTranslation();
+  const comparison = useContainer().get(ComparisonStore);
 
   return (
     <div {...stylex.props(styles.navbarActions)}>
@@ -37,10 +40,10 @@ export const NavbarActions = observer(({ favoritesStore }: NavbarActionsProps) =
           </span>
         )}
       </Link>
-      <button
+      <Link
         {...stylex.props(controlStyles.iconButton)}
-        type="button"
-        aria-label={t("common.menu")}
+        href="/compare"
+        aria-label={t("compare.navLabel", { count: comparison.count })}
       >
         <Image
           {...stylex.props(iconStyles.icon)}
@@ -49,7 +52,8 @@ export const NavbarActions = observer(({ favoritesStore }: NavbarActionsProps) =
           width={24}
           height={24}
         />
-      </button>
+        {comparison.count > 0 && <span {...stylex.props(controlStyles.badge)}>{comparison.count}</span>}
+      </Link>
     </div>
   );
 });

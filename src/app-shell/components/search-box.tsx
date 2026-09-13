@@ -32,6 +32,7 @@ export const SearchBox = observer(() => {
   const trimmedQuery = searchStore.trimmedQuery;
   const productSuggestions = searchStore.productSuggestions;
   const categorySuggestions = searchStore.categorySuggestions;
+  const hasEmptySuggestions = searchStore.hasEmptySuggestions;
 
   const updateAnchorRect = useCallback(() => {
     const field = fieldRef.current;
@@ -51,7 +52,11 @@ export const SearchBox = observer(() => {
   }, []);
 
   const navigateToSearch = useCallback(
-    ({ category, productId, query }: SearchNavigationParams) => {
+    ({ category, productId, productSlug, query }: SearchNavigationParams) => {
+      if (productSlug) {
+        searchStore.openProduct(productSlug, router.push);
+        return;
+      }
       const trimmedSearchQuery = query.trim();
 
       if (!trimmedSearchQuery) {
@@ -61,7 +66,7 @@ export const SearchBox = observer(() => {
       router.push(
         createSearchHref({
           category,
-          productId,
+          productId: productId?.toString(),
           q: trimmedSearchQuery,
         }),
       );
@@ -178,6 +183,7 @@ export const SearchBox = observer(() => {
         <SearchBoxOverlay
           anchorRect={anchorRect}
           categorySuggestions={categorySuggestions}
+          hasEmptySuggestions={hasEmptySuggestions}
           inputRef={inputRef}
           productSuggestions={productSuggestions}
           query={query}

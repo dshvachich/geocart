@@ -17,12 +17,11 @@ export const sectionLoaderStyles = stylex.create({
   loader: {
     width: 40,
     height: 40,
-    borderWidth: 2,
-    borderStyle: "solid",
-    borderColor: "var(--color-divider-light)",
-    borderTopColor: "var(--color-bg-dark)",
-    borderRadius: "50%",
-    animationName: loaderSpin,
+    flexShrink: 0,
+    animationName: {
+      default: loaderSpin,
+      "@media (prefers-reduced-motion: reduce)": "none",
+    },
     animationDuration: "0.9s",
     animationTimingFunction: "linear",
     animationIterationCount: "infinite",

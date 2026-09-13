@@ -5,14 +5,14 @@
  * OpenAPI spec version: 1
  */
 import type {
-  CategoryListResponseResponse,
+  CategoryList,
   ListProductsParams,
   ListSuggestionsParams,
-  ProductListResponseResponse,
-  ProductResponseResponse,
+  Product,
+  ProductListResponse,
   SearchProductsParams,
-  SearchResponseResponse,
-  SearchSuggestionResponseResponse,
+  SearchResponse,
+  SearchSuggestion,
 } from "../../models";
 
 import { orvalClient } from "../../../../network/orval-client";
@@ -24,10 +24,10 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
  */
 export const listCategories = (
-  options?: SecondParameter<typeof orvalClient<CategoryListResponseResponse>>,
+  options?: SecondParameter<typeof orvalClient<CategoryList>>,
 ) => {
-  return orvalClient<CategoryListResponseResponse>(
-    { url: `/catalog/categories`, method: "GET" },
+  return orvalClient<CategoryList>(
+    { url: `/categories`, method: "GET" },
     options,
   );
 };
@@ -37,10 +37,10 @@ export const listCategories = (
  */
 export const listProducts = (
   params: ListProductsParams,
-  options?: SecondParameter<typeof orvalClient<ProductListResponseResponse>>,
+  options?: SecondParameter<typeof orvalClient<ProductListResponse>>,
 ) => {
-  return orvalClient<ProductListResponseResponse>(
-    { url: `/catalog/products`, method: "GET", params },
+  return orvalClient<ProductListResponse>(
+    { url: `/products`, method: "GET", params },
     options,
   );
 };
@@ -49,11 +49,11 @@ export const listProducts = (
 
  */
 export const getProduct = (
-  id: string,
-  options?: SecondParameter<typeof orvalClient<ProductResponseResponse>>,
+  slug: string,
+  options?: SecondParameter<typeof orvalClient<Product>>,
 ) => {
-  return orvalClient<ProductResponseResponse>(
-    { url: `/catalog/products/${id}`, method: "GET" },
+  return orvalClient<Product>(
+    { url: `/products/${slug}`, method: "GET" },
     options,
   );
 };
@@ -66,7 +66,7 @@ export const getProduct = (
 При запросе с фильтрами всегда необходимо указывать категорию.
 
 Возможные фильтры, их названия и типы полностью определяются тем, что ответил сервер.
-Поэтому они не указаны как параметры запроса в схеме. Каждый тип фильтра соотносится типа параметра, который фильтруется.
+Их нужно указывать как `f[id]=X`, например `f[price]=100-200&f[color]=red,blue`.
 Каждый фильтр в ответе имеет указатель на то, были ли выбраны какие-то значения для этого фильтра при запросе.
 Так на стороне клиента должны отсекаться невалидные значения, сужения фильтров и так далее: логика формирования фильтров
 и действующих значений полностью находится на стороне сервера.
@@ -84,10 +84,10 @@ export const getProduct = (
  */
 export const searchProducts = (
   params?: SearchProductsParams,
-  options?: SecondParameter<typeof orvalClient<SearchResponseResponse>>,
+  options?: SecondParameter<typeof orvalClient<SearchResponse>>,
 ) => {
-  return orvalClient<SearchResponseResponse>(
-    { url: `/catalog/search`, method: "GET", params },
+  return orvalClient<SearchResponse>(
+    { url: `/search`, method: "GET", params },
     options,
   );
 };
@@ -97,12 +97,10 @@ export const searchProducts = (
  */
 export const listSuggestions = (
   params: ListSuggestionsParams,
-  options?: SecondParameter<
-    typeof orvalClient<SearchSuggestionResponseResponse>
-  >,
+  options?: SecondParameter<typeof orvalClient<SearchSuggestion>>,
 ) => {
-  return orvalClient<SearchSuggestionResponseResponse>(
-    { url: `/catalog/search/suggest`, method: "GET", params },
+  return orvalClient<SearchSuggestion>(
+    { url: `/search/suggest`, method: "GET", params },
     options,
   );
 };

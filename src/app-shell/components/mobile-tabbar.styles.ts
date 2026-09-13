@@ -1,6 +1,18 @@
 import * as stylex from "@stylexjs/stylex";
 
 export const mobileTabbarStyles = stylex.create({
+  activeCompareIcon: { filter: "brightness(0) invert(1)" },
+  safeArea: {
+    height: {
+      default: null,
+      "@media (max-width: 760px)":
+        "calc(var(--mobile-tabbar-height) + env(safe-area-inset-bottom, 0px))",
+    },
+    paddingBottom: {
+      default: null,
+      "@media (max-width: 760px)": "env(safe-area-inset-bottom, 0px)",
+    },
+  },
   tabbar: {
     position: {
       default: "static",
@@ -59,4 +71,5 @@ export const mobileTabbarStyles = stylex.create({
   activeItem: {
     color: "var(--color-fg-on-dark)",
   },
+  label: { color: "#727578" },
 });

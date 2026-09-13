@@ -10,7 +10,9 @@ import { NavbarDesktop } from "./navbar/navbar-desktop";
 import { NavbarMobile } from "./navbar/navbar-mobile";
 import { navbarStyles as styles } from "./navbar/navbar.styles";
 
-export const Navbar = observer(() => {
+type Props = { hideMobileSearch?: boolean };
+
+export const Navbar = observer(({ hideMobileSearch = false }: Props) => {
   const appStore = useContainer().get(AppStore);
   const isCompact = appStore.isNavbarCompact;
 
@@ -20,7 +22,12 @@ export const Navbar = observer(() => {
 
     updateCompactState();
     window.addEventListener("scroll", updateCompactState, { passive: true });
-    return () => window.removeEventListener("scroll", updateCompactState);
+    window.addEventListener("resize", updateCompactState);
+
+    return () => {
+      window.removeEventListener("scroll", updateCompactState);
+      window.removeEventListener("resize", updateCompactState);
+    };
   }, [appStore]);
 
   return (
@@ -29,10 +36,11 @@ export const Navbar = observer(() => {
         layoutStyles.section,
         styles.shell,
         isCompact && styles.shellCompact,
+        hideMobileSearch && styles.shellWithoutMobileSearch,
       )}
     >
       <NavbarDesktop />
-      <NavbarMobile isCompact={isCompact} />
+      <NavbarMobile isCompact={!hideMobileSearch && isCompact} hideSearch={hideMobileSearch} />
     </header>
   );
 });

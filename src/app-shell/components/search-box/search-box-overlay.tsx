@@ -4,9 +4,13 @@ import * as stylex from "@stylexjs/stylex";
 import { useTranslation } from "react-i18next";
 import { uiAssets } from "@/app-shell/components/assets";
 import { controlStyles, iconStyles } from "@/app-shell/styles/shared.styles";
-import type { SearchSuggestion } from "@/domain/entities";
+import type {
+  SearchCategorySuggestion,
+  SearchProductSuggestion,
+} from "@/domain/entities";
 import { searchBoxStyles as styles } from "./search-box.styles";
 import { SearchBoxField } from "./search-box-field";
+import { SearchBoxEmptyState } from "./search-box-empty-state";
 import { SearchBoxSuggestions } from "./search-box-suggestions";
 import type {
   SearchBoxAnchorRect,
@@ -15,12 +19,13 @@ import type {
 
 type SearchBoxOverlayProps = {
   anchorRect: SearchBoxAnchorRect | null;
-  categorySuggestions: SearchSuggestion[];
+  categorySuggestions: SearchCategorySuggestion[];
+  hasEmptySuggestions: boolean;
   inputRef: Ref<HTMLInputElement>;
   onChange: (value: string) => void;
   onClose: () => void;
   onSearch: (params: SearchNavigationParams) => void;
-  productSuggestions: SearchSuggestion[];
+  productSuggestions: SearchProductSuggestion[];
   query: string;
   trimmedQuery: string;
 };
@@ -35,6 +40,7 @@ type SearchBoxOverlayStyle = CSSProperties & {
 export const SearchBoxOverlay = ({
   anchorRect,
   categorySuggestions,
+  hasEmptySuggestions,
   inputRef,
   onChange,
   onClose,
@@ -90,14 +96,17 @@ export const SearchBoxOverlay = ({
         </button>
       </div>
 
-      {trimmedQuery && (
-        <SearchBoxSuggestions
-          categorySuggestions={categorySuggestions}
-          productSuggestions={productSuggestions}
-          query={trimmedQuery}
-          onSearch={onSearch}
-        />
-      )}
+      {hasEmptySuggestions && <SearchBoxEmptyState />}
+
+      {trimmedQuery &&
+        (productSuggestions.length > 0 || categorySuggestions.length > 0) && (
+          <SearchBoxSuggestions
+            categorySuggestions={categorySuggestions}
+            productSuggestions={productSuggestions}
+            query={trimmedQuery}
+            onSearch={onSearch}
+          />
+        )}
     </div>
   );
 };

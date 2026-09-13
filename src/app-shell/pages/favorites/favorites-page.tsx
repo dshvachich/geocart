@@ -20,13 +20,20 @@ export const FavoritesPage = observer(() => {
   const { t } = useTranslation();
   const favoritesStore = useContainer().get(FavoritesStore);
   const products = favoritesStore.visibleProducts;
+  const isEmpty = favoritesStore.isHydrated && favoritesStore.count === 0;
 
   return (
     <main {...stylex.props(layoutStyles.page)}>
       <Navbar />
 
       <section {...stylex.props(layoutStyles.section, styles.headerSection)}>
-        <div {...stylex.props(layoutStyles.contentRail, styles.header)}>
+        <div
+          {...stylex.props(
+            layoutStyles.contentRail,
+            styles.header,
+            isEmpty && styles.emptyHeader,
+          )}
+        >
           <h1 {...stylex.props(styles.title)}>{t("favorites.title")}</h1>
         </div>
       </section>
@@ -37,9 +44,7 @@ export const FavoritesPage = observer(() => {
 
       {!favoritesStore.isHydrated && <SectionLoader />}
 
-      {favoritesStore.isHydrated && favoritesStore.count === 0 && (
-        <FavoritesEmptyState />
-      )}
+      {isEmpty && <FavoritesEmptyState />}
 
       {favoritesStore.isHydrated && products.length > 0 && (
         <section
@@ -64,7 +69,9 @@ export const FavoritesPage = observer(() => {
         </section>
       )}
 
-      <div {...stylex.props(layoutStyles.footerGap)} aria-hidden="true" />
+      {!isEmpty && (
+        <div {...stylex.props(layoutStyles.footerGap)} aria-hidden="true" />
+      )}
       <Footer />
       <MobileTabbar activeItem="favorites" />
     </main>

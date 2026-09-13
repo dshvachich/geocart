@@ -6,8 +6,17 @@ export const SearchSuggestionType = {
 export type SearchSuggestionType =
   (typeof SearchSuggestionType)[keyof typeof SearchSuggestionType]
 
-export type SearchSuggestion = {
+export type SearchCategorySuggestion = {
   id: string
-  label?: string
-  type: SearchSuggestionType
+  label: string
+  type: typeof SearchSuggestionType.category
 }
+
+export type SearchProductSuggestion = {
+  id: number
+  slug: string
+  label: string
+  type: typeof SearchSuggestionType.product
+}
+
+export type SearchSuggestion = SearchCategorySuggestion | SearchProductSuggestion

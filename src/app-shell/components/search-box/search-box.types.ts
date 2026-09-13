@@ -1,8 +1,12 @@
-import type { SearchSuggestion } from "@/domain/entities";
+import type {
+  SearchCategorySuggestion,
+  SearchProductSuggestion,
+} from "@/domain/entities";
 
 export type SearchNavigationParams = {
   category?: string;
-  productId?: string;
+  productId?: number;
+  productSlug?: string;
   query: string;
 };
 
@@ -14,8 +18,8 @@ export type SearchBoxAnchorRect = {
 };
 
 export type SearchSuggestionsProps = {
-  categorySuggestions: SearchSuggestion[];
+  categorySuggestions: SearchCategorySuggestion[];
   onSearch: (params: SearchNavigationParams) => void;
-  productSuggestions: SearchSuggestion[];
+  productSuggestions: SearchProductSuggestion[];
   query: string;
 };

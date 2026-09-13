@@ -6,6 +6,7 @@
  */
 
 export interface ProductAttribute {
+  id: string;
   label: string;
   value: string;
 }

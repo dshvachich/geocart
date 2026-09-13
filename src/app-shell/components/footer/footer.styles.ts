@@ -21,7 +21,7 @@ export const footerStyles = stylex.create({
       default: "grid",
       "@media (max-width: 760px)": "flex",
     },
-    gridTemplateColumns: "minmax(320px, 512px) repeat(3, minmax(140px, 1fr))",
+    gridTemplateColumns: "minmax(0, 512px) repeat(3, minmax(140px, 1fr))",
     flexDirection: {
       default: null,
       "@media (max-width: 760px)": "column",

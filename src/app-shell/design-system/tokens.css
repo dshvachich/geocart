@@ -4,6 +4,9 @@
   --layout-max-width: 1440px;
   --layout-gutter: 68px;
   --layout-gutter-mobile: 16px;
+  --mobile-tabbar-height: 56px;
+  --product-mobile-offer-height: 77px;
+  --comparison-column-width: 220px;
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f2f4f5;
   --color-bg-dark: #101011;
@@ -13,11 +16,20 @@
   --color-fg-dark-secondary: #999c9f;
   --color-fg-dark-tertiary: #6a6c6e;
   --color-accent: #22a327;
+  --color-accent-hover: #1b8720;
+  --color-accent-on-dark: #3fcb43;
   --color-danger: #ec3235;
   --color-divider-light: #e5e5e5;
   --color-divider-soft: #f2f2f2;
   --color-divider-dark: #2a2a2a;
   --color-overlay: rgb(0 0 0 / 30%);
   --shadow-navbar: 0 2px 12px rgb(0 0 0 / 6%);
+  --shadow-bottom-bar: 0 -2px 24px rgb(0 0 0 / 6%);
   --shadow-dropdown: 0 8px 12px rgb(0 0 0 / 12%);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --comparison-column-width: 164px;
+  }
 }

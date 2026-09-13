@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { type SearchSuggestion, SearchSuggestionType } from "@/domain/entities";
 import { normalizeLocale } from "@/domain/types/locale";
 import i18n from "@/i18n";
+import { createProductHref } from '@/utils/product-url-utils';
 
 type SuggestionsResponse = {
   suggestions?: SearchSuggestion[];
@@ -13,6 +14,7 @@ export class SearchBoxStore {
   isOpen = false;
   query = "";
   suggestions: SearchSuggestion[] = [];
+  hasLoadedSuggestions = false;
 
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -20,6 +22,15 @@ export class SearchBoxStore {
 
   get trimmedQuery() {
     return this.query.trim();
+  }
+
+  get hasEmptySuggestions() {
+    return (
+      this.isOpen &&
+      this.trimmedQuery.length > 0 &&
+      this.hasLoadedSuggestions &&
+      this.suggestions.length === 0
+    );
   }
 
   get productSuggestions() {
@@ -41,17 +52,26 @@ export class SearchBoxStore {
   closeSearch() {
     this.isOpen = false;
     this.suggestions = [];
+    this.hasLoadedSuggestions = false;
+  }
+
+  openProduct(slug: string, navigate: (href: string) => void) {
+    this.closeSearch();
+    navigate(createProductHref(slug));
   }
 
   updateQuery(value: string) {
-    this.query = value;
-
-    if (!value.trim()) {
+    if (value.trim() !== this.trimmedQuery) {
       this.suggestions = [];
+      this.hasLoadedSuggestions = false;
     }
+
+    this.query = value;
   }
 
   async loadSuggestions(query: string, signal: AbortSignal) {
+    this.hasLoadedSuggestions = false;
+
     const params = new URLSearchParams({
       q: query,
       limit: String(SEARCH_LIMIT),
@@ -65,14 +85,20 @@ export class SearchBoxStore {
           signal,
         },
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to load search suggestions");
+      }
+
       const payload = (await response.json()) as SuggestionsResponse;
 
       runInAction(() => {
-        if (this.trimmedQuery !== query) {
+        if (signal.aborted || this.trimmedQuery !== query) {
           return;
         }
 
         this.suggestions = payload.suggestions ?? [];
+        this.hasLoadedSuggestions = true;
       });
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
@@ -80,7 +106,7 @@ export class SearchBoxStore {
       }
 
       runInAction(() => {
-        if (this.trimmedQuery !== query) {
+        if (signal.aborted || this.trimmedQuery !== query) {
           return;
         }
 

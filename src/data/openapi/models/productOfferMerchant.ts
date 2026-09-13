@@ -6,6 +6,7 @@
  */
 
 export interface ProductOfferMerchant {
+  id: string;
   name: string;
   url: string;
   logoUrl: string;

@@ -1,4 +1,5 @@
 import type { Product } from './product'
+import type { PageCursor } from './pagination'
 
 export type SearchBreadcrumb = {
   id: string
@@ -61,10 +62,7 @@ export type SearchFilter =
   | SearchSelectableFilter
   | SearchCollapsedFilter
 
-export type SearchCursor = {
-  next?: string | null
-  prev?: string | null
-}
+export type SearchCursor = PageCursor
 
 export type SearchResult = {
   title: string

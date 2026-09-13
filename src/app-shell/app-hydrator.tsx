@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect } from "react";
 import { AppStore } from "@/app-shell/app-store";
 import { FavoritesStore } from "@/app-shell/stores/favorites.store";
+import { ComparisonStore } from "@/app-shell/stores/comparison.store";
 import type { SupportedLocale } from "@/domain/types/locale";
 import { useContainer } from "@/di/di-provider";
 import i18n, { syncI18nLanguage } from "@/i18n";
@@ -16,9 +17,17 @@ export const AppHydrator = ({ children, initialLocale }: AppHydratorProps) => {
   const container = useContainer();
   const appStore = container.get(AppStore);
   const favoritesStore = container.get(FavoritesStore);
+  const comparisonStore = container.get(ComparisonStore);
 
   syncI18nLanguage(initialLocale);
   appStore.syncLanguage(initialLocale);
+
+  useEffect(() => {
+    comparisonStore.hydrate();
+    const syncComparison = () => comparisonStore.syncFromStorage();
+    window.addEventListener("storage", syncComparison);
+    return () => window.removeEventListener("storage", syncComparison);
+  }, [comparisonStore]);
 
   useEffect(() => {
     favoritesStore.hydrate();

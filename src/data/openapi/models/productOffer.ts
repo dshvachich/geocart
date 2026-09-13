@@ -7,8 +7,10 @@
 import type { ProductOfferMerchant } from "./productOfferMerchant";
 
 export interface ProductOffer {
+  id: number;
   merchant: ProductOfferMerchant;
   url: string;
+  updatedAt: string;
   priceTetri: number;
   originalPriceTetri: number;
   ratioToBestPrice: number;

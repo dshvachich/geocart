@@ -6,7 +6,8 @@
  */
 
 export interface ProductListItem {
-  id: string;
+  id: number;
+  slug: string;
   name: string;
   minPriceTetri: number;
   offersCount: number;

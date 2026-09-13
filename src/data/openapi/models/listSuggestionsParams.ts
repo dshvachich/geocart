@@ -11,6 +11,7 @@ export type ListSuggestionsParams = {
    */
   q: string;
   /**
+   * Максимум подсказок в каждой группе
    * @minimum 1
    * @maximum 50
    */

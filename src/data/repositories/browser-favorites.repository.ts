@@ -26,6 +26,27 @@ const getProductImages = (value: Record<string, unknown>) => {
   return normalizeProductImages(value.images.filter(isString));
 };
 
+const getProductSummary = (
+  value: Record<string, unknown>,
+): Product["summary"] => {
+  if (!Array.isArray(value.summary)) {
+    return undefined;
+  }
+
+  return value.summary.flatMap((attribute) => {
+    if (
+      !isRecord(attribute) ||
+      !isString(attribute.id) ||
+      !isString(attribute.label) ||
+      !isString(attribute.value)
+    ) {
+      return [];
+    }
+
+    return [{ id: attribute.id, label: attribute.label, value: attribute.value }];
+  });
+};
+
 const getProductCategory = (
   value: Record<string, unknown>,
 ): Product["category"] => {
@@ -49,7 +70,9 @@ const toProduct = (value: unknown): Product | null => {
   }
 
   if (
-    !isString(value.id) ||
+    !isNumber(value.id) ||
+    !Number.isSafeInteger(value.id) ||
+    !isString(value.slug) ||
     !isString(value.name) ||
     !isNumber(value.price) ||
     !isString(value.currency) ||
@@ -61,6 +84,7 @@ const toProduct = (value: unknown): Product | null => {
 
   return {
     id: value.id,
+    slug: value.slug,
     name: value.name,
     price: value.price,
     currency: value.currency,
@@ -68,6 +92,7 @@ const toProduct = (value: unknown): Product | null => {
     imageSrc: value.imageSrc,
     images: getProductImages(value),
     category: getProductCategory(value),
+    summary: getProductSummary(value),
     isNew: typeof value.isNew === "boolean" ? value.isNew : undefined,
     isFavorite: true,
     imageFit:

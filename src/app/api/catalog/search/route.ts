@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { createCatalogErrorResponse } from '@/app/api/catalog-error-response'
 import { getSearchProductsPageData } from '@/data/search-page'
 import { normalizeLocale } from '@/domain/types/locale'
 import type { SearchQueryParams } from '@/utils/search-query-utils'
@@ -30,10 +31,14 @@ export async function GET(request: Request) {
       request.headers.get('accept-language'),
   )
 
-  const productList = await getSearchProductsPageData({
-    locale,
-    searchParams: toSearchQueryParams(url),
-  })
+  try {
+    const productList = await getSearchProductsPageData({
+      locale,
+      searchParams: toSearchQueryParams(url),
+    })
 
-  return NextResponse.json(productList)
+    return NextResponse.json(productList)
+  } catch (error) {
+    return createCatalogErrorResponse(error)
+  }
 }

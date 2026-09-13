@@ -4,18 +4,30 @@
  * marketi
  * OpenAPI spec version: 1
  */
+import type { CategoryBreadcrumb } from "./categoryBreadcrumb";
 import type { ProductOffer } from "./productOffer";
 import type { ProductAttributeList } from "./productAttributeList";
+import type { ProductSummaryAttribute } from "./productSummaryAttribute";
 import type { ProductVariantGroup } from "./productVariantGroup";
 
 export interface Product {
-  id: string;
+  id: number;
+  /** Человекочитаемый код продукта для поиска и поддержки.
+   */
+  displayCode: string;
+  /** Канонический адрес продукта. Если не совпадает со слагом из запроса,
+клиенту следует сделать 301 на канонический.
+ */
+  slug: string;
   name: string;
   description: string;
   imageUrls: string[];
   isNew: boolean;
-  categoryBreadcrumbs: string[];
+  categoryBreadcrumbs: CategoryBreadcrumb[];
   offers: ProductOffer[];
   attributes: ProductAttributeList;
+  /** Ключевые атрибуты продукта, отрендеренные по схеме его типа.
+   */
+  summary: ProductSummaryAttribute[];
   variants: ProductVariantGroup[];
 }

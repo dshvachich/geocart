@@ -1,13 +1,13 @@
 import * as stylex from "@stylexjs/stylex";
 import { useTranslation } from "react-i18next";
-import type { SearchSuggestion } from "@/domain/entities";
+import type { SearchProductSuggestion } from "@/domain/entities";
 import { getSuggestionLabel } from "./search-box.helpers";
 import { searchBoxStyles as styles } from "./search-box.styles";
 import type { SearchNavigationParams } from "./search-box.types";
 
 type SearchBoxProductSuggestionsProps = {
   onSearch: (params: SearchNavigationParams) => void;
-  suggestions: SearchSuggestion[];
+  suggestions: SearchProductSuggestion[];
 };
 
 export const SearchBoxProductSuggestions = ({
@@ -15,6 +15,10 @@ export const SearchBoxProductSuggestions = ({
   suggestions,
 }: SearchBoxProductSuggestionsProps) => {
   const { t } = useTranslation();
+
+  if (suggestions.length === 0) {
+    return null;
+  }
 
   return (
     <>
@@ -29,6 +33,7 @@ export const SearchBoxProductSuggestions = ({
           onClick={() =>
             onSearch({
               productId: suggestion.id,
+              productSlug: suggestion.slug,
               query: getSuggestionLabel(suggestion),
             })
           }

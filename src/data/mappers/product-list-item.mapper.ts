@@ -12,6 +12,7 @@ export const ProductListItemToProductMapperExtension = {
 
     return {
       id: product.id,
+      slug: product.slug,
       name: product.name,
       price: tetriToGel(product.minPriceTetri),
       currency: GEL_CURRENCY,

@@ -1,6 +1,10 @@
 import * as stylex from "@stylexjs/stylex";
 
 export const productCardStyles = stylex.create({
+  scrollableImageFrame: { touchAction: "auto" },
+  comparisonName: {
+    minHeight: { default: 72, "@media (max-width: 760px)": 48 },
+  },
   card: {
     display: "flex",
     minWidth: 0,

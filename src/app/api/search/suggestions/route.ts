@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { createCatalogErrorResponse } from '@/app/api/catalog-error-response'
 import { catalogRepository } from '@/data/repositories'
 import { normalizeLocale } from '@/domain/types/locale'
 
@@ -28,11 +29,15 @@ export async function GET(request: Request) {
     return NextResponse.json({ suggestions: [] })
   }
 
-  const suggestions = await catalogRepository.getSearchSuggestions({
-    query,
-    locale,
-    limit: parseLimit(url.searchParams.get('limit')),
-  })
+  try {
+    const suggestions = await catalogRepository.getSearchSuggestions({
+      query,
+      locale,
+      limit: parseLimit(url.searchParams.get('limit')),
+    })
 
-  return NextResponse.json({ suggestions })
+    return NextResponse.json({ suggestions })
+  } catch (error) {
+    return createCatalogErrorResponse(error)
+  }
 }

@@ -8,6 +8,4 @@
 export interface Cursor {
   /** @nullable */
   next?: string | null;
-  /** @nullable */
-  prev?: string | null;
 }

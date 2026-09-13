@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 import { useTranslation } from "react-i18next";
-import type { SearchSuggestion } from "@/domain/entities";
+import type { SearchCategorySuggestion } from "@/domain/entities";
 import {
   getSuggestionLabel,
   splitCategoryLabel,
@@ -11,7 +11,7 @@ import type { SearchNavigationParams } from "./search-box.types";
 type SearchBoxCategorySuggestionsProps = {
   onSearch: (params: SearchNavigationParams) => void;
   query: string;
-  suggestions: SearchSuggestion[];
+  suggestions: SearchCategorySuggestion[];
 };
 
 export const SearchBoxCategorySuggestions = ({

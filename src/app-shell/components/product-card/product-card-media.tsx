@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 import { observer } from "mobx-react-lite";
-import { type PointerEvent, useMemo } from "react";
+import { type PointerEvent, type ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { Product } from "@/domain/entities";
 import { normalizeProductImages } from "@/domain/helpers/product-images.helpers";
@@ -8,11 +8,15 @@ import { ProductFavoriteButton } from "./product-favorite-button";
 import { productCardStyles as styles } from "./product-card.styles";
 import { ProductCardMediaStore } from "./product-card-media.store";
 import { ProductImageIndicators } from "./product-image-indicators";
+import Link from 'next/link';
+import { createProductHref } from '@/utils/product-url-utils';
 
 type ProductCardMediaProps = {
   isHoverImageSwitchEnabled: boolean;
-  isFavorite: boolean;
-  onToggleFavorite: () => void;
+  isTouchImageSwitchEnabled?: boolean;
+  action?: ReactNode;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
   priority: boolean;
   product: Product;
 };
@@ -23,7 +27,9 @@ const getProductImages = (product: Product) => {
 
 export const ProductCardMedia = observer(({
   isHoverImageSwitchEnabled,
-  isFavorite,
+  isTouchImageSwitchEnabled = true,
+  action,
+  isFavorite = false,
   onToggleFavorite,
   priority,
   product,
@@ -39,7 +45,7 @@ export const ProductCardMedia = observer(({
   const handleImageFramePointerDown = (
     event: PointerEvent<HTMLSpanElement>,
   ) => {
-    if (event.pointerType !== "touch" || !mediaStore.hasMultipleImages) {
+    if (!isTouchImageSwitchEnabled || event.pointerType !== "touch" || !mediaStore.hasMultipleImages) {
       return;
     }
 
@@ -114,8 +120,11 @@ export const ProductCardMedia = observer(({
 
   return (
     <div {...stylex.props(styles.media)}>
-      <span
-        {...stylex.props(styles.imageFrame)}
+      <Link
+        href={createProductHref(product.slug)}
+        aria-label={product.name}
+        onClick={mediaStore.handleClick}
+        {...stylex.props(styles.imageFrame, !isTouchImageSwitchEnabled && styles.scrollableImageFrame)}
         onPointerCancel={handleImageFramePointerCancel}
         onPointerDown={handleImageFramePointerDown}
         onPointerLeave={handleImageFramePointerLeave}
@@ -136,17 +145,17 @@ export const ProductCardMedia = observer(({
             />
           </>
         )}
-      </span>
+      </Link>
 
       {product.isNew && (
         <span {...stylex.props(styles.tag)}>{t("product.new")}</span>
       )}
 
-      <ProductFavoriteButton
+      {action ?? (onToggleFavorite && <ProductFavoriteButton
         isFavorite={isFavorite}
         productName={product.name}
         onToggleFavorite={onToggleFavorite}
-      />
+      />)}
 
       {mediaStore.hasMultipleImages && (
         <ProductImageIndicators

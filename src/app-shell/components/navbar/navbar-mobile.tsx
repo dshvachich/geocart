@@ -7,19 +7,24 @@ import { navbarStyles as styles } from "./navbar.styles";
 
 type NavbarMobileProps = {
   isCompact: boolean;
+  hideSearch?: boolean;
 };
 
-export const NavbarMobile = ({ isCompact }: NavbarMobileProps) => (
+export const NavbarMobile = ({ isCompact, hideSearch = false }: NavbarMobileProps) => (
   <div {...stylex.props(styles.mobileNavbar)}>
-    {!isCompact && (
-      <div {...stylex.props(layoutStyles.contentRail, styles.mobileNavbarTop)}>
-        <NavbarBrand />
-        <NavbarRight />
-      </div>
-    )}
-
-    <div {...stylex.props(layoutStyles.contentRail, styles.mobileNavbarMain)}>
-      <NavbarMain />
+    <div
+      {...stylex.props(
+        layoutStyles.contentRail,
+        styles.mobileNavbarTop,
+        isCompact && styles.mobileNavbarTopCompact,
+      )}
+    >
+      <NavbarBrand />
+      <NavbarRight />
     </div>
+
+    {!hideSearch && <div {...stylex.props(layoutStyles.contentRail, styles.mobileNavbarMain)}>
+      <NavbarMain />
+    </div>}
   </div>
 );

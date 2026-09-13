@@ -29,9 +29,18 @@ const serializeParams = (params: Record<string, unknown>): string => {
     }
 
     if (Array.isArray(value)) {
-      value.forEach((item) => {
+      const items = value.filter((item) => item !== undefined && item !== null)
+
+      if (items.length > 0) {
+        searchParams.append(key, items.join(','))
+      }
+      return
+    }
+
+    if (typeof value === 'object') {
+      Object.entries(value).forEach(([property, item]) => {
         if (item !== undefined && item !== null) {
-          searchParams.append(key, String(item))
+          searchParams.append(`${key}[${property}]`, String(item))
         }
       })
       return

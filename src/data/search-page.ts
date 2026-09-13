@@ -114,9 +114,19 @@ const withSuggestedProductFallback = async (
   searchParams: SearchQueryParams,
   locale: SupportedLocale,
 ): Promise<SearchResult> => {
-  const productId = searchParams[PRODUCT_ID_SEARCH_PARAM]?.trim();
+  const productIdParam = searchParams[PRODUCT_ID_SEARCH_PARAM]?.trim();
 
-  if (result.products.length > 0 || !productId) {
+  if (
+    result.products.length > 0 ||
+    !productIdParam ||
+    !/^\d+$/.test(productIdParam)
+  ) {
+    return result;
+  }
+
+  const productId = Number(productIdParam);
+
+  if (!Number.isSafeInteger(productId)) {
     return result;
   }
 

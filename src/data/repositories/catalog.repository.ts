@@ -12,10 +12,11 @@ import type {
   GetSearchProductsParams,
   GetSearchSuggestionsParams,
 } from "@/domain/repositories";
-import type { SearchResponseResponse } from "@/data/openapi/models";
+import type { SearchProductsParams, SearchResponse } from "@/data/openapi/models";
 import { DEFAULT_LOCALE, type SupportedLocale } from "@/domain/types/locale";
 import {
   listCategories,
+  getProduct as fetchProduct,
   listProducts,
   listSuggestions,
   searchProducts as fetchSearchProducts,
@@ -23,7 +24,10 @@ import {
 import { CategoryDtoToCategoryEntityMapperExtension } from "@/data/mappers/category.mapper";
 import { ProductListItemToProductMapperExtension } from "@/data/mappers/product-list-item.mapper";
 import { SearchResponseDtoToSearchResultEntityMapperExtension } from "@/data/mappers/search-response.mapper";
-import { SearchSuggestionItemToSearchSuggestionMapperExtension } from "@/data/mappers/search-suggestion-item.mapper";
+import { SearchSuggestionDtoToSearchSuggestionMapperExtension } from "@/data/mappers/search-suggestion.mapper";
+import { rethrowCatalogRequestError } from "@/data/repositories/catalog-error";
+import { ProductDtoToProductDetailsMapperExtension } from '@/data/mappers/product-details.mapper';
+import type { CatalogLocaleParams } from '@/domain/repositories/catalog.repository';
 
 const DEFAULT_POPULAR_PRODUCTS_LIMIT = 30;
 const DEFAULT_POPULAR_PRODUCTS_SORT = "popularity";
@@ -32,14 +36,12 @@ const DEFAULT_SEARCH_PRODUCTS_LIMIT = 30;
 const DEFAULT_SUGGESTIONS_LIMIT = 6;
 const EMPTY_CURSOR = {
   next: null,
-  prev: null,
 } as const;
 const CATEGORIES_API_TIMEOUT_MS = 3500;
 const HOME_API_TIMEOUT_MS = 3500;
 const SEARCH_API_TIMEOUT_MS = 3500;
 const SUGGESTIONS_API_TIMEOUT_MS = 2500;
-
-type SearchProductsDynamicParams = Record<string, string | number | undefined>;
+const PRODUCT_API_TIMEOUT_MS = 5000;
 
 const getLocaleHeaders = (locale: SupportedLocale = DEFAULT_LOCALE) => ({
   "Accept-Locale": locale,
@@ -61,7 +63,7 @@ const createEmptySearchResult = (): SearchResult => ({
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
-const isSearchResponse = (value: unknown): value is SearchResponseResponse => {
+const isSearchResponse = (value: unknown): value is SearchResponse => {
   if (!isRecord(value)) {
     return false;
   }
@@ -76,6 +78,19 @@ const isSearchResponse = (value: unknown): value is SearchResponseResponse => {
 };
 
 class CatalogApiRepository implements CatalogRepository {
+  async getProduct(slug: string, { locale }: CatalogLocaleParams = {}) {
+    try {
+      const product = await fetchProduct(encodeURIComponent(slug), {
+        timeout: PRODUCT_API_TIMEOUT_MS,
+        headers: getLocaleHeaders(locale),
+      });
+      return ProductDtoToProductDetailsMapperExtension.toEntity(product);
+    } catch (error) {
+      rethrowCatalogRequestError(error);
+      throw error;
+    }
+  }
+
   async getCategoryTree({ locale }: GetCategoryTreeParams = {}): Promise<
     Category[]
   > {
@@ -92,7 +107,8 @@ class CatalogApiRepository implements CatalogRepository {
       if (categoryTree.length > 0) {
         return categoryTree;
       }
-    } catch {
+    } catch (error) {
+      rethrowCatalogRequestError(error);
       return [];
     }
 
@@ -129,7 +145,8 @@ class CatalogApiRepository implements CatalogRepository {
         cursor: response.cursor ?? EMPTY_CURSOR,
         products,
       };
-    } catch {
+    } catch (error) {
+      rethrowCatalogRequestError(error);
       return createEmptyProductListResult();
     }
   }
@@ -164,7 +181,8 @@ class CatalogApiRepository implements CatalogRepository {
         cursor: response.cursor ?? EMPTY_CURSOR,
         products,
       };
-    } catch {
+    } catch (error) {
+      rethrowCatalogRequestError(error);
       return createEmptyProductListResult();
     }
   }
@@ -192,21 +210,13 @@ class CatalogApiRepository implements CatalogRepository {
         },
       );
 
-      const suggestions =
-        response.suggestions?.map((suggestion) =>
-          SearchSuggestionItemToSearchSuggestionMapperExtension.toEntity(
-            suggestion,
-          ),
-        ) ?? [];
-
-      if (suggestions.length > 0) {
-        return suggestions;
-      }
-    } catch {
+      return SearchSuggestionDtoToSearchSuggestionMapperExtension.toEntity(
+        response,
+      );
+    } catch (error) {
+      rethrowCatalogRequestError(error);
       return [];
     }
-
-    return [];
   }
 
   async getSearchProducts({
@@ -219,8 +229,8 @@ class CatalogApiRepository implements CatalogRepository {
     sort,
     sortOrder,
   }: GetSearchProductsParams = {}): Promise<SearchResult> {
-    const params: SearchProductsDynamicParams = {
-      ...filters,
+    const params: SearchProductsParams = {
+      f: filters,
       category,
       cursor,
       limit,
@@ -242,7 +252,8 @@ class CatalogApiRepository implements CatalogRepository {
       return SearchResponseDtoToSearchResultEntityMapperExtension.toEntity(
         response,
       );
-    } catch {
+    } catch (error) {
+      rethrowCatalogRequestError(error);
       return createEmptySearchResult();
     }
   }

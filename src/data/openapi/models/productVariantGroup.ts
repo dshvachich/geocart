@@ -7,6 +7,7 @@
 import type { ProductVariantOption } from "./productVariantOption";
 
 export interface ProductVariantGroup {
+  id: string;
   label: string;
   options: ProductVariantOption[];
 }

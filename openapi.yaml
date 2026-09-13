@@ -6,7 +6,7 @@ servers:
   - url: /api
 
 paths:
-  /catalog/categories:
+  /categories:
     get:
       operationId: listCategories
       description: |
@@ -15,9 +15,13 @@ paths:
         - $ref: '#/components/parameters/AcceptLocale'
       responses:
         "200":
-          $ref: '#/components/responses/CategoryListResponse'
+          description: Список категорий
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryList'
 
-  /catalog/products:
+  /products:
     get:
       operationId: listProducts
       description: |
@@ -31,8 +35,8 @@ paths:
           schema:
             type: array
             items:
-              type: string
-              format: uuid
+              type: integer
+              format: int64
         - name: limit
           required: true
           in: query
@@ -40,6 +44,7 @@ paths:
             type: integer
             minimum: 1
             maximum: 50
+            x-go-type: uint64
         - name: sort
           required: false
           in: query
@@ -57,11 +62,15 @@ paths:
             type: string
       responses:
         "200":
-          $ref: '#/components/responses/ProductListResponse'
+          description: Список продуктов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
         "400":
           $ref: '#/components/responses/ErrorResponse'
 
-  /catalog/products/{id}:
+  /products/{slug}:
     get:
       operationId: getProduct
       description: |
@@ -69,18 +78,30 @@ paths:
       parameters:
         - $ref: '#/components/parameters/AcceptLocale'
         - in: path
-          name: id
+          name: slug
+          required: true
           schema:
             type: string
-            format: uuid
-          required: true
+            pattern: '^(?:.*-p)?[0-9]+$'
+          examples:
+            slug:
+              value: apple-iphone-17-pro-p12321
+            id:
+              value: "12321"
       responses:
         "200":
-          $ref: '#/components/responses/ProductResponse'
+          description: |
+            Детальная карточка продукта
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
         "400":
           $ref: '#/components/responses/ErrorResponse'
+        "404":
+          $ref: '#/components/responses/ErrorResponse'
 
-  /catalog/search:
+  /search:
     get:
       operationId: searchProducts
       description: |
@@ -92,7 +113,7 @@ paths:
         При запросе с фильтрами всегда необходимо указывать категорию.
 
         Возможные фильтры, их названия и типы полностью определяются тем, что ответил сервер.
-        Поэтому они не указаны как параметры запроса в схеме. Каждый тип фильтра соотносится типа параметра, который фильтруется.
+        Их нужно указывать как `f[id]=X`, например `f[price]=100-200&f[color]=red,blue`.
         Каждый фильтр в ответе имеет указатель на то, были ли выбраны какие-то значения для этого фильтра при запросе.
         Так на стороне клиента должны отсекаться невалидные значения, сужения фильтров и так далее: логика формирования фильтров
         и действующих значений полностью находится на стороне сервера.
@@ -126,6 +147,7 @@ paths:
             type: integer
             minimum: 1
             maximum: 100
+            x-go-type: uint64
         - name: sort
           in: query
           schema:
@@ -139,11 +161,30 @@ paths:
           in: query
           schema:
             type: string
+        - name: f
+          in: query
+          description: Фильтры в формате `f[x]=value1,value2`, `f[x]=value1-value2`
+          style: deepObject
+          explode: true
+          schema:
+            type: object
+            additionalProperties:
+              type: string
       responses:
         "200":
-          $ref: '#/components/responses/SearchResponse'
+          description: |
+            Список продуктов по запросу, подходящих категорий и фильтров
+            по выбранной или предсказанной категории.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        "400":
+          $ref: '#/components/responses/ErrorResponse'
+        "404":
+          $ref: '#/components/responses/ErrorResponse'
 
-  /catalog/search/suggest:
+  /search/suggest:
     get:
       operationId: listSuggestions
       description: |
@@ -159,13 +200,23 @@ paths:
         - name: limit
           in: query
           required: true
+          description: Максимум подсказок в каждой группе
           schema:
             type: integer
             minimum: 1
             maximum: 50
+            x-go-type: uint64
       responses:
         "200":
-          $ref: '#/components/responses/SearchSuggestionResponse'
+          description: |
+            Подсказки, сгруппированные по типу сущности. Группа присутствует
+            всегда, даже если она пуста.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchSuggestion'
+        "400":
+          $ref: '#/components/responses/ErrorResponse'
 
 components:
   responses:
@@ -176,53 +227,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
 
-    CategoryListResponse:
-      description: Список категорий
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CategoryList'
-
-    ProductListResponse:
-      description: Список продуктов
-      content:
-        application/json:
-          schema:
-            type: object
-            required: [cursor, products]
-            properties:
-              cursor:
-                $ref: '#/components/schemas/Cursor'
-              products:
-                $ref: '#/components/schemas/ProductList'
-
-    SearchResponse:
-      description: |
-        Список продуктов по запросу, подходящих категорий и фильтров
-        по выбранной или предсказанной категории.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SearchResponse'
-
-    SearchSuggestionResponse:
-      description: |
-        Подсказки содержат ID, отображаемое название и тип сущности,
-        к которой они относятся. Актуальный набор типов сущностей указан
-        в схеме подсказки
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SearchSuggestion'
-
-    ProductResponse:
-      description: |
-        Детальная карточка продукта
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Product'
-
   parameters:
     AcceptLocale:
       name: "Accept-Locale"
@@ -231,7 +235,7 @@ components:
       schema:
         type: string
         enum: [ru, en, ka]
-        x-go-type: domain.Language
+        x-go-type: store.Language
 
   schemas:
     Error:
@@ -248,14 +252,11 @@ components:
 
     Cursor:
       type: object
-      x-go-type: paging.Cursor
       properties:
         next:
           type: string
           nullable: true
-        prev:
-          type: string
-          nullable: true
+          format: null-string
 
     CategoryList:
       type: array
@@ -282,6 +283,15 @@ components:
           items:
             $ref: '#/components/schemas/Category'
 
+    ProductListResponse:
+      type: object
+      required: [cursor, products]
+      properties:
+        cursor:
+          $ref: '#/components/schemas/Cursor'
+        products:
+          $ref: '#/components/schemas/ProductList'
+
     ProductList:
       type: array
       items:
@@ -289,11 +299,13 @@ components:
 
     ProductListItem:
       type: object
-      required: [id, name, minPriceTetri, offersCount, imageUrls, isNew]
+      required: [id, slug, name, minPriceTetri, offersCount, imageUrls, isNew]
       properties:
         id:
+          type: integer
+          format: int64
+        slug:
           type: string
-          format: uuid
         name:
           type: string
         minPriceTetri:
@@ -307,26 +319,64 @@ components:
         isNew:
           type: boolean
 
-    SearchSuggestionItem:
+    SearchSuggestionCategory:
       type: object
-      required: [id, label, type]
+      required: [id, label]
       properties:
         id:
           type: string
         label:
           type: string
-        type:
+
+    SearchSuggestionProduct:
+      type: object
+      required: [id, slug, label]
+      properties:
+        id:
+          type: integer
+          format: int64
+        slug:
           type: string
-          enum: [product, category]
+        label:
+          type: string
 
     SearchSuggestion:
       type: object
-      required: [suggestions]
+      required: [categories, products]
       properties:
-        suggestions:
+        categories:
           type: array
           items:
-            $ref: '#/components/schemas/SearchSuggestionItem'
+            $ref: '#/components/schemas/SearchSuggestionCategory'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchSuggestionProduct'
+
+    ProductSummaryAttribute:
+      type: object
+      required: [id, label, value]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        value:
+          type: string
+
+    SearchProductListItem:
+      allOf:
+        - $ref: '#/components/schemas/ProductListItem'
+        - type: object
+          required: [summary]
+          properties:
+            summary:
+              type: array
+              description: |
+                Ключевые атрибуты продукта, отрендеренные по схеме его типа.
+                Пусты, если категория поиска не определена.
+              items:
+                $ref: '#/components/schemas/ProductSummaryAttribute'
 
     SearchResponse:
       type: object
@@ -335,7 +385,9 @@ components:
         title:
           type: string
         products:
-          $ref: '#/components/schemas/ProductList'
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchProductListItem'
         filters:
           type: array
           items:
@@ -426,13 +478,31 @@ components:
         selectedMax:
           type: integer
 
-    Product:
+    CategoryBreadcrumb:
       type: object
-      required: [id, name, isNew, description, imageUrls, offers, attributes, categoryBreadcrumbs, variants]
+      required: [id, label]
       properties:
         id:
           type: string
-          format: uuid
+        label:
+          type: string
+
+    Product:
+      type: object
+      required: [id, displayCode, slug, name, isNew, description, imageUrls, offers, attributes, summary, categoryBreadcrumbs, variants]
+      properties:
+        id:
+          type: integer
+          format: int64
+        displayCode:
+          type: string
+          description: |
+            Человекочитаемый код продукта для поиска и поддержки.
+        slug:
+          type: string
+          description: |
+            Канонический адрес продукта. Если не совпадает со слагом из запроса,
+            клиенту следует сделать 301 на канонический.
         name:
           type: string
         description:
@@ -446,13 +516,19 @@ components:
         categoryBreadcrumbs:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/CategoryBreadcrumb'
         offers:
           type: array
           items:
             $ref: '#/components/schemas/ProductOffer'
         attributes:
           $ref: '#/components/schemas/ProductAttributeList'
+        summary:
+          type: array
+          description: |
+            Ключевые атрибуты продукта, отрендеренные по схеме его типа.
+          items:
+            $ref: '#/components/schemas/ProductSummaryAttribute'
         variants:
           type: array
           items:
@@ -460,8 +536,10 @@ components:
 
     ProductVariantGroup:
       type: object
-      required: [label, options]
+      required: [id, label, options]
       properties:
+        id:
+          type: string
         label:
           type: string
         options:
@@ -471,11 +549,13 @@ components:
 
     ProductVariantOption:
       type: object
-      required: [productId, label, selected, exact]
+      required: [productId, slug, label, selected, exact]
       properties:
         productId:
+          type: integer
+          format: int64
+        slug:
           type: string
-          format: uuid
         label:
           type: string
         selected:
@@ -485,12 +565,18 @@ components:
 
     ProductOffer:
       type: object
-      required: [merchant, url, priceTetri, originalPriceTetri, ratioToBestPrice]
+      required: [id, merchant, url, priceTetri, originalPriceTetri, ratioToBestPrice, updatedAt]
       properties:
+        id:
+          type: integer
+          format: int64
         merchant:
           $ref: '#/components/schemas/ProductOfferMerchant'
         url:
           type: string
+        updatedAt:
+          type: string
+          format: date-time
         priceTetri:
           type: integer
         originalPriceTetri:
@@ -501,8 +587,10 @@ components:
 
     ProductOfferMerchant:
       type: object
-      required: [name, url, logoUrl, phone]
+      required: [id, name, url, logoUrl, phone]
       properties:
+        id:
+          type: string
         name:
           type: string
         url:
@@ -524,8 +612,10 @@ components:
 
     ProductAttributeGroup:
       type: object
-      required: [label, attributes]
+      required: [id, label, attributes]
       properties:
+        id:
+          type: string
         label:
           type: string
         attributes:
@@ -535,8 +625,10 @@ components:
 
     ProductAttribute:
       type: object
-      required: [label, value]
+      required: [id, label, value]
       properties:
+        id:
+          type: string
         label:
           type: string
         value:
@@ -545,11 +637,11 @@ components:
     ProductSort:
       type: string
       enum: [popularity, price]
-      default: price
-      x-go-type: domain.ProductSort
+      default: popularity
+      x-go-type: store.ProductSort
 
     SortOrder:
       type: string
       enum: [asc, desc]
-      default: asc
+      default: desc
       x-go-type: paging.Order

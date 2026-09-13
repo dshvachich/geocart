@@ -5,8 +5,15 @@ export type ProductCategory = {
   title: string;
 };
 
-export type Product = {
+export type ProductSummaryAttribute = {
   id: string;
+  label: string;
+  value: string;
+};
+
+export type Product = {
+  id: number;
+  slug: string;
   name: string;
   price: number;
   currency: string;
@@ -14,6 +21,7 @@ export type Product = {
   imageSrc: string;
   images?: string[];
   category?: ProductCategory;
+  summary?: ProductSummaryAttribute[];
   isNew?: boolean;
   isFavorite?: boolean;
   imageFit?: "contain" | "cover";

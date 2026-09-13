@@ -4,8 +4,10 @@
  * marketi
  * OpenAPI spec version: 1
  */
-import type { SearchSuggestionItem } from "./searchSuggestionItem";
+import type { SearchSuggestionCategory } from "./searchSuggestionCategory";
+import type { SearchSuggestionProduct } from "./searchSuggestionProduct";
 
 export interface SearchSuggestion {
-  suggestions: SearchSuggestionItem[];
+  categories: SearchSuggestionCategory[];
+  products: SearchSuggestionProduct[];
 }

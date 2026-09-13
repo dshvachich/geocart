@@ -7,6 +7,7 @@
 import type { ProductAttribute } from "./productAttribute";
 
 export interface ProductAttributeGroup {
+  id: string;
   label: string;
   attributes: ProductAttribute[];
 }

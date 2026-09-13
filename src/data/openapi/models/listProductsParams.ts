@@ -8,7 +8,7 @@ import type { ProductSort } from "./productSort";
 import type { SortOrder } from "./sortOrder";
 
 export type ListProductsParams = {
-  ids?: string[];
+  ids?: number[];
   /**
    * @minimum 1
    * @maximum 50

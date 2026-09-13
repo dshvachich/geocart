@@ -20,6 +20,15 @@ export type {
   SearchSortOption,
 } from "./search";
 export type { Category } from "./category";
-export type { Product, ProductCategory, ProductListResult } from "./product";
+export type {
+  Product,
+  ProductCategory,
+  ProductListResult,
+  ProductSummaryAttribute,
+} from "./product";
 export { SearchSuggestionType } from "./search-suggestion";
-export type { SearchSuggestion } from "./search-suggestion";
+export type {
+  SearchCategorySuggestion,
+  SearchProductSuggestion,
+  SearchSuggestion,
+} from "./search-suggestion";

@@ -6,7 +6,8 @@
  */
 
 export interface ProductVariantOption {
-  productId: string;
+  productId: number;
+  slug: string;
   label: string;
   selected: boolean;
   exact: boolean;

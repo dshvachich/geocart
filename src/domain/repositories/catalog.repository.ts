@@ -5,6 +5,7 @@ import type {
   SearchSuggestion,
 } from "@/domain/entities";
 import type { SupportedLocale } from "@/domain/types/locale";
+import type { ProductDetails } from '@/domain/entities/product-details';
 
 export type CatalogSort = "popularity" | "price";
 export type CatalogSortOrder = "asc" | "desc";
@@ -24,7 +25,7 @@ export type GetPopularProductsParams = {
 };
 
 export type GetProductsByIdsParams = CatalogLocaleParams & {
-  ids: string[];
+  ids: number[];
   limit?: number;
 };
 
@@ -46,6 +47,7 @@ export type GetSearchProductsParams = {
 };
 
 export interface CatalogRepository {
+  getProduct(slug: string, params?: CatalogLocaleParams): Promise<ProductDetails>;
   getCategoryTree(params?: GetCategoryTreeParams): Promise<Category[]>;
   getPopularProducts(
     params?: GetPopularProductsParams,

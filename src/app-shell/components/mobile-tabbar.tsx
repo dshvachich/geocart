@@ -10,7 +10,8 @@ import { mobileTabbarStyles as styles } from "./mobile-tabbar.styles";
 type MobileTabbarItemId = "home" | "catalog" | "favorites" | "compare";
 
 type MobileTabbarProps = {
-  activeItem?: MobileTabbarItemId;
+  activeItem?: MobileTabbarItemId | null;
+  respectSafeArea?: boolean;
 };
 
 const tabbarItems = [
@@ -38,7 +39,7 @@ const tabbarItems = [
   {
     id: "compare",
     labelKey: "common.compare",
-    href: "/",
+    href: "/compare",
     activeIcon: uiAssets.list,
     icon: uiAssets.list,
   },
@@ -50,12 +51,15 @@ const tabbarItems = [
   icon: string;
 }>;
 
-export const MobileTabbar = ({ activeItem = "home" }: MobileTabbarProps) => {
+export const MobileTabbar = ({
+  activeItem = "home",
+  respectSafeArea = false,
+}: MobileTabbarProps) => {
   const { t } = useTranslation();
 
   return (
     <nav
-      {...stylex.props(styles.tabbar)}
+      {...stylex.props(styles.tabbar, respectSafeArea && styles.safeArea)}
       aria-label={t("common.primaryNavigation")}
     >
       {tabbarItems.map((item) => {
@@ -69,12 +73,17 @@ export const MobileTabbar = ({ activeItem = "home" }: MobileTabbarProps) => {
             aria-current={isActive ? "page" : undefined}
           >
             <Image
+              {...stylex.props(isActive && item.id === "compare" && styles.activeCompareIcon)}
               src={isActive ? item.activeIcon : item.icon}
               alt=""
               width={24}
               height={24}
             />
-            <span>{t(item.labelKey)}</span>
+            <span
+              {...stylex.props(styles.label, isActive && styles.activeItem)}
+            >
+              {t(item.labelKey)}
+            </span>
           </Link>
         );
       })}

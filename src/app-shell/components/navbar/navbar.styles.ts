@@ -1,9 +1,15 @@
 import * as stylex from "@stylexjs/stylex";
 
 export const navbarStyles = stylex.create({
+  shellWithoutMobileSearch: {
+    top: 0,
+  },
   shell: {
     position: "sticky",
-    top: 0,
+    top: {
+      default: 0,
+      "@media (max-width: 760px)": -56,
+    },
     zIndex: 50,
     backgroundColor: "var(--color-bg-primary)",
   },
@@ -19,10 +25,7 @@ export const navbarStyles = stylex.create({
       "@media (max-width: 760px)": "none",
     },
     alignItems: "center",
-    flexWrap: {
-      default: "nowrap",
-      "@media (max-width: 1180px)": "wrap",
-    },
+    flexWrap: "nowrap",
     gap: {
       default: 24,
       "@media (max-width: 1180px)": 12,
@@ -54,10 +57,6 @@ export const navbarStyles = stylex.create({
   navbarMain: {
     display: "flex",
     flex: "1 1 auto",
-    flexBasis: {
-      default: null,
-      "@media (max-width: 1180px)": "100%",
-    },
     alignItems: "center",
     gap: 8,
     minWidth: {
@@ -65,10 +64,6 @@ export const navbarStyles = stylex.create({
       "@media (max-width: 760px)": 0,
     },
     minHeight: 40,
-    order: {
-      default: 0,
-      "@media (max-width: 1180px)": 3,
-    },
   },
   catalogButton: {
     display: "inline-flex",
@@ -139,10 +134,6 @@ export const navbarStyles = stylex.create({
     height: {
       default: null,
       "@media (max-width: 760px)": 40,
-    },
-    marginLeft: {
-      default: null,
-      "@media (max-width: 1180px)": "auto",
     },
   },
   dropdownAnchor: {
@@ -244,6 +235,10 @@ export const navbarStyles = stylex.create({
     paddingTop: 8,
     paddingBottom: 8,
     backgroundColor: "var(--color-bg-primary)",
+  },
+  mobileNavbarTopCompact: {
+    visibility: "hidden",
+    pointerEvents: "none",
   },
   mobileNavbarMain: {
     display: "flex",
